@@ -24,14 +24,19 @@ Usage
 =============
 1. First modify the config.py based on your requirements.
 2. To generate only assembly program run the following command. Outputs will be in result/test# folder.
-    > ./make.py gen_only
-3. To generate assembly programs and execute on riscv vanilla spike run the following command. This assumes that spike exists in the your $PATH
-    > ./make.py spike
-4. To generate assembly programs and execute on shakti-mod-spike run the following:
-    > ./make.py modspike
+
+         $ ./make.py gen_only
+         
+4. To generate assembly programs and execute on riscv vanilla spike run the following command. This assumes that spike exists in the your $PATH
+
+        $ ./make.py spike
+
+5. To generate assembly programs and execute on shakti-mod-spike run the following:
+
+        $ ./make.py modspike
+        
 6. To generate assembly, run on modspike, run on RTL binary and compare results run the following command. Currently this assumes that the RTL binary is named "out" and is present in $SHAKTI_C_HOME/bin, where $SHAKTI_C_HOME is any environment variable.
-    > ./make.py
+
+        $ ./make.py
 
 8. All the generated tests will be in result/test# folder.
-9. The seed for each random test is taken from the randomSeed.txt. Users can modify this file as per
-their requirements.
