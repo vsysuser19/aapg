@@ -293,5 +293,89 @@ machineLevelCSR32 = ('mtimeh', 'htimew')
 if bitwidth == 32:
     machineLevelCSR += machineLevelCSR32
 
+# Compressed Instruction Set
+
+rvc_load_store = ('flw', 'fsw')
+rvc_base = (
+    'c.add',
+    'c.addi',
+    'c.addi16sp',
+    'c.addi4spn',
+    'c.addiw',
+    'c.addw',
+    'c.and',
+    'c.andi',
+    'c.beqz',
+    'c.benz',
+    'c.ebreak',
+    'c.fld',
+    'c.fldsp',
+    'c.flw',
+    'c.flwsp',
+    'c.fsd',
+    'c.fsdsp',
+    'c.fsw',
+    'c.fswsp',
+    'c.j',
+    'c.jal',
+    'c.jalr',
+    'c.jr',
+    'c.ld',
+    'c.ldsp',
+    'c.li',
+    'c.lui',
+    'c.lw',
+    'c.lwsp',
+    'c.mv',
+    'c.or',
+    'c.sd',
+    'c.sdsp',
+    'c.slli',
+    'c.srai',
+    'c.srli',
+    'c.sub',
+    'c.subw',
+    'c.sw',
+    'c.swsp',
+    'c.xor')
+rvc_cr = (
+    'c.add',
+    'c.addw',
+    'c.ebreak',
+    'c.jalr',
+    'c.jr',
+    'c.mv',
+    'c.')
+rvc_ci = ('c.addi',
+    'c.addi16sp',
+    'c.addiw',
+    'c.andi',
+    'c.fldsp',
+    'c.flwsp',
+    'c.ldsp',
+    'c.li',
+    'c.lui',
+    'c.lwsp',
+    'c.slli',
+    'c.')
+rvc_ciw = ('c.addi4spn',)
+rvc_cb = ('c.beqz','c.bnez','c.srai','c.srli',
+    'c.')
+rvc_cl= ('c.fld',
+    'c.flw',
+    'c.fsd',
+    'c.fsw',
+    'c.ld',
+    'c.lw',
+    'c.sd',
+    'c.sw',
+    'c.')
+rvc_css= ('c.fsdsp','c.fswsp','c.sdsp',
+    'c.swsp')
+rvc_cj= ('c.j',
+    'c.jal')
+rvc_cs= ('c.and','c.or','c.sub',
+    'c.subw','c.xor')    
+
 if __name__ == "__main__":
     print("Please Run aapg.py")
