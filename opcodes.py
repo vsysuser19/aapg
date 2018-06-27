@@ -295,7 +295,6 @@ if bitwidth == 32:
 
 # Compressed Instruction Set
 
-rvc_load_store = ('flw', 'fsw')
 rvc_base = (
     'c.add',
     'c.addi',
