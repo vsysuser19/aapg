@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-
-# Author: Nandu Raj P ( nndurj@gmail.com )
-
-
 import sys
 from commonStuff import *
 import baseInstructions as bI
@@ -17,7 +12,6 @@ try:
     debug = sys.argv[3]
 except BaseException:
     debug = 'debug'
-
 
 def initialCode():
     asmFile.write('''
