@@ -19,7 +19,7 @@ def run(args):
             None
     """
     logger = logging.getLogger(__name__)
-    logger.info("Gen command invoked. Random program generation started")
+    logger.info("Command [GEN] invoked. Random program generation started")
 
     config_file_path = os.path.abspath(args.config_file)
 
