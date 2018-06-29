@@ -11,6 +11,8 @@ import argparse
 import os
 import io
 
+import aapg.gen_random_program
+
 # Version read
 VERSION = None
 here = os.path.abspath(os.path.dirname(__file__))
@@ -39,6 +41,10 @@ def parse_cmdline_opts():
 
     # Subparser: gen action
     gen_parser = subparsers.add_parser('gen', help = 'Generate a random program')
+    gen_parser.add_argument('--config-file', action = 'store', default = 'config.ini', metavar = "", \
+        help="Configuration file. Default: ./config.ini" 
+    )
+    gen_parser.set_defaults(func = aapg.gen_random_program.run)
 
     return main_parser.parse_args()
 
@@ -69,7 +75,6 @@ def execute():
     """
     args = parse_cmdline_opts()
     setup_logging(args.verbose)
-    
     logger = logging.getLogger(__name__)
-
     logger.info("AAPG started")
+    args.func(args)

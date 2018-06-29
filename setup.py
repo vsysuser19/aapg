@@ -4,7 +4,7 @@
 import io
 import os
 import sys
-from shutil import rmtree
+import re
 
 from setuptools import find_packages, setup, Command
 
