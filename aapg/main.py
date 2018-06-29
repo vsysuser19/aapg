@@ -34,16 +34,19 @@ def parse_cmdline_opts():
     # Main Parser
     main_parser = argparse.ArgumentParser(prog = 'aapg', description = 'Automated Assembly Program Generator for RISC-V')
     main_parser.add_argument('--version', action = 'version', version = VERSION)
-    main_parser.add_argument('--verbose', action = 'store', default = 'WARNING', \
-            help = 'debug | info | warning | error')
+    main_parser.add_argument('--verbose', action = 'store', default = 'info', \
+            help = 'debug | info | warning | error', metavar = "")
     
-    subparsers = main_parser.add_subparsers(help = 'Sub-commands Help')
+    subparsers = main_parser.add_subparsers(help = 'Available sub-commands')
 
     # Subparser: gen action
     gen_parser = subparsers.add_parser('gen', help = 'Generate a random program')
     gen_parser.add_argument('--config-file', action = 'store', default = 'config.ini', metavar = "", \
-        help="Configuration file. Default: ./config.ini" 
-    )
+        help="Configuration file. Default: ./config.ini" )
+    gen_parser.add_argument('--asm-name', action = 'store', default = 'out.asm', \
+            help = 'Assembly output file name. Default: out.asm', metavar = "")
+    gen_parser.add_argument('--output-dir', action='store', default = './build', \
+            help = 'Output directory. Default: ./build', metavar = "")
     gen_parser.set_defaults(func = aapg.gen_random_program.run)
 
     return main_parser.parse_args()
