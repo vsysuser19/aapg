@@ -7,9 +7,32 @@ import sys
 import os
 import configparser
 
+import aapg.asm_writer
+import aapg.program_generator
+import aapg.utils
+
 def gen_random_program(ofile, args):
     """ Function to generate one random assembly program
+
+        Args:
+            ofile: Output file handler
+            args: Configuration parser args obtained from (default) config.ini
     """
+
+    # Instantiate AsmWriter
+    writer = aapg.asm_writer.AsmWriter(ofile)
+
+    # Header Section
+    writer.comment("Random Assembly Program Generated using AAPG")
+    writer.write('.text')
+    writer.write('.align\t\t4')
+    writer.write('.globl\t\tmain');
+    writer.write('.type\t\tmain, @function');
+
+    # Section main
+    writer.write('main:', indent = 0)
+
+    basic_generator = aapg.program_generator.BasicGenerator(args) 
 
 def run(args):
     """ Entry point for generating new random assembly program

@@ -10,8 +10,10 @@ import logging
 import argparse
 import os
 import io
+import sys
 
 import aapg.gen_random_program
+import aapg.utils
 
 # Version read
 VERSION = None
@@ -65,7 +67,8 @@ def setup_logging(log_level):
     numeric_level = getattr(logging, log_level.upper(), None)
 
     if not isinstance(numeric_level, int):
-        raise ValueError('Non-integer log_level associated with {}'.format(log_level))
+        print("\033[91mInvalid log level passed. Please select from debug | info | warning | error\033[0m")
+        sys.exit(1)
 
     logging.basicConfig(level = numeric_level)
 
@@ -78,6 +81,12 @@ def execute():
     """
     args = parse_cmdline_opts()
     setup_logging(args.verbose)
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger()
+    logger.handlers = []
+    ch = logging.StreamHandler()
+    ch.setFormatter(aapg.utils.ColoredFormatter())
+    logger.addHandler(ch)
     logger.info("AAPG started")
+
+    # Call the required function for the sub-command
     args.func(args)
