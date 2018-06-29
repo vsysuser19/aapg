@@ -21,3 +21,4 @@ class TestBasicGenerator(object):
 
     def test_correct_num_instructions_generated(self):
         """ Check generated number of instructions """
+        args = {'general': }
