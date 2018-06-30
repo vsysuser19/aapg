@@ -89,4 +89,8 @@ def execute():
     logger.info("AAPG started")
 
     # Call the required function for the sub-command
-    args.func(args)
+    if args.func is not None:
+        args.func(args)
+
+if __name__ == '__main__':
+    execute()
