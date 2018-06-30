@@ -11,7 +11,7 @@ from six.moves import queue
 import logging
 
 import aapg.utils
-import aapg.opcodes
+import aapg.isa_funcs
 
 import random
 import os
@@ -64,12 +64,9 @@ class BasicGenerator(object):
         while not next_inst_found:
             isa_ext = random.choice(list(self.inst_dist.keys()))
             if self.inst_dist[isa_ext] > 0:
-                next_inst = aapg.opcodes.get_random_inst_from_set(isa_ext)
+                next_inst = aapg.isa_funcs.get_random_inst_from_set(isa_ext)
                 self.inst_dist[isa_ext] -= 1
                 next_inst_found = True
-
-        # Process the args for the instruction
-        self.process_args(next_inst)
 
         self.q.put(next_inst)
 
