@@ -30,14 +30,18 @@ class BasicGenerator(object):
         logger.debug("total_instructions: {0}".format(self.total_instructions))
 
     def __iter__(self):
-        self.pre_inst_gen()
         return self
 
     def __next__(self):
+        self.pre_inst_gen()
+
         if self.q.empty():
             raise StopIteration('Instructions are over')
 
         return self.q.get()
 
     def pre_inst_gen(self):
-        pass
+        if self.total_instructions > 0:
+            self.q.put('inst')
+
+        self.total_instructions -= 1
