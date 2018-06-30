@@ -37,7 +37,6 @@ def gen_random_program(ofile, args):
 
     basic_generator = aapg.program_generator.BasicGenerator(args) 
     for instruction in basic_generator:
-        logger.debug(instruction)
         writer.write_inst(*instruction)
 
 def run(args):
