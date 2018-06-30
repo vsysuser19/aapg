@@ -23,7 +23,7 @@ class BasicGenerator(object):
 
         # Instantiate local variables
         self.q = queue.Queue()
-        self.total_instructions = args.get('general', 'total_instructions')
+        self.total_instructions = int(args.get('general', 'total_instructions'))
 
         # Log debug messages
         logger.debug("Configuration parameters received")

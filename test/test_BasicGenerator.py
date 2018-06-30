@@ -2,17 +2,15 @@
     Testing BasicGenerator class from program_generator module
 """
 import pytest
+import configparser
 
 from aapg.program_generator import BasicGenerator
 
 @pytest.fixture
 def confargs():
-    args = {
-        'general' : {
-            'total_instructions': 100
-        }
-    }
-
+    args = configparser.ConfigParser()
+    args['general'] = {}
+    args['general']['total_instructions'] =  '100'
     return args
 
 class TestBasicGenerator(object):
@@ -24,7 +22,8 @@ class TestBasicGenerator(object):
 
     def test_raises_StopIteration_on_empty(self):
         """ Check if it stops iteration properly """
-        args = {'general': {'total_instructions': 0}}
+        args = confargs()
+        args['general']['total_instructions'] = '0'
         basic_generator = BasicGenerator(args)
         with pytest.raises(StopIteration):
             next(basic_generator)

@@ -51,7 +51,7 @@ def parse_cmdline_opts():
             help = 'Output directory. Default: ./build', metavar = "")
     gen_parser.set_defaults(func = aapg.gen_random_program.run)
 
-    return main_parser.parse_args()
+    return main_parser.parse_args(), main_parser
 
 def setup_logging(log_level):
     """Setup logging
@@ -79,7 +79,7 @@ def execute():
         * console-scripts section in pip
         * python -m aapg.main
     """
-    args = parse_cmdline_opts()
+    args, parser = parse_cmdline_opts()
     setup_logging(args.verbose)
     logger = logging.getLogger()
     logger.handlers = []
@@ -89,8 +89,11 @@ def execute():
     logger.info("AAPG started")
 
     # Call the required function for the sub-command
-    if args.func is not None:
+    try:
         args.func(args)
+    except AttributeError as e:
+        logger.error("aapg did not receive any command")
+        parser.print_help()
 
 if __name__ == '__main__':
     execute()
