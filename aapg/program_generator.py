@@ -11,6 +11,7 @@ from six.moves import queue
 import logging
 
 import aapg.utils
+import aapg.opcodes
 
 """ Setup the logger """
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class BasicGenerator(object):
         return self.q.get()
 
     def pre_inst_gen(self):
-        if self.total_instructions > 0:
-            self.q.put('inst')
-
+        if self.total_instructions == 0:
+            return
+        self.q.put(aapg.opcodes.get_random_inst_from_set('rv32i.compute'))
         self.total_instructions -= 1

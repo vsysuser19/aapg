@@ -12,6 +12,8 @@ import aapg.asm_writer
 import aapg.program_generator
 import aapg.utils
 
+logger = logging.getLogger(__name__)
+
 def gen_random_program(ofile, args):
     """ Function to generate one random assembly program
 
@@ -34,6 +36,9 @@ def gen_random_program(ofile, args):
     writer.write('main:', indent = 0)
 
     basic_generator = aapg.program_generator.BasicGenerator(args) 
+    for instruction in basic_generator:
+        logger.debug(instruction)
+        writer.write_inst(*instruction)
 
 def run(args):
     """ Entry point for generating new random assembly program
@@ -46,8 +51,6 @@ def run(args):
         Returns:
             None
     """
-    logger = logging.getLogger(__name__)
-
     config_file_path = os.path.abspath(args.config_file)
     config_file_name = os.path.basename(config_file_path.rstrip(os.sep))
 
