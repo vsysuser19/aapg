@@ -7,7 +7,7 @@
 
     #TODO: Inheritance
 """
-import queue
+from six.moves import queue
 import logging
 
 import aapg.utils
@@ -23,7 +23,7 @@ class BasicGenerator(object):
 
         # Instantiate local variables
         self.q = queue.Queue()
-        self.total_instructions = args['general']['total_instructions']
+        self.total_instructions = args.get('general', 'total_instructions')
 
         # Log debug messages
         logger.debug("Configuration parameters received")

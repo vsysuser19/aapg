@@ -16,6 +16,7 @@ EMAIL = 'shakti@iitm.ac.in'
 VERSION = None
 
 REQUIRED = [
+    'six',
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))

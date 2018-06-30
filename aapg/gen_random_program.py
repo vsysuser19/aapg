@@ -5,7 +5,8 @@
 import logging
 import sys
 import os
-import configparser
+from six.moves import configparser
+import errno
 
 import aapg.asm_writer
 import aapg.program_generator
@@ -68,8 +69,9 @@ def run(args):
     logger.info("Output directory selected: {0}".format(output_dir))
     try:
         os.makedirs(output_dir)
-    except FileExistsError as e:
-        logger.warn("Output directory exists")
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            logger.warn("Output directory exists")
 
     # Configure output file and run the program generator
     output_file_path = os.path.join(output_dir, output_asm_name)
