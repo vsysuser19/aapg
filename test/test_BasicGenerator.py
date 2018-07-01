@@ -11,6 +11,8 @@ def confargs():
     args = configparser.ConfigParser()
     args['general'] = {}
     args['general']['total_instructions'] =  '100'
+    args['isa-instruction-distribution'] = {}
+    args['isa-instruction-distribution']['rel_rv32i.ctrl_instructions'] = '10'
     return args
 
 class TestBasicGenerator(object):
