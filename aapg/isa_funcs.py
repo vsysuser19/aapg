@@ -208,6 +208,9 @@ inst_store_by_set = {
     ]
 }
 
+inst_store_fp_set = {key: inst_store_by_set[key] for key in ['rv32f', 'rv64f', 'rv32d', 'rv64d']}
+fp_instrs = [inst.split(' ')[0] for inst_set in inst_store_fp_set.values() for inst in inst_set] 
+
 args_list = [
     'rd',
     'rs1',
@@ -229,3 +232,10 @@ def get_random_inst_from_set(set_name):
     inst_template = get_random_inst_template(set_name)
     inst_tokens = inst_template.split(' ')
     return (inst_tokens[0], ) +  tuple(filter(lambda x: x in args_list, inst_tokens))
+
+def is_floating_point(instr_name):
+    ''' Check if given instruction name is floating point '''
+    if instr_name in fp_instrs:
+        return True
+    else:
+        return False

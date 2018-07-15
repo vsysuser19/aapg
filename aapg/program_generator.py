@@ -12,6 +12,7 @@ import logging
 
 import aapg.utils
 import aapg.isa_funcs
+import aapg.args_generator
 
 import random
 import os
@@ -31,9 +32,11 @@ class BasicGenerator(object):
         self.q = queue.Queue()
         self.total_instructions = int(args.get('general', 'total_instructions'))
         self.inst_dist = None
+        self.regfile = {}
 
         # Setup the generator
         self.compute_instruction_distribution(args.items('isa-instruction-distribution'))
+        self.init_regfile()
 
         # Log debug messages
         logger.debug("Total_instructions: {0}".format(self.total_instructions))
@@ -68,16 +71,20 @@ class BasicGenerator(object):
                 self.inst_dist[isa_ext] -= 1
                 next_inst_found = True
 
-        self.q.put(next_inst)
+        next_inst_with_args = aapg.args_generator.gen_args(next_inst, self.regfile)
+        self.q.put(next_inst_with_args)
 
         # Decrement total number of instructions
         self.total_instructions -= 1
 
     def compute_instruction_distribution(self, args):
         """ Function to compute fraction of instructions per ISA extension """
+
+        # Dictionary to store the values of each instruction distribution
         cd = {}
 
         # Count relative values of instruction set
+        # config format - rel_<inst_set>_instructions
         for item in args:
             isa_index = item[0].split('_')[1]
             if float(item[1]) > 0.0:
@@ -90,3 +97,10 @@ class BasicGenerator(object):
             cd[k] = int(cd[k]*self.total_instructions/total_sum)
 
         self.inst_dist = cd
+
+    def init_regfile(self):
+        """ Initialize the register file """
+        for i in range(32):
+            self.regfile[('x', i)] = 0
+        for i in range(32):
+            self.regfile[('f', i)] = 0
