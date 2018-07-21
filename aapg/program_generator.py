@@ -4,8 +4,6 @@
     Each program generator is a state machine that
     generates one instruction at a time. Each object
     creates a generator which can be iterated over
-
-    #TODO: Inheritance
 """
 from six.moves import queue
 import logging
