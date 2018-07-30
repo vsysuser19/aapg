@@ -35,6 +35,8 @@ class BasicGenerator(object):
         self.inst_dist = None
         self.regfile = {}
         self.instructions_togen = 0
+        self.args = args
+        self.end_sections = False
 
         # Setup the generator
 
@@ -53,8 +55,11 @@ class BasicGenerator(object):
             sys.exit(1)
 
         # Create Pre-lude
-        logger.debug("Creating Prelude")
+        logger.info("Creating Prelude")
         self.add_prelude()
+
+        # Add recursion call
+        self.add_recursion_call()
 
         # Log debug messages
         logger.debug("Total instructions: {0}".format(self.total_instructions))
@@ -64,10 +69,15 @@ class BasicGenerator(object):
         return self
 
     def __next__(self):
-        self.generate_next_instruction()
 
-        if self.q.empty():
+        if self.total_instructions != 0:
+            self.generate_next_instruction()
+
+        if self.q.empty() and self.end_sections:
             raise StopIteration('Instructions are over')
+        elif self.q.empty() and not self.end_sections:
+            self.add_user_defined_template_sections()
+            self.end_sections = True
 
         return self.q.get()
 
@@ -129,6 +139,34 @@ class BasicGenerator(object):
     def add_prelude(self):
         """Add the prelude instructions to the queue to be written"""
         args = {'stack_size': 32}
+        self.q.put(('section', '.main'))
+        self.total_instructions += 1
         for instruction in aapg.asm_templates.prelude_template(args):
             self.q.put(('instruction', instruction))
             self.total_instructions += 1
+
+    def add_user_defined_template_sections(self):
+        """Add user-defined templates"""
+
+        # Add recursion template sections
+        try:
+            recursion_template_enabled = self.args.getboolean('recursion-options', 'recursion-enable')
+        except configparser.NoSectionError as e:
+            logger.info("Recursion section not present. Disabling.")
+            recursion_template_enabled = False
+        logger.info("Recursion Enabled? {}".format(recursion_template_enabled))
+
+        if recursion_template_enabled:
+            recurse_sections = aapg.asm_templates.recurse_sections()
+            for section in recurse_sections:
+                self.q.put(('section', '.' + section))
+                for instruction in recurse_sections[section]:
+                    self.q.put(('instruction', instruction))
+
+    def add_recursion_call(self):
+        """ Add a recursion call """
+        recursion_depth = self.args.getint('recursion-options', 'recursion-depth')
+        self.q.put(('instruction', ('li', 'a0', str(recursion_depth))))
+        self.q.put(('instruction', ('call', 'recurse')))
+        self.total_instructions += 2
+        logger.debug("Added recursion call")

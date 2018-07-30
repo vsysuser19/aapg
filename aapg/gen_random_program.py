@@ -32,19 +32,13 @@ def gen_random_program(ofile, args):
     writer.write('.globl\t\tmain');
     writer.write('.type\t\tmain, @function');
 
-    # Section main
-    writer.write('main:', indent = 0)
-
     # Section instruction writer
     basic_generator = aapg.program_generator.BasicGenerator(args) 
     for line in basic_generator:
-        if line[0] == 'section_heading':
+        if line[0] == 'section':
             writer.write(line[1], indent = 0)
         elif line[0] == 'instruction':
             writer.write_inst(*line[1])
-
-    # Jump to return address
-    writer.write_inst('jr', 'ra')
 
 def run(args, index):
     """ Entry point for generating new random assembly program
