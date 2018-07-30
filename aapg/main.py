@@ -38,6 +38,8 @@ def parse_cmdline_opts():
     main_parser.add_argument('--version', action = 'version', version = VERSION)
     main_parser.add_argument('--verbose', action = 'store', default = 'info', \
             help = 'debug | info | warning | error', metavar = "")
+    main_parser.add_argument('--num-programs', action = 'store', default = 1, type = int, dest = "num_programs", help = 'Number of programs to generate | Default = 1',
+            metavar = '')
     
     subparsers = main_parser.add_subparsers(help = 'Available sub-commands')
 
@@ -45,13 +47,13 @@ def parse_cmdline_opts():
     gen_parser = subparsers.add_parser('gen', help = 'Generate a random program')
     gen_parser.add_argument('--config-file', action = 'store', default = 'config.ini', metavar = "", \
         help="Configuration file. Default: ./config.ini" )
-    gen_parser.add_argument('--asm-name', action = 'store', default = 'out.asm', \
+    gen_parser.add_argument('--asm-name', action = 'store', default = 'out', \
             help = 'Assembly output file name. Default: out.asm', metavar = "")
     gen_parser.add_argument('--output-dir', action='store', default = './build', \
             help = 'Output directory. Default: ./build', metavar = "")
     gen_parser.set_defaults(func = aapg.gen_random_program.run)
 
-    return main_parser.parse_args(), main_parser
+    return (main_parser.parse_args(), main_parser)
 
 def setup_logging(log_level):
     """Setup logging
@@ -86,14 +88,16 @@ def execute():
     ch = logging.StreamHandler()
     ch.setFormatter(aapg.utils.ColoredFormatter())
     logger.addHandler(ch)
-    logger.info("AAPG started")
+    logger.info("aapg started")
+    logger.info("Number of programs to generate: {}".format(args.num_programs))
 
     # Call the required function for the sub-command
     try:
-        args.func(args)
+        for index in range(args.num_programs):
+            logger.info("Program number: {} started".format(index))
+            args.func(args, index)
     except AttributeError as e:
         logger.error("aapg did not receive any command")
-        parser.print_help()
 
 if __name__ == '__main__':
     execute()

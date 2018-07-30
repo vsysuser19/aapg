@@ -29,7 +29,6 @@ def gen_args(instruction, regfile):
     if aapg.isa_funcs.is_floating_point(instr_name):
         gen_floating_point_args(instruction, regfile)
 
-
     # Iterate over the args
     final_inst = [instr_name,]
 

@@ -35,11 +35,15 @@ def gen_random_program(ofile, args):
     # Section main
     writer.write('main:', indent = 0)
 
+    # Section instruction writer
     basic_generator = aapg.program_generator.BasicGenerator(args) 
     for instruction in basic_generator:
         writer.write_inst(*instruction)
 
-def run(args):
+    # Jump to return
+    writer.write_inst('jr', 'ra')
+
+def run(args, index):
     """ Entry point for generating new random assembly program
     
         Invoked from main.py
@@ -76,7 +80,7 @@ def run(args):
             logger.warn("Output directory exists")
 
     # Configure output file and run the program generator
-    output_file_path = os.path.join(output_dir, output_asm_name)
+    output_file_path = os.path.join(output_dir, output_asm_name + '_{:05d}'.format(index) + '.s')
     logger.info("Output file path: {0}".format(output_file_path))
 
     if os.path.isfile(output_file_path):

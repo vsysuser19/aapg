@@ -6,6 +6,7 @@
     creates a generator which can be iterated over
 """
 from six.moves import queue
+from six.moves import configparser
 import logging
 
 import aapg.utils
@@ -14,6 +15,7 @@ import aapg.args_generator
 
 import random
 import os
+import sys
 
 random.seed(os.urandom(128))
 
@@ -33,14 +35,23 @@ class BasicGenerator(object):
         self.regfile = {}
 
         # Setup the generator
-        self.compute_instruction_distribution(args.items('isa-instruction-distribution'))
+
+        # Setup the register file
         self.init_regfile()
+
+        # Read the instruction distribution
+        try:
+            self.compute_instruction_distribution(args.items('isa-instruction-distribution'))
+            logger.debug("Instruction distribution received")
+            for k in self.inst_dist:
+                logger.debug("{0} - {1}".format(k, self.inst_dist[k]))
+        except configparser.NoSectionError as e:
+            logger.error("Instruction distribution not specified.")
+            logger.error("Check if your config file has the [isa-instruction-distribution] section")
+            sys.exit(1)
 
         # Log debug messages
         logger.debug("Total_instructions: {0}".format(self.total_instructions))
-        logger.debug("Instruction distribution received")
-        for k in self.inst_dist:
-            logger.debug("{0} - {1}".format(k, self.inst_dist[k]))
 
     def __iter__(self):
         return self
@@ -95,6 +106,7 @@ class BasicGenerator(object):
             cd[k] = int(cd[k]*self.total_instructions/total_sum)
 
         self.inst_dist = cd
+        self.total_instructions = sum(self.inst_dist.values())
 
     def init_regfile(self):
         """ Initialize the register file """
