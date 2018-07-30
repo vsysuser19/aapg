@@ -12,6 +12,7 @@ import logging
 import aapg.utils
 import aapg.isa_funcs
 import aapg.args_generator
+import aapg.asm_templates
 
 import random
 import os
@@ -33,6 +34,7 @@ class BasicGenerator(object):
         self.total_instructions = int(args.get('general', 'total_instructions'))
         self.inst_dist = None
         self.regfile = {}
+        self.instructions_togen = 0
 
         # Setup the generator
 
@@ -50,8 +52,13 @@ class BasicGenerator(object):
             logger.error("Check if your config file has the [isa-instruction-distribution] section")
             sys.exit(1)
 
+        # Create Pre-lude
+        logger.debug("Creating Prelude")
+        self.add_prelude()
+
         # Log debug messages
-        logger.debug("Total_instructions: {0}".format(self.total_instructions))
+        logger.debug("Total instructions: {0}".format(self.total_instructions))
+        logger.debug("Total instructions to generate: {0}".format(self.instructions_togen))
 
     def __iter__(self):
         return self
@@ -72,19 +79,22 @@ class BasicGenerator(object):
             return
 
         # Select a random instruction
-        next_inst_found = False
-        while not next_inst_found:
-            isa_ext = random.choice(list(self.inst_dist.keys()))
-            if self.inst_dist[isa_ext] > 0:
-                next_inst = aapg.isa_funcs.get_random_inst_from_set(isa_ext)
-                self.inst_dist[isa_ext] -= 1
-                next_inst_found = True
+        if self.instructions_togen > 0:
+            next_inst_found = False
+            while not next_inst_found:
+                isa_ext = random.choice(list(self.inst_dist.keys()))
+                if self.inst_dist[isa_ext] > 0:
+                    next_inst = aapg.isa_funcs.get_random_inst_from_set(isa_ext)
+                    self.inst_dist[isa_ext] -= 1
+                    next_inst_found = True
 
-        next_inst_with_args = aapg.args_generator.gen_args(next_inst, self.regfile)
-        self.q.put(next_inst_with_args)
+            next_inst_with_args = aapg.args_generator.gen_args(next_inst, self.regfile)
+            self.q.put(('instruction', next_inst_with_args))
+            self.instructions_togen -= 1
 
         # Decrement total number of instructions
         self.total_instructions -= 1
+        return
 
     def compute_instruction_distribution(self, args):
         """ Function to compute fraction of instructions per ISA extension """
@@ -107,6 +117,7 @@ class BasicGenerator(object):
 
         self.inst_dist = cd
         self.total_instructions = sum(self.inst_dist.values())
+        self.instructions_togen = self.total_instructions
 
     def init_regfile(self):
         """ Initialize the register file """
@@ -114,3 +125,10 @@ class BasicGenerator(object):
             self.regfile[('x', i)] = 0
         for i in range(32):
             self.regfile[('f', i)] = 0
+
+    def add_prelude(self):
+        """Add the prelude instructions to the queue to be written"""
+        args = {'stack_size': 32}
+        for instruction in aapg.asm_templates.prelude_template(args):
+            self.q.put(('instruction', instruction))
+            self.total_instructions += 1

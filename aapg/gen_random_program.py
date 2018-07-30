@@ -28,7 +28,7 @@ def gen_random_program(ofile, args):
     # Header Section
     writer.comment("Random Assembly Program Generated using AAPG")
     writer.write('.text')
-    writer.write('.align\t\t4')
+    writer.write('.align\t\t1')
     writer.write('.globl\t\tmain');
     writer.write('.type\t\tmain, @function');
 
@@ -37,10 +37,13 @@ def gen_random_program(ofile, args):
 
     # Section instruction writer
     basic_generator = aapg.program_generator.BasicGenerator(args) 
-    for instruction in basic_generator:
-        writer.write_inst(*instruction)
+    for line in basic_generator:
+        if line[0] == 'section_heading':
+            writer.write(line[1], indent = 0)
+        elif line[0] == 'instruction':
+            writer.write_inst(*line[1])
 
-    # Jump to return
+    # Jump to return address
     writer.write_inst('jr', 'ra')
 
 def run(args, index):
