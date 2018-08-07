@@ -97,6 +97,7 @@ def execute():
             logger.info("Program number: {} started".format(index))
             args.func(args, index)
     except AttributeError as e:
+        print(e)
         logger.error("aapg did not receive any command")
 
 if __name__ == '__main__':

@@ -34,9 +34,10 @@ def gen_random_program(ofile, args):
 
     # Section instruction writer
     basic_generator = aapg.program_generator.BasicGenerator(args) 
-    for line in basic_generator:
+    for index, line in enumerate(basic_generator):
+        logger.debug("Writing: " + " ".join(line[1]))
         if line[0] == 'section':
-            writer.write(line[1], indent = 0)
+            writer.write(line[1] + ":", indent = 0)
         elif line[0] == 'instruction':
             writer.write_inst(*line[1])
 

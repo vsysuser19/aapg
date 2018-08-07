@@ -37,6 +37,7 @@ class BasicGenerator(object):
         self.instructions_togen = 0
         self.args = args
         self.end_sections = False
+        self.recursion_enabled = args.getboolean('recursion-options', 'recursion-enable')
 
         # Setup the generator
 
@@ -56,10 +57,11 @@ class BasicGenerator(object):
 
         # Create Pre-lude
         logger.info("Creating Prelude")
-        self.add_prelude()
+        #self.add_prelude()
 
         # Add recursion call
-        self.add_recursion_call()
+        if self.recursion_enabled:
+            self.add_recursion_call()
 
         # Log debug messages
         logger.debug("Total instructions: {0}".format(self.total_instructions))
@@ -69,20 +71,22 @@ class BasicGenerator(object):
         return self
 
     def __next__(self):
-
         if self.total_instructions != 0:
             self.generate_next_instruction()
 
-        if self.q.empty() and self.end_sections:
-            raise StopIteration('Instructions are over')
-        elif self.q.empty() and not self.end_sections:
-            self.add_user_defined_template_sections()
-            self.end_sections = True
+        if self.q.empty():
+            if self.recursion_enabled:
+                self.add_recursion_sections()
+            else:
+                raise StopIteration('Instructions over')
 
         return self.q.get()
+    
+    def next(self):
+        """Python 2 compat"""
+        return self.__next__()
 
     def generate_next_instruction(self):
-
         # Check if total number of required instructions have been generated
         if self.total_instructions == 0:
             logger.info("Total number of instructions required generated")
@@ -139,21 +143,15 @@ class BasicGenerator(object):
     def add_prelude(self):
         """Add the prelude instructions to the queue to be written"""
         args = {'stack_size': 32}
-        self.q.put(('section', '.main'))
+        self.q.put(('section', 'main'))
         self.total_instructions += 1
         for instruction in aapg.asm_templates.prelude_template(args):
             self.q.put(('instruction', instruction))
             self.total_instructions += 1
 
-    def add_user_defined_template_sections(self):
+    def add_recursion_sections(self):
         """Add user-defined templates"""
-
-        # Add recursion template sections
-        try:
-            recursion_template_enabled = self.args.getboolean('recursion-options', 'recursion-enable')
-        except configparser.NoSectionError as e:
-            logger.info("Recursion section not present. Disabling.")
-            recursion_template_enabled = False
+        recursion_template_enabled = self.recursion_enabled
         logger.info("Recursion Enabled? {}".format(recursion_template_enabled))
 
         if recursion_template_enabled:
@@ -163,6 +161,8 @@ class BasicGenerator(object):
                 for instruction in recurse_sections[section]:
                     self.q.put(('instruction', instruction))
 
+        return
+
     def add_recursion_call(self):
         """ Add a recursion call """
         recursion_depth = self.args.getint('recursion-options', 'recursion-depth')
@@ -170,3 +170,4 @@ class BasicGenerator(object):
         self.q.put(('instruction', ('call', 'recurse')))
         self.total_instructions += 2
         logger.debug("Added recursion call")
+        return
