@@ -51,9 +51,9 @@ Feature List
 Currently, ``aapg`` supports the following controls for
 random program generation.
 
-    * Total number of instructions
-    * Recursion template with recursion parameters
-    * Percentage distribution of ISA instructions - RV32/64 IMAFDC
+* Total number of instructions
+* Recursion template with recursion parameters
+* Percentage distribution of ISA instructions - RV32/64 IMAFDC
 
 License
 -------
