@@ -35,6 +35,8 @@ You should find your random program generated in
 and the output file to be ``build/out.asm`` in the directory
 that ``aapg`` was run in.
 
+A sample config.ini with all options can be found in the ```samples``` directory. 
+
 Feature List
 ------------
 Currently, ``aapg`` supports the following controls for
