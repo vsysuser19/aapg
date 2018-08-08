@@ -41,7 +41,7 @@ def parse_cmdline_opts():
     main_parser.add_argument('--num-programs', action = 'store', default = 1, type = int, dest = "num_programs", help = 'Number of programs to generate | Default = 1',
             metavar = '')
     
-    subparsers = main_parser.add_subparsers(help = 'Available sub-commands')
+    subparsers = main_parser.add_subparsers(help = 'Available sub-commands', dest='command')
 
     # Subparser: gen action
     gen_parser = subparsers.add_parser('gen', help = 'Generate a random program')
@@ -53,7 +53,9 @@ def parse_cmdline_opts():
             help = 'Output directory. Default: ./build', metavar = "")
     gen_parser.add_argument('--arch', action='store', default = 'rv64', \
             help = 'Target architecture. Default: rv64', metavar = "")
-    gen_parser.set_defaults(func = aapg.gen_random_program.run)
+
+    # Subparser: sample
+    sample_parser = subparsers.add_parser('sample', help = 'Generate a sample config.ini')
 
     return (main_parser.parse_args(), main_parser)
 
@@ -91,16 +93,20 @@ def execute():
     ch.setFormatter(aapg.utils.ColoredFormatter())
     logger.addHandler(ch)
     logger.info("aapg started")
-    logger.info("Number of programs to generate: {}".format(args.num_programs))
 
     # Call the required function for the sub-command
-    try:
+    if args.command == 'gen':
+        logger.info("Command received: gen")
+        logger.info("Number of programs to generate: {}".format(args.num_programs))
         for index in range(args.num_programs):
             logger.info("Program number: {} started".format(index))
-            args.func(args, index)
-    except AttributeError as e:
-        print(e)
-        logger.error("aapg did not receive any command")
+            aapg.gen_random_program.run(args, index)
+    elif args.command == 'sample':
+        logger.info("Command received: sample")
+        aapg.utils.print_sample_config()
+        logger.info("Sample config written to config.ini")
+    else:
+        logger.error("No command received")
 
 if __name__ == '__main__':
     execute()
