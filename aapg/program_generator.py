@@ -42,7 +42,7 @@ class BasicGenerator(object):
         self.arch = arch
 
         # Setup the register file
-        self.init_regfile()
+        self.init_regfile(args.get('general', 'regs_not_use'))
 
         # Read the instruction distribution
         try:
@@ -149,12 +149,17 @@ class BasicGenerator(object):
         self.total_instructions = sum(self.inst_dist.values())
         self.instructions_togen = self.total_instructions
 
-    def init_regfile(self):
+    def init_regfile(self, not_used_reg_string):
         """ Initialize the register file """
+        not_used_regs = [(x[0], int(x[1:])) for x in not_used_reg_string.strip("'").split(',')]
         for i in range(32):
-            self.regfile[('x', i)] = 0
+            reg = ('x', i)
+            if reg not in not_used_regs:
+                self.regfile[('x', i)] = 0
         for i in range(32):
-            self.regfile[('f', i)] = 0
+            reg = ('f', i)
+            if reg not in not_used_regs:
+                self.regfile[('f', i)] = 0
 
     def add_prelude(self):
         """Add the prelude instructions to the queue to be written"""
