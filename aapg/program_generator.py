@@ -57,7 +57,7 @@ class BasicGenerator(object):
 
         # Create Pre-lude
         logger.info("Creating Prelude")
-        #self.add_prelude()
+        self.add_prelude()
 
         # Add recursion call
         if self.recursion_enabled:
@@ -77,6 +77,7 @@ class BasicGenerator(object):
         if self.q.empty():
             if self.recursion_enabled:
                 self.add_recursion_sections()
+                self.recursion_enabled = False
             else:
                 raise StopIteration('Instructions over')
 
@@ -171,3 +172,32 @@ class BasicGenerator(object):
         self.total_instructions += 2
         logger.debug("Added recursion call")
         return
+
+class DataGenerator(object):
+    """ Object to generate the data section """
+
+    def __init__(self, args):
+        """ Initialize the data generator """
+        logger.debug("Data generator instantiated")
+
+        # Read the args
+        data_size = int(args.getint('data-section', 'size'))
+        
+        # Log configured args
+        logger.info("Data section size: {} KB".format(data_size))
+
+        # Local variables
+        self.num_dwords = data_size * 1024 / 64
+        logger.debug("Num dwords: {}".format(self.num_dwords))
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.num_dwords == 0:
+            raise StopIteration("Data Section Generated")
+        else:
+            self.num_dwords -= 1
+            value = random.randint(0, 1<<64)
+            address = ('.dword', "{0:#0{1}x}".format(value, 18))
+            return address

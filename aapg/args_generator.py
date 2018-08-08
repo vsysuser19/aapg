@@ -36,7 +36,6 @@ def gen_args(instruction, regfile, arch='rv64'):
 
     # Iterate over the args
     final_inst = [instr_name,]
-    print(final_inst)
     for arg in instr_args:
         if arg == 'rd':
             register = random.choice(registers_int)
@@ -235,5 +234,4 @@ def gen_args(instruction, regfile, arch='rv64'):
     if final_inst[0] in aapg.isa_funcs.comp_insts:
         final_inst[0] = aapg.isa_funcs.comp_insts_subs[final_inst[0]]
         
-    print(final_inst)
     return tuple(final_inst)

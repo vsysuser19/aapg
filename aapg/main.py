@@ -51,6 +51,8 @@ def parse_cmdline_opts():
             help = 'Assembly output file name. Default: out.asm', metavar = "")
     gen_parser.add_argument('--output-dir', action='store', default = './build', \
             help = 'Output directory. Default: ./build', metavar = "")
+    gen_parser.add_argument('--arch', action='store', default = 'rv32', \
+            help = 'Target architecture. Default: rv32', metavar = "")
     gen_parser.set_defaults(func = aapg.gen_random_program.run)
 
     return (main_parser.parse_args(), main_parser)

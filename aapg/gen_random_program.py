@@ -12,6 +12,8 @@ import aapg.asm_writer
 import aapg.program_generator
 import aapg.utils
 
+import datetime
+
 logger = logging.getLogger(__name__)
 
 def gen_random_program(ofile, args):
@@ -26,7 +28,8 @@ def gen_random_program(ofile, args):
     writer = aapg.asm_writer.AsmWriter(ofile)
 
     # Header Section
-    writer.comment("Random Assembly Program Generated using AAPG")
+    writer.comment("Random Assembly Program Generated using aapg")
+    writer.comment("Generated at: {}".format(datetime.datetime.now().strftime("%H %T")))
     writer.write('.text')
     writer.write('.align\t\t1')
     writer.write('.globl\t\tmain');
@@ -40,6 +43,21 @@ def gen_random_program(ofile, args):
             writer.write(line[1] + ":", indent = 0)
         elif line[0] == 'instruction':
             writer.write_inst(*line[1])
+
+    writer.write('\n')
+
+    # Data section writer
+    writer.write('.data')
+    writer.write('.align 4')
+    writer.write('.globl data')
+    writer.write('data:', indent = 0)
+
+    data_generator = aapg.program_generator.DataGenerator(args)
+    for line in data_generator:
+        writer.write_inst(*line)
+
+    # Completed
+    logger.info("Program generation completed")
 
 def run(args, index):
     """ Entry point for generating new random assembly program
