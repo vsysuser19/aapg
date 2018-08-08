@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class BasicGenerator(object):
     """ Basic Generator to generate random instructions """
 
-    def __init__(self, args):
+    def __init__(self, args, arch):
         logger.debug("Created instance of BasicGenerator")
 
         # Instantiate local variables
@@ -38,8 +38,8 @@ class BasicGenerator(object):
         self.args = args
         self.end_sections = False
         self.recursion_enabled = args.getboolean('recursion-options', 'recursion-enable')
-
-        # Setup the generator
+        self.access_sections_enabled = args.getboolean('access-sections', 'enable')
+        self.arch = arch
 
         # Setup the register file
         self.init_regfile()
@@ -98,12 +98,27 @@ class BasicGenerator(object):
             next_inst_found = False
             while not next_inst_found:
                 isa_ext = random.choice(list(self.inst_dist.keys()))
+
                 if self.inst_dist[isa_ext] > 0:
+                    if self.access_sections_enabled:
+                        if isa_ext in ['rv32i.data', 'rv64i.data']:
+                            if self.arch == 'rv32':
+                                next_inst = aapg.isa_funcs.get_random_inst_from_set('bounded-access-rv32')
+                            elif self.arch == 'rv64':
+                                next_inst = aapg.isa_funcs.get_random_inst_from_set('bounded-access-rv64')
+                            self.inst_dist[isa_ext] -= 1
+                            self.instructions_togen -= 1
+
+                            insts_to_put = aapg.args_generator.gen_bounded_access_args(next_inst, self.regfile, self.args.items('access-sections'))
+                            self.q.put(('pseudo', insts_to_put[0]))
+                            self.q.put(('instruction', insts_to_put[1]))
+                            return
+
                     next_inst = aapg.isa_funcs.get_random_inst_from_set(isa_ext)
                     self.inst_dist[isa_ext] -= 1
                     next_inst_found = True
 
-            next_inst_with_args = aapg.args_generator.gen_args(next_inst, self.regfile)
+            next_inst_with_args = aapg.args_generator.gen_args(next_inst, self.regfile, self.arch)
             self.q.put(('instruction', next_inst_with_args))
             self.instructions_togen -= 1
 
@@ -160,7 +175,7 @@ class BasicGenerator(object):
             for section in recurse_sections:
                 self.q.put(('section', '.' + section))
                 for instruction in recurse_sections[section]:
-                    self.q.put(('instruction', instruction))
+                    self.q.put(('pseudo', instruction))
 
         return
 

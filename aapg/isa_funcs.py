@@ -253,6 +253,30 @@ inst_store_by_set = {
         'c.addw rd_rs1_prime rsprime2',
         'c.ldsp rd sp s8uimm6',
         'c.sdsp rs2 sp s8uimm6'
+    ],
+    'bounded-access-rv32' : [
+        'lb rd rt',
+        'lh rd rt',
+        'lw rd rt',
+        'sb rd rt',
+        'sh rd rt',
+        'sw rd rt',
+        'flw rdf rt',
+        'fsw rdf rt',
+    ],
+    'bounded-access-rv64' : [
+        'lb rd rt',
+        'lh rd rt',
+        'lw rd rt',
+        'ld rd rt',
+        'sb rd rt',
+        'sh rd rt',
+        'sw rd rt',
+        'sd rd rt',
+        'flw rdf rt',
+        'fld rdf rt',
+        'fsw rdf rt',
+        'fsd rdf rt'
     ]
 }
 
@@ -324,7 +348,7 @@ args_list = [
     'imm8',
     'nzuimm8', 's8uimm5', 's4uimm5', 'nzimm6',
     's16imm6',
-    'sp', 'x1', 'x0', 's8uimm6', 's4uimm6', 'const0', 'rd_rs1'
+    'sp', 'x1', 'x0', 's8uimm6', 's4uimm6', 'const0', 'rd_rs1', 'rt'
 ]
 
 def get_random_inst_template(set_name):

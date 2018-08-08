@@ -88,3 +88,24 @@ class AsmWriter(object):
             write_string = '{0:<20s}{1:<20s}{2}\n'.format(inst_name, ', '.join(args), comment)
         write_string = indent_string(write_string, indent)
         ofile.write(write_string)
+
+    def write_pseudo(self, inst_name, *args, **kwargs):
+        """ Write a pseudo-instruction to the file
+
+            Args:
+                inst_name: (str) Name of 
+                args: ([str]) List of arguments to function
+                comment: (str) Comment to add
+                indent: (int) Tabs to indent
+            
+            Returns:
+                None
+        """
+        ofile = self.ofile
+        if kwargs is not None:
+            indent = kwargs['indent'] if 'indent' in kwargs else 1
+            comment = '# ' + kwargs['comment'] if 'comment' in kwargs else ''
+
+        write_string = '{0:<20s}{1:<20s}{2}\n'.format(inst_name, ', '.join(args), comment)
+        write_string = indent_string(write_string, indent)
+        ofile.write(write_string)

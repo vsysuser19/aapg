@@ -12,7 +12,55 @@ random.seed(os.urandom(256))
 
 logger = logging.getLogger(__name__)
 
-def gen_args(instruction, regfile, arch='rv64'):
+def gen_bounded_access_args(instruction, regfile, args):
+    """ Generate a load or store to a specific address range """
+
+    # Register file setup
+    registers_int = [x for x in regfile if x[0] == 'x'] 
+    registers_float = [x for x in regfile if x[0] == 'f']
+    register_mapping = aapg.mappings.register_mapping_int
+    register_mapping_float = aapg.mappings.register_mapping_float
+
+    # Create valid sections
+    sections_dict = {k : tuple(map(lambda x: int(x,16), v.split(',')))
+            for k,v in args if k != 'enable'}
+
+    # Choose random address
+    section = random.choice(list(sections_dict.keys()))
+    upper, lower = sections_dict[section]
+    addr = random.randint(upper, lower)
+
+    # Setup constants
+    instr_name = instruction[0]
+    instr_args = instruction[1:]
+
+    final_inst = [instr_name,]
+    for arg in instr_args:
+        if arg == 'rd':
+            register = random.choice(registers_int)
+            regfile[register] += 1
+            final_inst.append(register_mapping[register])
+            continue
+
+        if arg == 'rdf':
+            register = random.choice(registers_float)
+            regfile[register] += 1
+            final_inst.append(register_mapping_float[register])
+            continue
+
+        if arg == 'rt':
+            register = ('x', 31)
+            regfile[register] += 1
+            final_inst.append(register_mapping[register])
+            continue
+
+    # Return the tuple
+    return (
+        ('li', 't6', "{0:#0{1}x}".format(addr, 18)),
+        tuple(final_inst) + ('0', )
+    )
+
+def gen_args(instruction, regfile, arch):
     '''
         Function to generate the args for a given instruction
 

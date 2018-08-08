@@ -16,7 +16,7 @@ import datetime
 
 logger = logging.getLogger(__name__)
 
-def gen_random_program(ofile, args):
+def gen_random_program(ofile, args, arch):
     """ Function to generate one random assembly program
 
         Args:
@@ -36,13 +36,15 @@ def gen_random_program(ofile, args):
     writer.write('.type\t\tmain, @function');
 
     # Section instruction writer
-    basic_generator = aapg.program_generator.BasicGenerator(args) 
+    basic_generator = aapg.program_generator.BasicGenerator(args, arch) 
     for index, line in enumerate(basic_generator):
         logger.debug("Writing: " + " ".join(line[1]))
         if line[0] == 'section':
             writer.write(line[1] + ":", indent = 0)
         elif line[0] == 'instruction':
             writer.write_inst(*line[1])
+        elif line[0] == 'pseudo':
+            writer.write_pseudo(*line[1])
 
     writer.write('\n')
 
@@ -103,4 +105,4 @@ def run(args, index):
         logger.warn('Output file exists. Overwriting')
 
     with open(output_file_path, 'w') as output_file:
-        gen_random_program(output_file, config_args)
+        gen_random_program(output_file, config_args, args.arch)
