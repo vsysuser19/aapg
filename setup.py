@@ -16,11 +16,12 @@ EMAIL = 'shakti@iitm.ac.in'
 VERSION = None
 
 REQUIRED = [
+    'six',
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with io.open(os.path.join(here, 'README.md'), encoding = 'utf-8') as f:
+with io.open(os.path.join(here, 'README.rst'), encoding = 'utf-8') as f:
     long_description = '\n' + f.read()
 
 if not VERSION:
@@ -47,6 +48,8 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'

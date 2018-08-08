@@ -1,5 +1,5 @@
 """
-    Utils modules for various helpers
+    Helpers for different functions
 """
 import logging
 
@@ -8,7 +8,7 @@ class ColoredFormatter(logging.Formatter):
         Class to create a log output which is colored based on level.
     """
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(ColoredFormatter, self).__init__(*args, **kwargs)
         self.colors = {
                 'DEBUG' : '\033[94m',
                 'INFO'  : '\033[92m',
