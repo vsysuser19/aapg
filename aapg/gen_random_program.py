@@ -47,6 +47,8 @@ def gen_random_program(ofile, args, arch):
             writer.write_pseudo(*line[1])
 
     writer.write('\n')
+    writer.write('j tohost_exit')
+    writer.write('\n')
 
     # Data section writer
     writer.write('.data')

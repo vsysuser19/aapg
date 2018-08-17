@@ -61,8 +61,8 @@ def parse_cmdline_opts():
     sample_parser = subparsers.add_parser('sample', help = 'Generate a sample config.ini')
 
     sim_parser = subparsers.add_parser('sim', help = 'Simulate a random program')
-    sim_parser.add_argument('--filename',dest="filename", default = 'out_00000.S', metavar = "", \
-        help="test file. Default: out_00000.S" )
+    sim_parser.add_argument('--filename',dest="filename", default = 'out_00000', metavar = "", \
+        help="test file. Default: out_00000" )
 
     return (main_parser.parse_args(), main_parser)
 
@@ -127,8 +127,9 @@ def execute():
             while process.poll() is None:
                 check_io()
         logger.info("Simulating test:")
-        do_command("riscv64-unknown-elf-gcc -march=rv64imafd  -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles -Isim -Tsim/link.ld sim/crt.S build/{} -o out_00000.elf".format(args.filename));
-        do_command("spike -c --isa=rv64imafd out_00000.elf".format(args.filename));
+        do_command("riscv64-unknown-elf-gcc -march=rv64imafd  -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles -Ienv -Tenv/link.ld build/{0}.S env/crt.S -o {0}.elf".format(args.filename));
+        #do_command("riscv64-unknown-elf-objdump --disassemble-all --disassemble-zeroes --section=.text --section=.text.startup --section=.text.init --section=.data {0}.elf &> {0}.disass".format(args.filename));
+        do_command("spike -c --isa=rv64imafd {0}.elf".format(args.filename));
     else:
         logger.error("No command received")
 
