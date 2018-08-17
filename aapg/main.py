@@ -16,6 +16,7 @@ import shlex
 import select
 
 import aapg.gen_random_program
+import aapg.env.env_setup
 import aapg.utils
 
 # Version read
@@ -52,17 +53,17 @@ def parse_cmdline_opts():
         help="Configuration file. Default: ./config.ini" )
     gen_parser.add_argument('--asm-name', action = 'store', default = 'out', \
             help = 'Assembly output file name. Default: out.asm', metavar = "")
-    gen_parser.add_argument('--output-dir', action='store', default = './build', \
-            help = 'Output directory. Default: ./build', metavar = "")
+    gen_parser.add_argument('--output-dir', action='store', default = './asm', \
+            help = 'Output directory for generated programs. Default: ./asm', metavar = "")
     gen_parser.add_argument('--arch', action='store', default = 'rv64', \
             help = 'Target architecture. Default: rv64', metavar = "")
 
     # Subparser: sample
     sample_parser = subparsers.add_parser('sample', help = 'Generate a sample config.ini')
 
-    sim_parser = subparsers.add_parser('sim', help = 'Simulate a random program')
-    sim_parser.add_argument('--filename',dest="filename", default = 'out_00000', metavar = "", \
-        help="test file. Default: out_00000" )
+    # Subparset: setup
+    # Setup the current directory to build all asms
+    setup_parser = subparsers.add_parser('setup', help = 'Simulate a random program')
 
     return (main_parser.parse_args(), main_parser)
 
@@ -112,24 +113,9 @@ def execute():
         logger.info("Command received: sample")
         aapg.utils.print_sample_config()
         logger.info("Sample config written to config.ini")
-    elif args.command == 'sim':
-        def do_command(command):
-            logger.info(command)
-            process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # keep checking stdout/stderr until the child exits
-            def check_io():
-                while True:
-                    output = process.stdout.readline().decode()
-                    if output:
-                        logger.info(output.strip())
-                    else:
-                        break
-            while process.poll() is None:
-                check_io()
-        logger.info("Simulating test:")
-        do_command("riscv64-unknown-elf-gcc -march=rv64imafd  -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles -Ienv -Tenv/link.ld build/{0}.S env/crt.S -o {0}.elf".format(args.filename));
-        #do_command("riscv64-unknown-elf-objdump --disassemble-all --disassemble-zeroes --section=.text --section=.text.startup --section=.text.init --section=.data {0}.elf &> {0}.disass".format(args.filename));
-        do_command("spike -c --isa=rv64imafd {0}.elf".format(args.filename));
+    elif args.command == 'setup':
+        logger.info("Command received: setup")
+        aapg.env.env_setup.setup_build()
     else:
         logger.error("No command received")
 

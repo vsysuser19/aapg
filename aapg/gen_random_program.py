@@ -47,7 +47,13 @@ def gen_random_program(ofile, args, arch):
             writer.write_pseudo(*line[1])
 
     writer.write('\n')
-    writer.write('j tohost_exit')
+    writer.write('j write_tohost')
+    writer.write('\n')
+
+    writer.write('write_tohost:', indent = 0)
+    writer.write_pseudo('li', 't5', '1')
+    writer.write_pseudo('sw', 't5', 'tohost', 't4')
+    writer.write('label: j label')
     writer.write('\n')
 
     # Data section writer
