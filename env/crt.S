@@ -80,38 +80,39 @@ _start:
   csrw mtvec, t0
 
   fssr    x0
-  fmv.s.x f0, x0
-  fmv.s.x f1, x0
-  fmv.s.x f2, x0
-  fmv.s.x f3, x0
-  fmv.s.x f4, x0
-  fmv.s.x f5, x0
-  fmv.s.x f6, x0
-  fmv.s.x f7, x0
-  fmv.s.x f8, x0
-  fmv.s.x f9, x0
-  fmv.s.x f10,x0
-  fmv.s.x f11,x0
-  fmv.s.x f12,x0
-  fmv.s.x f13,x0
-  fmv.s.x f14,x0
-  fmv.s.x f15,x0
-  fmv.s.x f16,x0
-  fmv.s.x f17,x0
-  fmv.s.x f18,x0
-  fmv.s.x f19,x0
-  fmv.s.x f20,x0
-  fmv.s.x f21,x0
-  fmv.s.x f22,x0
-  fmv.s.x f23,x0
-  fmv.s.x f24,x0
-  fmv.s.x f25,x0
-  fmv.s.x f26,x0
-  fmv.s.x f27,x0
-  fmv.s.x f28,x0
-  fmv.s.x f29,x0
-  fmv.s.x f30,x0
-  fmv.s.x f31,x0
+	flw f0, 0(x2)
+	flw f1, 4(x2)
+	flw f2, 8(x2)
+	flw f3, 12(x2)
+	flw f4, 16(x2)
+	flw f5, 20(x2)
+	flw f6, 24(x2)
+	flw f7, 28(x2)
+	flw f8, 32(x2)
+	flw f9, 36(x2)
+	flw f10, 40(x2)
+	flw f11, 44(x2)
+	flw f12, 48(x2)
+	flw f13, 52(x2)
+	flw f14, 56(x2)
+	flw f15, 60(x2)
+	flw f16, 64(x2)
+	flw f17, 68(x2)
+	flw f18, 72(x2)
+	flw f19, 76(x2)
+	flw f20, 80(x2)
+	flw f21, 84(x2)
+	flw f22, 88(x2)
+	flw f23, 92(x2)
+	flw f24, 96(x2)
+	flw f25, 100(x2)
+	flw f26, 104(x2)
+	flw f27, 108(x2)
+	flw f28, 112(x2)
+	flw f29, 116(x2)
+	flw f30, 120(x2)
+	flw f31, 124(x2)
+
 1:
 #endif
 
@@ -145,12 +146,9 @@ _start:
   j main
 
 tohost_exit:
-  addi x2, x0,0x1
-  slli x2, x2, 0x1f # 0x80000000
-  lui x3, 0x10  #
-  add x2,x2,x3
+  la x3, tohost
   li a4, 1
-  sw a4, %lo(tohost)(x2) # store 1 to tohost.
+  sw a4, (x3) # store 1 to tohost.
   loop: j loop
 
   .align 2
