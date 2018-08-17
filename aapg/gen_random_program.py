@@ -98,7 +98,7 @@ def run(args, index):
             logger.warn("Output directory exists")
 
     # Configure output file and run the program generator
-    output_file_path = os.path.join(output_dir, output_asm_name + '_{:05d}'.format(index) + '.s')
+    output_file_path = os.path.join(output_dir, output_asm_name + '_{:05d}'.format(index) + '.S')
     logger.info("Output file path: {0}".format(output_file_path))
 
     if os.path.isfile(output_file_path):

@@ -11,6 +11,9 @@ import argparse
 import os
 import io
 import sys
+import subprocess
+import shlex
+import select
 
 import aapg.gen_random_program
 import aapg.utils
@@ -56,6 +59,10 @@ def parse_cmdline_opts():
 
     # Subparser: sample
     sample_parser = subparsers.add_parser('sample', help = 'Generate a sample config.ini')
+
+    sim_parser = subparsers.add_parser('sim', help = 'Simulate a random program')
+    sim_parser.add_argument('--filename',dest="filename", default = 'out_00000.S', metavar = "", \
+        help="test file. Default: out_00000.S" )
 
     return (main_parser.parse_args(), main_parser)
 
@@ -105,6 +112,23 @@ def execute():
         logger.info("Command received: sample")
         aapg.utils.print_sample_config()
         logger.info("Sample config written to config.ini")
+    elif args.command == 'sim':
+        def do_command(command):
+            logger.info(command)
+            process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # keep checking stdout/stderr until the child exits
+            def check_io():
+                while True:
+                    output = process.stdout.readline().decode()
+                    if output:
+                        logger.info(output.strip())
+                    else:
+                        break
+            while process.poll() is None:
+                check_io()
+        logger.info("Simulating test:")
+        do_command("riscv64-unknown-elf-gcc -march=rv64imafd  -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles -Isim -Tsim/link.ld sim/crt.S build/{} -o out_00000.elf".format(args.filename));
+        do_command("spike -c --isa=rv64imafd out_00000.elf".format(args.filename));
     else:
         logger.error("No command received")
 

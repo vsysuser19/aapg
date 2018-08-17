@@ -40,7 +40,8 @@ Developing
 If you want to develop aapg features and test them on your system, install aapg using the following command - 
 
 .. code-block:: python
-    python setup.py develop
+
+   sudo python3 setup.py develop
 
 This will create the command line tool ``aapg`` and any changes you make in the source will reflect in the command line tool. 
 
