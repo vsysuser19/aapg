@@ -31,7 +31,7 @@ def gen_random_program(ofile, args, arch):
     writer.comment("Random Assembly Program Generated using aapg")
     writer.comment("Generated at: {}".format(datetime.datetime.now().strftime("%H %T")))
     writer.write('.text')
-    writer.write('.align\t\t1')
+    writer.write('.align\t\t4')
     writer.write('.globl\t\tmain');
     writer.write('.type\t\tmain, @function');
 
