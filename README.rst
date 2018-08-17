@@ -33,6 +33,20 @@ You should find your random program generated in
 and the output file to be ``build/out.asm`` in the directory
 that ``aapg`` was run in.
 
+Now we setup the build environment by typing,
+
+.. code-block:: bash
+
+    aapg setup
+
+This creates the folders for the outputs of each step that is compiling the assembly to machine code, dumping a disassemly and then running the simulator on spike (riscv-isa-sim). Type the following to start the run, 
+
+.. code-block:: bash
+
+    make run
+
+You can check the logfiles in the ``log`` folder.
+
 A sample config.ini with all options can be found in the ```samples``` directory. 
 
 Developing
