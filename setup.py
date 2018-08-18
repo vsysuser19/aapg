@@ -11,7 +11,7 @@ from setuptools import find_packages, setup, Command
 # Package meta-data
 NAME='aapg'
 DESCRIPTION = 'Automatic Assembly Generator for RISC-V'
-AUTHOR = 'Nandu Raj P'
+AUTHOR = 'Anmol Sahoo'
 EMAIL = 'shakti@iitm.ac.in'
 VERSION = None
 
