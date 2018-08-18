@@ -12,15 +12,30 @@ To get started, we first need to install ``aapg`` using the following command,
 
     pip install aapg
 
-Now navigate to a directory where you want to store
-the random assembly program. We need to setup a config file
+Next, create a working directory for your project,
+
+.. code-block:: bash
+    mkdir ~/aapg-samples 
+    cd ~/aapg-samples
+
+We need to setup a config file
 for ``aapg`` to read the configuration from.
 
 .. code-block:: bash
 
     aapg sample
 
-Once the ``config.ini`` has been created we can run ``aapg``
+A sample ``config.ini`` file should be created in your local directory.
+
+Now we setup the build environment by typing,
+
+.. code-block:: bash
+
+    aapg setup
+
+This creates the folders for the outputs of each step that is compiling the assembly to machine code, dumping a disassemly and then running the simulator on spike (riscv-isa-sim).
+
+Once the previous steps have been completed, we can run ``aapg``
 using the following command.
 
 .. code-block:: bash
@@ -31,21 +46,13 @@ You should find your random program generated in
 ``build/out.asm`` in your current directory. By default,
 ``aapg`` expects the configuration file to be ``config.ini``
 and the output file to be ``build/out.asm`` in the directory
-that ``aapg`` was run in.
-
-Now we setup the build environment by typing,
+that ``aapg`` was run in. To build the programs and run them on Spike,
 
 .. code-block:: bash
 
-    aapg setup
+    make
 
-This creates the folders for the outputs of each step that is compiling the assembly to machine code, dumping a disassemly and then running the simulator on spike (riscv-isa-sim). Type the following to start the run, 
-
-.. code-block:: bash
-
-    make run
-
-You can check the logfiles in the ``log`` folder.
+You can check the logfiles in the ``log`` directory and the disassembled code in ``objdump`` directory.
 
 A sample config.ini with all options can be found in the ```samples``` directory. 
 
