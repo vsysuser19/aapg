@@ -2,17 +2,19 @@ crt_asm = '''
 #include "encoding.h"
 
 #if __riscv_xlen == 64
-# define LREG ld
-# define SREG sd
-# define REGBYTES 8
-# define FLREG fld
-# define FSREG fsd
+  #define LREG ld
+  #define SREG sd
+  #define REGBYTES 8
+  #if __riscv_flen == 64
+    #define FMV fmv.d.x
+  #else
+    #define FMV fmv.w.x
+  #endif
 #else
 # define LREG lw
 # define SREG sw
 # define REGBYTES 4
-# define FLREG flw
-# define FSREG fsw
+# define FMV fmv.w.x
 #endif
 
   .section ".text.init"
@@ -74,37 +76,37 @@ _start:
   csrw mtvec, t0
 
   fssr    x0
-  fmv.w.x  f1, x1
-  fmv.w.x  f2, x2
-  fmv.w.x  f3, x3
-  fmv.w.x  f4, x4
-  fmv.w.x  f5, x5
-  fmv.w.x  f6, x6
-  fmv.w.x  f7, x7
-  fmv.w.x  f8, x8
-  fmv.w.x  f9, x9
-  fmv.w.x  f10, x10
-  fmv.w.x  f11, x11
-  fmv.w.x  f12, x12
-  fmv.w.x  f13, x13
-  fmv.w.x  f14, x14
-  fmv.w.x  f15, x15
-  fmv.w.x  f16, x16
-  fmv.w.x  f17, x17
-  fmv.w.x  f18, x18
-  fmv.w.x  f19, x19
-  fmv.w.x  f20, x20
-  fmv.w.x  f21, x21
-  fmv.w.x  f22, x22
-  fmv.w.x  f23, x23
-  fmv.w.x  f24, x24
-  fmv.w.x  f25, x25
-  fmv.w.x  f26, x26
-  fmv.w.x  f27, x27
-  fmv.w.x  f28, x28
-  fmv.w.x  f29, x29
-  fmv.w.x  f30, x30
-  fmv.w.x  f31, x31
+  FMV  f1, x1
+  FMV  f2, x2
+  FMV  f3, x3
+  FMV  f4, x4
+  FMV  f5, x5
+  FMV  f6, x6
+  FMV  f7, x7
+  FMV  f8, x8
+  FMV  f9, x9
+  FMV  f10, x10
+  FMV  f11, x11
+  FMV  f12, x12
+  FMV  f13, x13
+  FMV  f14, x14
+  FMV  f15, x15
+  FMV  f16, x16
+  FMV  f17, x17
+  FMV  f18, x18
+  FMV  f19, x19
+  FMV  f20, x20
+  FMV  f21, x21
+  FMV  f22, x22
+  FMV  f23, x23
+  FMV  f24, x24
+  FMV  f25, x25
+  FMV  f26, x26
+  FMV  f27, x27
+  FMV  f28, x28
+  FMV  f29, x29
+  FMV  f30, x30
+  FMV  f31, x31
 1:
 #endif
 
