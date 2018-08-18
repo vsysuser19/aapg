@@ -28,7 +28,7 @@ objdump: $(OBJ_FILES)
 $(OBJ_DIR)/%.objdump: $(BIN_DIR)/%.riscv
 \triscv64-unknown-elf-objdump -D $< > $@
 
-run: $(LOG_FILES)
+run: $(LOG_FILES) objdump
 \t$(info ==================== Spike Run Completed ================)
 
 $(LOG_DIR)/%.log: $(BIN_DIR)/%.riscv
