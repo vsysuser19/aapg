@@ -184,8 +184,12 @@ inst16:
 1: 
   csrw mepc, a1                   # point mepc to the next instruction.
 
-# use mcause to update the number of exceptions encountered in the program.
+  j trap_handler
 
+trap_handler:
+  j trap_return
+
+trap_return:
   LREG x1, 1*REGBYTES(sp)
   LREG x2, 2*REGBYTES(sp)
   LREG x3, 3*REGBYTES(sp)
@@ -220,6 +224,7 @@ inst16:
 
   addi sp, sp, 272
   mret
+
 
 .section ".tdata.begin"
 .globl _tdata_begin
