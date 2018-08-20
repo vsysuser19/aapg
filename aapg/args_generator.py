@@ -35,6 +35,7 @@ def gen_bounded_access_args(instruction, regfile, args):
     instr_args = instruction[1:]
 
     final_inst = [instr_name,]
+
     for arg in instr_args:
         if arg == 'rd':
             register = random.choice(registers_int)
@@ -60,7 +61,7 @@ def gen_bounded_access_args(instruction, regfile, args):
         tuple(final_inst) + ('0', )
     )
 
-def gen_args(instruction, regfile, arch):
+def gen_args(instruction, regfile, arch, *args, **kwargs):
     '''
         Function to generate the args for a given instruction
 
@@ -84,7 +85,28 @@ def gen_args(instruction, regfile, arch):
 
     # Iterate over the args
     final_inst = [instr_name,]
+
+    if instr_name in aapg.isa_funcs.ctrl_insts:
+
+        # Extract branch limits
+        if kwargs is not None:
+            total = int(kwargs['total'] if 'total' in kwargs else 0)
+            current = int(kwargs['current'] if 'current' in kwargs else 0)
+
+        rs1, rs2 = tuple(map(register_mapping.__getitem__, random.sample(registers_int, 2)))
+
+        if random.random() < 1.0:
+            try:
+                jump_target = random.randint(0, total - current - 1)
+            except ValueError as e:
+                return ['addi', 'zero', 'zero', '0']
+            bimm12 = 'i{0:010x}'.format(jump_target)
+
+        final_inst.extend([rs1, rs2, bimm12])
+        return final_inst
+
     for arg in instr_args:
+
         if arg == 'rd':
             register = random.choice(registers_int)
             regfile[register] += 1
