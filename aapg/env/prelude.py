@@ -165,14 +165,26 @@ trap_entry:
   SREG x30, 30*REGBYTES(sp)
   SREG x31, 31*REGBYTES(sp)
 
-  csrr a0, mcause
-  csrr a1, mepc
-  mv a2, sp
-  csrw mepc, a0
+  csrr a0, mcause                 # copy the mcause to register a0.
+  csrr a1, mepc                   # copy the mepc to register a1.
+  lhu  a2, 0(a1)                  # load instruction into reg a1.
 
-  # Remain in M-mode after eret
-  li t0, MSTATUS_MPP
-  csrs mstatus, t0
+  # check the lower 2 bits to see if the instruction is 32-bit or 16-bit.
+  andi a2, a2, 0x3;
+  li t0, 0x3
+  bne a2,t0,inst16
+
+inst32:                           # is 32-bit instruction then increment by 4
+  addi a1,a1,0x4
+  beqz x0,1f
+
+inst16:
+  addi a1,a1,0x2                  # is 16-bit instruction then increment by 2
+
+1: 
+  csrw mepc, a1                   # point mepc to the next instruction.
+
+# use mcause to update the number of exceptions encountered in the program.
 
   LREG x1, 1*REGBYTES(sp)
   LREG x2, 2*REGBYTES(sp)
