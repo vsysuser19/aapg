@@ -6,15 +6,15 @@ crt_asm = '''
   #define SREG sd
   #define REGBYTES 8
   #if __riscv_flen == 64
-    #define FMV fmv.d.x
+    #define FCVT fcvt.d.l
   #else
-    #define FMV fmv.w.x
+    #define FCVT fcvt.s.w
   #endif
 #else
 # define LREG lw
 # define SREG sw
 # define REGBYTES 4
-# define FMV fmv.w.x
+# define FCVT fcvt.s.w
 #endif
 
   .section ".text.init"
@@ -76,37 +76,38 @@ _start:
   csrw mtvec, t0
 
   fssr    x0
-  FMV  f1, x1
-  FMV  f2, x2
-  FMV  f3, x3
-  FMV  f4, x4
-  FMV  f5, x5
-  FMV  f6, x6
-  FMV  f7, x7
-  FMV  f8, x8
-  FMV  f9, x9
-  FMV  f10, x10
-  FMV  f11, x11
-  FMV  f12, x12
-  FMV  f13, x13
-  FMV  f14, x14
-  FMV  f15, x15
-  FMV  f16, x16
-  FMV  f17, x17
-  FMV  f18, x18
-  FMV  f19, x19
-  FMV  f20, x20
-  FMV  f21, x21
-  FMV  f22, x22
-  FMV  f23, x23
-  FMV  f24, x24
-  FMV  f25, x25
-  FMV  f26, x26
-  FMV  f27, x27
-  FMV  f28, x28
-  FMV  f29, x29
-  FMV  f30, x30
-  FMV  f31, x31
+  FCVT  f0, x1
+  FCVT  f1, x1
+  FCVT  f2, x2
+  FCVT  f3, x3
+  FCVT  f4, x4
+  FCVT  f5, x5
+  FCVT  f6, x6
+  FCVT  f7, x7
+  FCVT  f8, x8
+  FCVT  f9, x9
+  FCVT  f10, x10
+  FCVT  f11, x11
+  FCVT  f12, x12
+  FCVT  f13, x13
+  FCVT  f14, x14
+  FCVT  f15, x15
+  FCVT  f16, x16
+  FCVT  f17, x17
+  FCVT  f18, x18
+  FCVT  f19, x19
+  FCVT  f20, x20
+  FCVT  f21, x21
+  FCVT  f22, x22
+  FCVT  f23, x23
+  FCVT  f24, x24
+  FCVT  f25, x25
+  FCVT  f26, x26
+  FCVT  f27, x27
+  FCVT  f28, x28
+  FCVT  f29, x29
+  FCVT  f30, x30
+  FCVT  f31, x31
 1:
 #endif
 
