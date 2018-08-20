@@ -37,14 +37,20 @@ def gen_random_program(ofile, args, arch):
 
     # Section instruction writer
     basic_generator = aapg.program_generator.BasicGenerator(args, arch) 
+    root_index = 0
     for index, line in enumerate(basic_generator):
         logger.debug("Writing: " + " ".join(line[1]))
         if line[0] == 'section':
+            root_index = 0
             writer.write(line[1] + ":", indent = 0)
         elif line[0] == 'instruction':
-            writer.write_inst(*line[1])
+            label = 'i' + '{0:010x}'.format(root_index)
+            writer.write_inst(*line[1], label = label)
+            root_index += 1
         elif line[0] == 'pseudo':
-            writer.write_pseudo(*line[1])
+            label = 'i' + '{0:010x}'.format(root_index)
+            writer.write_pseudo(*line[1], label = label)
+            root_index += 1
 
     writer.write('\n')
     writer.write('j write_tohost')
