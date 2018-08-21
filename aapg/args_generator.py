@@ -89,6 +89,11 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
     if instr_name in aapg.isa_funcs.ctrl_insts:
 
         # Extract branch limits
+
+        if instr_name in ['jal', 'jalr']:
+            #TODO
+            return ['addi', 'zero', 'zero', '0']
+
         if kwargs is not None:
             total = int(kwargs['total'] if 'total' in kwargs else 0)
             current = int(kwargs['current'] if 'current' in kwargs else 0)
