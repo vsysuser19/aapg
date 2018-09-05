@@ -18,15 +18,13 @@ import random
 import os
 import sys
 
-random.seed(os.urandom(128))
-
 """ Setup the logger """
 logger = logging.getLogger(__name__)
 
 class BasicGenerator(object):
     """ Basic Generator to generate random instructions """
 
-    def __init__(self, args, arch):
+    def __init__(self, args, arch, seed):
         logger.debug("Created instance of BasicGenerator")
 
         # Instantiate local variables
@@ -41,6 +39,12 @@ class BasicGenerator(object):
         self.recursion_enabled = args.getboolean('recursion-options', 'recursion-enable')
         self.access_sections_enabled = args.getboolean('access-sections', 'enable')
         self.arch = arch
+        self.seed = seed
+
+        # Seeding the PRNG generator
+        random.seed(self.seed)
+        aapg.args_generator.set_seed_args_gen(self.seed)
+        aapg.isa_funcs.set_seed_isa_funcs(self.seed)
 
         # Setup the register file
         self.init_regfile(args.get('general', 'regs_not_use'))

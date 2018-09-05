@@ -4,8 +4,8 @@
 import random
 import os
 
-random.seed(os.urandom(256))
-
+def set_seed_isa_funcs(seed):
+    random.seed(seed)
 # Dictionary to store all instructions
 # Structure: 
 # {
