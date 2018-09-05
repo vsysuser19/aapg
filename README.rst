@@ -45,6 +45,7 @@ using the following command.
 By default, ``aapg`` generates 64 bit programs. To generate 32 bit programs, you have to run,
 
 .. code-block:: bash
+
     aapg gen --arch rv32
 
 You should find your random program generated in
@@ -60,6 +61,7 @@ that ``aapg`` was run in. To build the programs and run them on Spike,
 Alternatively for compiling using the 32-bit toolchain, you can type,
 
 .. code-block:: bash
+
     make XLEN=32
 
 You can check the logfiles in the ``log`` directory and the disassembled code in ``objdump`` directory.
