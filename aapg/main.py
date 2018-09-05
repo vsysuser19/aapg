@@ -12,8 +12,6 @@ import os
 import io
 import sys
 import subprocess
-import shlex
-import select
 
 import aapg.gen_random_program
 import aapg.env.env_setup
@@ -57,6 +55,8 @@ def parse_cmdline_opts():
             help = 'Output directory for generated programs. Default: ./asm', metavar = "")
     gen_parser.add_argument('--arch', action='store', default = 'rv64', \
             help = 'Target architecture. Default: rv64', metavar = "")
+    gen_parser.add_argument('--seed', action='store',\
+            help = 'Seed to regenerate test.', metavar = "")
 
     # Subparser: sample
     sample_parser = subparsers.add_parser('sample', help = 'Generate a sample config.ini')

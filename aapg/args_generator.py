@@ -7,10 +7,11 @@ import random
 import os
 import logging
 
-# Module Initialization
-random.seed(os.urandom(256))
-
 logger = logging.getLogger(__name__)
+
+def set_seed_args_gen(seed):
+    """ Set the global seed """
+    random.seed(seed)
 
 def gen_bounded_access_args(instruction, regfile, args):
     """ Generate a load or store to a specific address range """
