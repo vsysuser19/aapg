@@ -31,14 +31,14 @@ inst_store_by_set = {
         'csrrci    rd      uimm12   uimm5           14..12=7 6..2=0x1C 1..0=3',
     ],
     'rv32i.ctrl' : [
-        'beq     rs1 rs2 imm12 14..12=0 6..2=0x18 1..0=3',
-        'bne     rs1 rs2 imm12 14..12=1 6..2=0x18 1..0=3',
-        'blt     rs1 rs2 imm12 14..12=4 6..2=0x18 1..0=3',
-        'bge     rs1 rs2 imm12 14..12=5 6..2=0x18 1..0=3',
-        'bltu    rs1 rs2 imm12 14..12=6 6..2=0x18 1..0=3',
-        'bgeu    rs1 rs2 imm12 14..12=7 6..2=0x18 1..0=3',
-        'jalr    rd  rs1 imm12 14..12=0 6..2=0x19 1..0=3',
-        'jal     rd  imm20              6..2=0x1b 1..0=3',
+        'beq     rs1 rs2 bimm12 14..12=0 6..2=0x18 1..0=3',
+        'bne     rs1 rs2 bimm12 14..12=1 6..2=0x18 1..0=3',
+        'blt     rs1 rs2 bimm12 14..12=4 6..2=0x18 1..0=3',
+        'bge     rs1 rs2 bimm12 14..12=5 6..2=0x18 1..0=3',
+        'bltu    rs1 rs2 bimm12 14..12=6 6..2=0x18 1..0=3',
+        'bgeu    rs1 rs2 bimm12 14..12=7 6..2=0x18 1..0=3',
+        'jalr    rd  rs1 bimm12 14..12=0 6..2=0x19 1..0=3',
+        'jal     rd  bimm20              6..2=0x1b 1..0=3',
     ],
     'rv32i.compute': [
         'lui     rd imm20 6..2=0x0D 1..0=3',
@@ -324,10 +324,16 @@ comp_insts_subs = {
 }
 
 inst_store_fp_set = {key: inst_store_by_set[key] for key in ['rv32f', 'rv64f', 'rv32d', 'rv64d']}
+
 fp_instrs = [inst.split(' ')[0] for inst_set in inst_store_fp_set.values() for inst in inst_set] 
+
 atomic_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32a'] + inst_store_by_set['rv64a']]
+
 memory_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32i.data'] + inst_store_by_set['rv64i.data']] + ['flw', 'fsw', 'fld', 'fsd']
+
 comp_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32c'] + inst_store_by_set['rv64c'] + inst_store_by_set['rvc']]
+
+ctrl_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32i.ctrl']]
 
 args_list = [
     'rd', 'rdf', 'rdprime', 'rdprimef',
@@ -348,7 +354,8 @@ args_list = [
     'imm8',
     'nzuimm8', 's8uimm5', 's4uimm5', 'nzimm6',
     's16imm6',
-    'sp', 'x1', 'x0', 's8uimm6', 's4uimm6', 'const0', 'rd_rs1', 'rt'
+    'sp', 'x1', 'x0', 's8uimm6', 's4uimm6', 'const0', 'rd_rs1', 'rt',
+    'bimm12', 'bimm20'
 ]
 
 def get_random_inst_template(set_name):

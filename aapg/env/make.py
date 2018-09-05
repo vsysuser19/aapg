@@ -1,4 +1,7 @@
 makefile = '''
+XLEN ?= 64
+TARGET ?= unknown-elf
+RISCVPREFIX=riscv${XLEN}-${TARGET}
 ASM_SRC_DIR := asm
 COMMON_DIR := common
 BIN_DIR := bin
@@ -25,7 +28,7 @@ build: $(BIN_FILES)
 
 $(BIN_DIR)/%.riscv: $(ASM_SRC_DIR)/%.S 
 \t$(info ==================== Compiling asm to binary ============)
-\triscv64-unknown-elf-gcc $(GCC_OPTS) -I $(INCLUDE_DIRS) -o $@ $< $(CRT_FILE) $(LINKER_OPTIONS)
+\t${RISCVPREFIX}-gcc $(GCC_OPTS) -I $(INCLUDE_DIRS) -o $@ $< $(CRT_FILE) $(LINKER_OPTIONS)
 
 objdump: $(OBJ_FILES)
 \t$(info ==================== Objdump Completed ==================)
@@ -33,7 +36,7 @@ objdump: $(OBJ_FILES)
 
 $(OBJ_DIR)/%.objdump: $(BIN_DIR)/%.riscv
 \t$(info ==================== Disassembling binary ===============)
-\triscv64-unknown-elf-objdump -D $< > $@
+\t${RISCVPREFIX}-objdump -D $< > $@
 
 run: $(LOG_FILES)
 \t$(info ==================== Spike Run Completed ================)

@@ -32,6 +32,7 @@ class BasicGenerator(object):
         # Instantiate local variables
         self.q = queue.Queue()
         self.total_instructions = int(args.get('general', 'total_instructions'))
+        self.ref_total_instructions = self.total_instructions
         self.inst_dist = None
         self.regfile = {}
         self.instructions_togen = 0
@@ -118,7 +119,12 @@ class BasicGenerator(object):
                     self.inst_dist[isa_ext] -= 1
                     next_inst_found = True
 
-            next_inst_with_args = aapg.args_generator.gen_args(next_inst, self.regfile, self.arch)
+            next_inst_with_args = aapg.args_generator.gen_args(
+                    next_inst,
+                    self.regfile,
+                    self.arch,
+                    total = self.ref_total_instructions,
+                    current = self.instructions_togen)
             self.q.put(('instruction', next_inst_with_args))
             self.instructions_togen -= 1
 

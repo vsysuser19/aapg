@@ -5,16 +5,12 @@ crt_asm = '''
   #define LREG ld
   #define SREG sd
   #define REGBYTES 8
-  #if __riscv_flen == 64
-    #define FMV fmv.d.x
-  #else
-    #define FMV fmv.w.x
-  #endif
+  #define FMV fmv.d.x
 #else
-# define LREG lw
-# define SREG sw
-# define REGBYTES 4
-# define FMV fmv.w.x
+  # define LREG lw
+  # define SREG sw
+  # define REGBYTES 4
+  # define FMV fmv.w.x
 #endif
 
   .section ".text.init"

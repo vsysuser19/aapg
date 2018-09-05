@@ -8,6 +8,10 @@ def indent_string(content, indent):
     """ Utility function to indent a string by given levels """
     return ''.join(['\t']*indent) + content
 
+def label_string(content, label):
+    colon = '' if label == '' else ':'
+    return label + colon + content
+
 class AsmWriter(object):
     """ Class that creates methods for writing various sections to file
         
@@ -65,6 +69,7 @@ class AsmWriter(object):
         """ Write an instruction to the file
 
             Args:
+                label: (str) Instruction label
                 inst_name: (str) Name of 
                 args: ([str]) List of arguments to function
                 comment: (str) Comment to add
@@ -77,6 +82,7 @@ class AsmWriter(object):
         if kwargs is not None:
             indent = kwargs['indent'] if 'indent' in kwargs else 1
             comment = '# ' + kwargs['comment'] if 'comment' in kwargs else ''
+            label = kwargs['label'] if 'label' in kwargs else ''
 
         if inst_name in aapg.isa_funcs.atomic_insts:
             args = args[:-1] + ('({})'.format(args[-1]), )
@@ -87,6 +93,7 @@ class AsmWriter(object):
         else:
             write_string = '{0:<20s}{1:<20s}{2}\n'.format(inst_name, ', '.join(args), comment)
         write_string = indent_string(write_string, indent)
+        write_string = label_string(write_string, label)
         ofile.write(write_string)
 
     def write_pseudo(self, inst_name, *args, **kwargs):
