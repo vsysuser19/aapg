@@ -229,4 +229,3 @@ tohost: .dword 0
 .globl fromhost
 fromhost: .dword 0
 '''
-
