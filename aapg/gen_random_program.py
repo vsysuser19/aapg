@@ -54,7 +54,6 @@ def gen_random_program(ofile, args, arch, seed):
             root_index += 1
 
     writer.write('\n')
-    writer.write('j write_tohost')
     writer.write('\n')
 
     writer.write('write_tohost:', indent = 0)

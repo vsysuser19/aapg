@@ -27,7 +27,7 @@ def recurse_sections():
             ('addiw', 'a5', 'a5', '-1'),
             ('sext.w', 'a5', 'a5'),
             ('mv', 'a0', 'a5'),
-            ('call', 'recurse')
+            ('call', '.recurse')
         ],
         'recurse.L3': [
             ('mv', 'a0', 'a5'),

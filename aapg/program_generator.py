@@ -39,6 +39,7 @@ class BasicGenerator(object):
         self.recursion_enabled = args.getboolean('recursion-options', 'recursion-enable')
         self.arch = arch
         self.seed = seed
+
         
         # Create the data_access sections
         access_sections = args.items('access-sections')
@@ -92,6 +93,7 @@ class BasicGenerator(object):
 
         if self.q.empty():
             if self.recursion_enabled:
+                self.q.put(('pseudo', ['j', 'write_tohost']))
                 self.add_recursion_sections()
                 self.recursion_enabled = False
             else:
@@ -203,7 +205,7 @@ class BasicGenerator(object):
         """ Add a recursion call """
         recursion_depth = self.args.getint('recursion-options', 'recursion-depth')
         self.q.put(('instruction', ('li', 'a0', str(recursion_depth))))
-        self.q.put(('instruction', ('call', 'recurse')))
+        self.q.put(('instruction', ('call', '.recurse')))
         self.total_instructions += 2
         logger.debug("Added recursion call")
         return
