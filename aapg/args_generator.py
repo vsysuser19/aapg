@@ -13,54 +13,16 @@ def set_seed_args_gen(seed):
     """ Set the global seed """
     random.seed(seed)
 
-def gen_bounded_access_args(instruction, regfile, args):
-    """ Generate a load or store to a specific address range """
-
-    # Register file setup
-    registers_int = [x for x in regfile if x[0] == 'x'] 
-    registers_float = [x for x in regfile if x[0] == 'f']
-    register_mapping = aapg.mappings.register_mapping_int
-    register_mapping_float = aapg.mappings.register_mapping_float
-
-    # Create valid sections
-    sections_dict = {k : tuple(map(lambda x: int(x,16), v.split(',')))
-            for k,v in args if k != 'enable'}
-
-    # Choose random address
-    section = random.choice(list(sections_dict.keys()))
-    upper, lower = sections_dict[section]
-    addr = random.randint(upper, lower)
-
-    # Setup constants
-    instr_name = instruction[0]
-    instr_args = instruction[1:]
-
-    final_inst = [instr_name,]
-
-    for arg in instr_args:
-        if arg == 'rd':
-            register = random.choice(registers_int)
-            regfile[register] += 1
-            final_inst.append(register_mapping[register])
-            continue
-
-        if arg == 'rdf':
-            register = random.choice(registers_float)
-            regfile[register] += 1
-            final_inst.append(register_mapping_float[register])
-            continue
-
-        if arg == 'rt':
-            register = ('x', 31)
-            regfile[register] += 1
-            final_inst.append(register_mapping[register])
-            continue
-
-    # Return the tuple
-    return (
-        ('li', 't6', "{0:#0{1}x}".format(addr, 18)),
-        tuple(final_inst) + ('0', )
-    )
+def gen_memory_inst_offset(instr_name):
+    """ Generate load/store offset for the instruction """
+    if instr_name in ['ld', 'sd', 'fld', 'fsd']:
+        return random.choice(range(-2048, 2047, 8))
+    if instr_name in ['lw', 'lwu', 'sw', 'flw', 'fsw']:
+        return random.choice(range(-2048, 2047, 4))
+    if instr_name in ['lh', 'lhu', 'sh']:
+        return random.choice(range(-2048, 2047, 2))
+    if instr_name in ['lb', 'lbu', 'sb']:
+        return random.choice(range(-2048, 2047))
 
 def gen_args(instruction, regfile, arch, *args, **kwargs):
     '''
@@ -132,10 +94,17 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
             continue
 
         if arg in ['imm12', 'uimm12']:
-            if arg == 'uimm12':
-                imm12_val = random.randint(0,4095)
+
+            # Check if memory_inst
+            if instr_name in aapg.isa_funcs.memory_insts:
+                imm12_val = gen_memory_inst_offset(instr_name)
+
             else:
-                imm12_val = random.randint(-2048, 2047)
+                if arg == 'uimm12':
+                    imm12_val = random.randint(0,4095)
+                else:
+                    imm12_val = random.randint(-2048, 2047)
+
             final_inst.append(str(imm12_val))
             continue
 

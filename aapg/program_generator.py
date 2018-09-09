@@ -37,9 +37,17 @@ class BasicGenerator(object):
         self.args = args
         self.end_sections = False
         self.recursion_enabled = args.getboolean('recursion-options', 'recursion-enable')
-        self.access_sections_enabled = args.getboolean('access-sections', 'enable')
         self.arch = arch
         self.seed = seed
+        
+        # Create the data_access sections
+        access_sections = args.items('access-sections')
+        self.access_sections = []
+        for item in access_sections:
+            bounds = item[1].split(',')
+            lower_bound = int(bounds[0], 16)
+            upper_bound = int(bounds[1], 16)
+            self.access_sections.append((lower_bound, upper_bound))
 
         # Seeding the PRNG generator
         random.seed(self.seed)
@@ -63,6 +71,9 @@ class BasicGenerator(object):
         # Create Pre-lude
         logger.info("Creating Prelude")
         self.add_prelude()
+
+        # Set SP to a legal range
+        self.add_memory_instruction(random_gen = False)
 
         # Add recursion call
         if self.recursion_enabled:
@@ -109,12 +120,20 @@ class BasicGenerator(object):
                     self.inst_dist[isa_ext] -= 1
                     next_inst_found = True
 
+            # if memory_insts randomly displace sp
+            if next_inst[0] in aapg.isa_funcs.memory_insts:
+                self.add_memory_instruction()
+                next_inst = tuple([next_inst[0], next_inst[1], 'sp', next_inst[3]])
+
+            # Create args for next instruction
             next_inst_with_args = aapg.args_generator.gen_args(
                     next_inst,
                     self.regfile,
                     self.arch,
                     total = self.ref_total_instructions,
                     current = self.instructions_togen)
+
+            # Put the instruction
             self.q.put(('instruction', next_inst_with_args))
             self.instructions_togen -= 1
 
@@ -188,6 +207,22 @@ class BasicGenerator(object):
         self.total_instructions += 2
         logger.debug("Added recursion call")
         return
+
+    def add_memory_instruction(self, random_gen = True):
+        """ Add a memory instruction
+            With a certain percentage, move the stack pointer within the accepted
+            access sections and then check the instruction type and create the
+            offset
+        """
+        if random.random() < 0.2 or random_gen == False:
+            # Select a random access section
+            access_section = random.choice(self.access_sections)
+            sp_address = random.randint(access_section[0] + 2048, access_section[1] - 2048)
+
+            # Align to 64 bits
+            sp_address = int(sp_address/8)*8
+            self.q.put(('instruction', ['li', 'sp', hex(sp_address)]))
+
 
 class DataGenerator(object):
     """ Object to generate the data section """
