@@ -105,20 +105,6 @@ class BasicGenerator(object):
                 isa_ext = random.choice(list(self.inst_dist.keys()))
 
                 if self.inst_dist[isa_ext] > 0:
-                    if self.access_sections_enabled:
-                        if isa_ext in ['rv32i.data', 'rv64i.data']:
-                            if self.arch == 'rv32':
-                                next_inst = aapg.isa_funcs.get_random_inst_from_set('bounded-access-rv32')
-                            elif self.arch == 'rv64':
-                                next_inst = aapg.isa_funcs.get_random_inst_from_set('bounded-access-rv64')
-                            self.inst_dist[isa_ext] -= 1
-                            self.instructions_togen -= 1
-
-                            insts_to_put = aapg.args_generator.gen_bounded_access_args(next_inst, self.regfile, self.args.items('access-sections'))
-                            self.q.put(('pseudo', insts_to_put[0]))
-                            self.q.put(('instruction', insts_to_put[1]))
-                            return
-
                     next_inst = aapg.isa_funcs.get_random_inst_from_set(isa_ext)
                     self.inst_dist[isa_ext] -= 1
                     next_inst_found = True
