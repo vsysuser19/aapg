@@ -39,8 +39,8 @@ class BasicGenerator(object):
         self.recursion_enabled = args.getboolean('recursion-options', 'recursion-enable')
         self.arch = arch
         self.seed = seed
+        self.end = False
 
-        
         # Create the data_access sections
         access_sections = args.items('access-sections')
         self.access_sections = []
@@ -55,9 +55,6 @@ class BasicGenerator(object):
         aapg.args_generator.set_seed_args_gen(self.seed)
         aapg.isa_funcs.set_seed_isa_funcs(self.seed)
 
-        # Setup the register file
-        self.init_regfile(args.get('general', 'regs_not_use'))
-
         # Read the instruction distribution
         try:
             self.compute_instruction_distribution(args.items('isa-instruction-distribution'))
@@ -68,6 +65,9 @@ class BasicGenerator(object):
             logger.error("Instruction distribution not specified.")
             logger.error("Check if your config file has the [isa-instruction-distribution] section")
             sys.exit(1)
+
+        # Setup the register file
+        self.init_regfile(args.get('general', 'regs_not_use'))
 
         # Create Pre-lude
         logger.info("Creating Prelude")
@@ -84,6 +84,13 @@ class BasicGenerator(object):
         logger.debug("Total instructions: {0}".format(self.total_instructions))
         logger.debug("Total instructions to generate: {0}".format(self.instructions_togen))
 
+        # Branch control
+        self.insts_since_last_branch = 0
+        if 'rv32i.ctrl' in self.inst_dist:
+            self.branch_bwd_prob = args.get('branch-control', 'backward-probability')
+        self.q.put(('instruction', ['li', 't6', '0']))
+        self.total_instructions += 1
+
     def __iter__(self):
         return self
 
@@ -92,8 +99,10 @@ class BasicGenerator(object):
             self.generate_next_instruction()
 
         if self.q.empty():
-            if self.recursion_enabled:
+            if not self.end:
                 self.q.put(('pseudo', ['j', 'write_tohost']))
+                self.end = True
+            elif self.recursion_enabled:
                 self.add_recursion_sections()
                 self.recursion_enabled = False
             else:
@@ -115,17 +124,50 @@ class BasicGenerator(object):
         if self.instructions_togen > 0:
             next_inst_found = False
             while not next_inst_found:
-                isa_ext = random.choice(list(self.inst_dist.keys()))
+
+                # If we have crossed a certain threshold from the
+                # previous branch instruction, generate a branch
+                # instruction possibly, otherwise omit the key
+                if 'rv32i.ctrl' in self.inst_dist:
+                    if self.insts_since_last_branch > self.min_insts_threshold:
+                        isa_ext = 'rv32i.ctrl'
+                    else:
+                        isa_ext = random.choice(list(self.inst_dist_nobranch.keys()))
+                else:
+                    isa_ext = random.choice(list(self.inst_dist.keys()))
 
                 if self.inst_dist[isa_ext] > 0:
                     next_inst = aapg.isa_funcs.get_random_inst_from_set(isa_ext)
                     self.inst_dist[isa_ext] -= 1
+
+                    if isa_ext != 'rv32i.ctrl':
+                        self.insts_since_last_branch += 1
+
                     next_inst_found = True
 
             # if memory_insts randomly displace sp
             if next_inst[0] in aapg.isa_funcs.memory_insts:
                 self.add_memory_instruction()
                 next_inst = tuple([next_inst[0], next_inst[1], 'sp', next_inst[3]])
+
+            # if control instruction
+            if isa_ext == 'rv32i.ctrl':
+                next_insts = aapg.args_generator.gen_branch_args(
+                        next_inst,
+                        self.regfile,
+                        self.arch,
+                        insts_total = self.ref_total_instructions,
+                        insts_left = self.instructions_togen,
+                        insts_since = self.insts_since_last_branch,
+                        bwd_prob = self.branch_bwd_prob
+                )
+
+                self.q.put(('branch', next_insts))
+                # Reset the counters
+                self.insts_since_last_branch = 0
+                self.instructions_togen -= 1
+                self.total_instructions -= 1
+                return
 
             # Create args for next instruction
             next_inst_with_args = aapg.args_generator.gen_args(
@@ -163,12 +205,22 @@ class BasicGenerator(object):
             cd[k] = int(cd[k]*self.total_instructions/total_sum)
 
         self.inst_dist = cd
+        self.inst_dist_nobranch = {k:cd[k] for k in self.inst_dist if k != 'rv32i.ctrl'}
+        if 'rv32i.ctrl' in self.inst_dist:
+            self.min_insts_threshold = int(sum(self.inst_dist_nobranch.values())/self.inst_dist['rv32i.ctrl']) - 1
+            logger.info("Branch threshold: {}".format(self.min_insts_threshold))
+        else:
+            self.min_insts_threshold = 0
         self.total_instructions = sum(self.inst_dist.values())
         self.instructions_togen = self.total_instructions
 
     def init_regfile(self, not_used_reg_string):
         """ Initialize the register file """
         not_used_regs = [(x[0], int(x[1:])) for x in not_used_reg_string.strip("'").split(',')]
+
+        if 'rv32i.ctrl' in self.inst_dist:
+            not_used_regs.append(('x', 31))
+
         for i in range(32):
             reg = ('x', i)
             if reg not in not_used_regs:
@@ -224,7 +276,7 @@ class BasicGenerator(object):
             # Align to 64 bits
             sp_address = int(sp_address/8)*8
             self.q.put(('instruction', ['li', 'sp', hex(sp_address)]))
-
+            self.total_instructions += 1
 
 class DataGenerator(object):
     """ Object to generate the data section """

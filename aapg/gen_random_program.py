@@ -40,21 +40,34 @@ def gen_random_program(ofile, args, arch, seed):
     basic_generator = aapg.program_generator.BasicGenerator(args, arch, seed) 
     root_index = 0
     for index, line in enumerate(basic_generator):
-        logger.debug("Writing: " + " ".join(line[1]))
         if line[0] == 'section':
             root_index = 0
             writer.write(line[1] + ":", indent = 0)
+            logger.debug("Writing: " + " ".join(line[1]))
         elif line[0] == 'instruction':
             label = 'i' + '{0:010x}'.format(root_index)
             writer.write_inst(*line[1], label = label)
             root_index += 1
+            logger.debug("Writing: " + " ".join(line[1]))
         elif line[0] == 'pseudo':
             label = 'i' + '{0:010x}'.format(root_index)
             writer.write_pseudo(*line[1], label = label)
             root_index += 1
+            logger.debug("Writing: " + " ".join(line[1]))
+        elif line[0] == 'branch':
+            offset_string = line[1][-1]
+            jump_backward = True if offset_string[0] == 'b' else False
+            jump_length = int(offset_string[2:])
 
-    writer.write('\n')
-    writer.write('\n')
+            if jump_backward:
+                offset_label = 'i' + '{0:010x}'.format(root_index - jump_length) 
+            else:
+                offset_label = 'i' + '{0:010x}'.format(root_index + jump_length)
+
+            for inst in line[1][:-1]:
+                if offset_string in inst:
+                    inst[-1] = offset_label
+                writer.write_pseudo(*inst)
 
     writer.write('write_tohost:', indent = 0)
     writer.write_pseudo('li', 't5', '1')

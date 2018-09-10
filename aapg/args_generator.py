@@ -13,6 +13,119 @@ def set_seed_args_gen(seed):
     """ Set the global seed """
     random.seed(seed)
 
+def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
+    """ Generate the args for branch instructions """
+    instr_name = instruction[0]
+    instr_args = instruction[1:]
+
+    # Creating the registers
+    registers_comp = [x for x in regfile if x[1] in range(8,16) and x[0] == 'x']
+    registers_comp_float = [x for x in regfile if x[1] in range(8,16) and x[0] == 'f']
+    registers_int = [x for x in regfile if x[0] == 'x'] 
+    registers_float = [x for x in regfile if x[0] == 'f']
+    register_mapping = aapg.mappings.register_mapping_int
+    register_mapping_float = aapg.mappings.register_mapping_float
+
+    # Forward or backward jump
+    backward = random.random() < float(kwargs['bwd_prob'])
+
+    # Taken or not taken
+    taken = random.random() < 0.5
+
+    # Number of steps to jump
+    num_steps = random.randint(5, kwargs['insts_since'] - 5)
+
+    # Generate the args
+    offset_string = '{0},{1}'.format('b' if backward else 'f', num_steps)
+
+    if instr_name == 'beq':
+        pre_insts = []
+        if backward:
+            if taken:
+                pre_insts.append(['li', 'x30', '1'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+            else:
+                pre_insts.append(['li', 'x30', '1'])
+                pre_insts.append(['addi', 'x31', 'x31', '2'])
+        else:
+            pre_insts.append(['li', 'x31', '0']) 
+        pre_insts.append(['beq', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['li', 'x31', '0'])
+
+        pre_insts.append(offset_string)
+        return pre_insts
+    elif instr_name == 'bne':
+        pre_insts = []
+        if backward:
+            if taken:
+                pre_insts.append(['li', 'x30', '2'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+            else:
+                pre_insts.append(['li', 'x30', '1'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+        else:
+            if taken:
+                pre_insts.append(['li', 'x30', '1'])
+                pre_insts.append(['li', 'x31', '0']) 
+            else:
+                pre_insts.append(['li', 'x30', '0'])
+                pre_insts.append(['li', 'x31', '0'])
+        pre_insts.append(['bne', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['li', 'x31', '0'])
+
+        pre_insts.append(offset_string)
+        return pre_insts
+    elif instr_name == 'blt':
+        pre_insts = []
+        if backward:
+            if taken:
+                pre_insts.append(['li', 'x30', '2'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+            else:
+                pre_insts.append(['li', 'x30', '0'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+        else:
+            if taken:
+                pre_insts.append(['li', 'x30', '1'])
+                pre_insts.append(['li', 'x31', '0']) 
+            else:
+                pre_insts.append(['li', 'x30', '0'])
+                pre_insts.append(['li', 'x31', '1'])
+        pre_insts.append(['blt', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['li', 'x31', '0'])
+
+        pre_insts.append(offset_string)
+        return pre_insts
+    elif instr_name == 'bge':
+        pre_insts = []
+        if backward:
+            if taken:
+                pre_insts.append(['li', 'x30', '2'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+            else:
+                pre_insts.append(['li', 'x30', '0'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+        else:
+            if taken:
+                pre_insts.append(['li', 'x30', '1'])
+                pre_insts.append(['li', 'x31', '0']) 
+            else:
+                pre_insts.append(['li', 'x30', '0'])
+                pre_insts.append(['li', 'x31', '1'])
+        pre_insts.append(['bge', 'x30', 'x31', offset_string]) 
+        pre_insts.append(['li', 'x31', '0'])
+
+        pre_insts.append(offset_string)
+        return pre_insts
+    elif instr_name == 'bltu':
+        return [['addi', 'zero', 'zero', '0'], 'f,0']
+    elif instr_name == 'bgeu':
+        return [['addi', 'zero', 'zero', '0'], 'f,0']
+    elif instr_name == 'jal':
+        return [['addi', 'zero', 'zero', '0'], 'f,0']
+    elif instr_name == 'jalr':
+        return [['addi', 'zero', 'zero', '0'], 'f,0']
+
 def gen_memory_inst_offset(instr_name):
     """ Generate load/store offset for the instruction """
     if instr_name in ['ld', 'sd', 'fld', 'fsd']:
