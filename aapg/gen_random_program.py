@@ -58,16 +58,20 @@ def gen_random_program(ofile, args, arch, seed):
             offset_string = line[1][-1]
             jump_backward = True if offset_string[0] == 'b' else False
             jump_length = int(offset_string[2:])
+            label = '{:<11s}'.format('')
 
             if jump_backward:
                 offset_label = 'i' + '{0:010x}'.format(root_index - jump_length) 
             else:
                 offset_label = 'i' + '{0:010x}'.format(root_index + jump_length)
 
+            writer.write('')
+            writer.write('b' + '{0:010x}:'.format(root_index), indent = 0)
             for inst in line[1][:-1]:
                 if offset_string in inst:
                     inst[-1] = offset_label
-                writer.write_pseudo(*inst)
+                writer.write_pseudo(*inst, indent = 4)
+            writer.write('')
 
     writer.write('write_tohost:', indent = 0)
     writer.write_pseudo('li', 't5', '1')
