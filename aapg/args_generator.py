@@ -16,15 +16,6 @@ def set_seed_args_gen(seed):
 def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
     """ Generate the args for branch instructions """
     instr_name = instruction[0]
-    instr_args = instruction[1:]
-
-    # Creating the registers
-    registers_comp = [x for x in regfile if x[1] in range(8,16) and x[0] == 'x']
-    registers_comp_float = [x for x in regfile if x[1] in range(8,16) and x[0] == 'f']
-    registers_int = [x for x in regfile if x[0] == 'x'] 
-    registers_float = [x for x in regfile if x[0] == 'f']
-    register_mapping = aapg.mappings.register_mapping_int
-    register_mapping_float = aapg.mappings.register_mapping_float
 
     # Forward or backward jump
     backward = random.random() < float(kwargs['bwd_prob'])
