@@ -48,7 +48,7 @@ config_sample = '''
 #                           reading/writing in the random generated instructions
 # ---------------------------------------------------------------------------------
 [general]
-total_instructions = 200
+total_instructions = 100000
 regs_not_use = x1,x2
 
 # ---------------------------------------------------------------------------------
@@ -58,23 +58,26 @@ regs_not_use = x1,x2
 # generated equal number of times in the total instructions. Specify 0 to disable.
 # ---------------------------------------------------------------------------------
 [isa-instruction-distribution]
-rel_sys = 1
+rel_sys = 0
 rel_rv32i.ctrl = 1
-rel_rv32i.compute = 1
-rel_rv32i.data = 1
-rel_rv32i.fence = 1
-rel_rv64i.compute = 0
-rel_rv64i.data = 0
+rel_rv32i.compute = 10
+rel_rv32i.data = 10
+rel_rv32i.fence = 0
+rel_rv64i.compute = 1
+rel_rv64i.data = 1
 rel_rv32m = 1
-rel_rv64m = 0
-rel_rv32a = 1
+rel_rv64m = 1
+rel_rv32a = 0
 rel_rv64a = 0
 rel_rv32f = 1
-rel_rv64f = 0
+rel_rv64f = 1
 rel_rv32d = 1
-rel_rv64d = 0
+rel_rv64d = 1
 rel_rv32c = 0
 rel_rv64c = 0
+
+[branch-control]
+backward-probability = 0.5
 
 # ---------------------------------------------------------------------------------
 # Recursion options
@@ -105,8 +108,7 @@ size = 8
 #       section_name =  section_low,section_high (HEX)     
 # ---------------------------------------------------------------------------------
 [access-sections]
-enable = true
-section1 = 0x80000000,0x90000000
+section1 = 0x81000000,0x81010000
 '''
 def print_sample_config():
     """

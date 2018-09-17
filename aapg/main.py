@@ -109,13 +109,11 @@ def execute():
         for index in range(args.num_programs):
             logger.info("Program number: {} started".format(index))
             aapg.gen_random_program.run(args, index)
-    elif args.command == 'sample':
-        logger.info("Command received: sample")
-        aapg.utils.print_sample_config()
-        logger.info("Sample config written to config.ini")
     elif args.command == 'setup':
         logger.info("Command received: setup")
         aapg.env.env_setup.setup_build()
+        aapg.utils.print_sample_config()
+        logger.info("Sample config written to config.ini")
     else:
         logger.error("No command received")
 
