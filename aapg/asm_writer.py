@@ -41,7 +41,7 @@ class AsmWriter(object):
                 None
         """
         ofile = self.ofile
-        write_string = indent_string('# ' + comment, indent) + '\n'
+        write_string = indent_string('#' + comment, indent) + '\n'
         ofile.write(write_string)
 
     def newline(self, count = 1):

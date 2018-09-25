@@ -28,9 +28,12 @@ def gen_random_program(ofile, args, arch, seed):
     writer = aapg.asm_writer.AsmWriter(ofile)
 
     # Header Section
-    writer.comment("Random Assembly Program Generated using aapg")
-    writer.comment("Generated at: {}".format(datetime.datetime.now().strftime("%H %T")))
-    writer.comment("Seed: {}".format(seed))
+    writer.comment(" Random Assembly Program Generated using aapg")
+    writer.comment(" Generated at: {}".format(datetime.datetime.now().strftime("%H %T")))
+    writer.comment(" Seed: {}".format(seed))
+    writer.newline()
+    writer.comment("include \"templates.S\"")
+    writer.newline()
     writer.write('.text')
     writer.write('.align\t\t4')
     writer.write('.globl\t\tmain');

@@ -29,7 +29,7 @@ build: $(BIN_FILES)
 
 $(BIN_DIR)/%.riscv: $(ASM_SRC_DIR)/%.S 
 \t$(info ==================== Compiling asm to binary ============)
-\t${RISCVPREFIX}-gcc $(GCC_OPTS) -I $(INCLUDE_DIRS) -o $@ $< $(CRT_FILE) $(TEMPLATE_FILE) $(LINKER_OPTIONS)
+\t${RISCVPREFIX}-gcc $(GCC_OPTS) -I $(INCLUDE_DIRS) -o $@ $< $(CRT_FILE) $(LINKER_OPTIONS)
 
 objdump: $(OBJ_FILES)
 \t$(info ==================== Objdump Completed ==================)

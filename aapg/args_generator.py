@@ -44,7 +44,9 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
                 pre_insts.append(['addi', 'x31', 'x31', '2'])
         else:
             pre_insts.append(['li', 'x31', '0']) 
+        pre_insts.append(['pre_branch_macro'])
         pre_insts.append(['beq', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['post_branch_macro'])
         pre_insts.append(['li', 'x31', '0'])
 
         pre_insts.append(offset_string)
@@ -65,7 +67,9 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
             else:
                 pre_insts.append(['li', 'x30', '0'])
                 pre_insts.append(['li', 'x31', '0'])
+        pre_insts.append(['pre_branch_macro'])
         pre_insts.append(['bne', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['post_branch_macro'])
         pre_insts.append(['li', 'x31', '0'])
 
         pre_insts.append(offset_string)
@@ -86,7 +90,9 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
             else:
                 pre_insts.append(['li', 'x30', '0'])
                 pre_insts.append(['li', 'x31', '1'])
+        pre_insts.append(['pre_branch_macro'])
         pre_insts.append(['blt', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['post_branch_macro'])
         pre_insts.append(['li', 'x31', '0'])
 
         pre_insts.append(offset_string)
@@ -107,7 +113,9 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
             else:
                 pre_insts.append(['li', 'x30', '0'])
                 pre_insts.append(['li', 'x31', '1'])
+        pre_insts.append(['pre_branch_macro'])
         pre_insts.append(['bge', 'x30', 'x31', offset_string]) 
+        pre_insts.append(['post_branch_macro'])
         pre_insts.append(['li', 'x31', '0'])
 
         pre_insts.append(offset_string)
