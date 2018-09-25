@@ -206,51 +206,65 @@ inst_store_by_set = {
         'fcvt.d.lu rdf rs1 24..20=3 31..27=0x1A rm       26..25=1 6..2=0x14 1..0=3',
         'fmv.d.x   rdf rs1 24..20=0 31..27=0x1E 14..12=0 26..25=1 6..2=0x14 1..0=3',
     ],
-    'rvc' : [
-        'addi4spn rdprime sp nzuimm8',
-        'c.fld rdprimef rsprime1 s8uimm5',
-        'c.lw rdprime rsprime1 s4uimm5',
-        'c.fsd rsprime2f rsprime1 s8uimm5',
-        'c.sw rsprime1 rsprime2 s4uimm5',
+    'rvc.ctrl': [
+        'c.j x0 imm11',
+        'c.beqz rsprime1 x0 imm8',
+        'c.bnez rsprime1 x0 imm8',
+        'c.jr     x0  rs1 const0',
+        'c.jalr x1 rs1 const0',
+    ],
+    'rvc.compute' : [
         'c.addi rd_rs1_prime nzimm6',
         'c.li rd x0 nzimm6',
-        'c.addi16sp sp sp s16imm6',
         'c.lui rd nzuimm6',
         'c.andi rd_rs1_prime imm6',
         'c.sub rd_rs1_prime rsprime2',
         'c.xor rd_rs1_prime rsprime2',
         'c.or rd_rs1_prime rsprime2',
         'c.and rd_rs1_prime rsprime2',
-        'c.j x0 imm11',
-        'c.beqz rsprime1 x0 imm8',
-        'c.bnez rsprime1 x0 imm8',
         'c.slli rd_rs1_prime nzuimm6',
-        'c.fldsp rdf sp  s8uimm6',
-        'c.lwsp  rd  sp  s4uimm6',
-        'c.jr     x0  rs1 const0',
-        'c.mv rd x0 rs2',
-        'c.jalr x1 rs1 const0',
         'c.add rd_rs1 rs2',
-        'c.fsdsp rs2f sp s8uimm6',
+        'c.mv rd x0 rs2',
+    ],
+    'rvc.sp' : [
+        'addi4spn rdprime sp nzuimm8',
+        'c.addi16sp sp sp s16imm6',
+    ],
+    'rvc.data': [
+        'c.lw rdprime rsprime1 s4uimm5',
+        'c.sw rsprime1 rsprime2 s4uimm5',
+        'c.lwsp  rd  sp  s4uimm6',
         'c.swsp  rs2  sp s4uimm6' 
     ],
-    'rv32c' : [
-        'c.flw rdprimef rsprime1 s4uimm5',
-        'c.fsw rsprime2f rsprime1 s4uimm5',
-        'c.jal x1 imm11',
+    'rvc.fdata' : [
+        'c.fld rdprimef rsprime1 s8uimm5',
+        'c.fsd rsprime2f rsprime1 s8uimm5',
+        'c.fldsp rdf sp  s8uimm6',
+        'c.fsdsp rs2f sp s8uimm6',
+    ],
+    'rv32c.compute' : [
         'c.srli rd_rs1_prime nzuimm5',
         'c.srai rd_rs1_prime nzuimm5',
+    ],
+    'rv32c.ctrl' : [
+        'c.jal x1 imm11',
+    ],
+    'rv32c.fdata' : [
         'c.flwsp rdf sp s4uimm6',
         'c.fswsp rs2f sp s4uimm6'
+        'c.flw rdprimef rsprime1 s4uimm5',
+        'c.fsw rsprime2f rsprime1 s4uimm5',
     ],
-    'rv64c' : [
-        'c.ld rdprime rsprime1 s8uimm5',
-        'c.sd rsprime1 rsprime2 s8uimm5',
+    'rv64c.compute': [
         'c.addiw rd_rs1_prime nzimm6',
         'c.srli rd_rs1_prime nzuimm6',
         'c.srai rd_rs1_prime nzuimm6',
         'c.subw rd_rs1_prime rsprime2',
         'c.addw rd_rs1_prime rsprime2',
+    ],
+    'rv64c.data' : [
+        'c.ld rdprime rsprime1 s8uimm5',
+        'c.sd rsprime1 rsprime2 s8uimm5',
         'c.ldsp rd sp s8uimm6',
         'c.sdsp rs2 sp s8uimm6'
     ]
@@ -307,7 +321,18 @@ atomic_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32a'] + inst_store
 
 memory_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32i.data'] + inst_store_by_set['rv64i.data']] + ['flw', 'fsw', 'fld', 'fsd']
 
-comp_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32c'] + inst_store_by_set['rv64c'] + inst_store_by_set['rvc']]
+comp_insts = [x.split(' ')[0] for x in
+        inst_store_by_set['rvc.ctrl'] + 
+        inst_store_by_set['rvc.compute'] + 
+        inst_store_by_set['rvc.sp'] + 
+        inst_store_by_set['rvc.data'] + 
+        inst_store_by_set['rvc.fdata'] + 
+        inst_store_by_set['rv32c.compute'] + 
+        inst_store_by_set['rv32c.ctrl'] + 
+        inst_store_by_set['rv32c.fdata'] + 
+        inst_store_by_set['rv64c.compute'] +
+        inst_store_by_set['rv64c.data']
+]
 
 ctrl_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32i.ctrl']]
 

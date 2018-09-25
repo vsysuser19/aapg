@@ -58,12 +58,9 @@ def parse_cmdline_opts():
     gen_parser.add_argument('--seed', action='store',\
             help = 'Seed to regenerate test.', metavar = "")
 
-    # Subparser: sample
-    sample_parser = subparsers.add_parser('sample', help = 'Generate a sample config.ini')
-
     # Subparset: setup
     # Setup the current directory to build all asms
-    setup_parser = subparsers.add_parser('setup', help = 'Simulate a random program')
+    setup_parser = subparsers.add_parser('setup', help = 'Setup the current dir')
 
     return (main_parser.parse_args(), main_parser)
 

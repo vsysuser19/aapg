@@ -48,7 +48,7 @@ config_sample = '''
 #                           reading/writing in the random generated instructions
 # ---------------------------------------------------------------------------------
 [general]
-total_instructions = 100000
+total_instructions = 10000
 regs_not_use = x1,x2
 
 # ---------------------------------------------------------------------------------
@@ -59,9 +59,9 @@ regs_not_use = x1,x2
 # ---------------------------------------------------------------------------------
 [isa-instruction-distribution]
 rel_sys = 0
-rel_rv32i.ctrl = 1
-rel_rv32i.compute = 10
-rel_rv32i.data = 10
+rel_rv32i.ctrl = 0.1
+rel_rv32i.compute = 1
+rel_rv32i.data = 1
 rel_rv32i.fence = 0
 rel_rv64i.compute = 1
 rel_rv64i.data = 1
@@ -73,8 +73,21 @@ rel_rv32f = 1
 rel_rv64f = 1
 rel_rv32d = 1
 rel_rv64d = 1
-rel_rv32c = 0
-rel_rv64c = 0
+
+# Compressed instructions
+
+rel_rvc.ctrl = 0
+rel_rvc.compute = 1
+rel_rvc.sp = 1
+rel_rvc.data = 1
+rel_rvc.fdata = 1
+
+rel_rv32c.compute = 1
+rel_rv32c.ctrl = 0
+rel_rv32c.fdata = 1
+
+rel_rv64c.compute = 1
+rel_rv64c.data = 1
 
 [branch-control]
 backward-probability = 0.5

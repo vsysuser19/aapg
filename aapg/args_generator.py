@@ -26,6 +26,10 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
     # Number of steps to jump
     num_steps = random.randint(5, kwargs['insts_since'] - 5)
 
+    # if forward and number of insts not sufficient, switch to bwd
+    if not backward and num_steps > kwargs['insts_left'] - 5:
+        backward = True
+
     # Generate the args
     offset_string = '{0},{1}'.format('b' if backward else 'f', num_steps)
 
