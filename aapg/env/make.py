@@ -11,6 +11,7 @@ LOG_DIR := log
 LINKER_SCRIPT := common/link.ld
 INCLUDE_DIRS := common
 CRT_FILE := common/crt.S
+TEMPLATE_FILE := common/templates.S
 GCC_OPTS := -DPREALLOCATE=1 -mcmodel=medany -static -std=gnu99 -O2 -fno-common -fno-builtin-printf
 LINKER_OPTIONS := -static -nostdlib -nostartfiles -lm -lgcc -T $(LINKER_SCRIPT)
 
@@ -28,7 +29,7 @@ build: $(BIN_FILES)
 
 $(BIN_DIR)/%.riscv: $(ASM_SRC_DIR)/%.S 
 \t$(info ==================== Compiling asm to binary ============)
-\t${RISCVPREFIX}-gcc $(GCC_OPTS) -I $(INCLUDE_DIRS) -o $@ $< $(CRT_FILE) $(LINKER_OPTIONS)
+\t${RISCVPREFIX}-gcc $(GCC_OPTS) -I $(INCLUDE_DIRS) -o $@ $< $(CRT_FILE) $(TEMPLATE_FILE) $(LINKER_OPTIONS)
 
 objdump: $(OBJ_FILES)
 \t$(info ==================== Objdump Completed ==================)

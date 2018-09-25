@@ -48,7 +48,7 @@ config_sample = '''
 #                           reading/writing in the random generated instructions
 # ---------------------------------------------------------------------------------
 [general]
-total_instructions = 10000
+total_instructions = 1000
 regs_not_use = x1,x2
 
 # ---------------------------------------------------------------------------------
@@ -59,35 +59,35 @@ regs_not_use = x1,x2
 # ---------------------------------------------------------------------------------
 [isa-instruction-distribution]
 rel_sys = 0
-rel_rv32i.ctrl = 0.1
-rel_rv32i.compute = 1
-rel_rv32i.data = 1
+rel_rv32i.ctrl = 1
+rel_rv32i.compute = 10
+rel_rv32i.data = 10
 rel_rv32i.fence = 0
-rel_rv64i.compute = 1
-rel_rv64i.data = 1
-rel_rv32m = 1
-rel_rv64m = 1
+rel_rv64i.compute = 0
+rel_rv64i.data = 0
+rel_rv32m = 0
+rel_rv64m = 0
 rel_rv32a = 0
 rel_rv64a = 0
-rel_rv32f = 1
-rel_rv64f = 1
-rel_rv32d = 1
-rel_rv64d = 1
+rel_rv32f = 0
+rel_rv64f = 0
+rel_rv32d = 0
+rel_rv64d = 0
 
 # Compressed instructions
 
 rel_rvc.ctrl = 0
-rel_rvc.compute = 1
-rel_rvc.sp = 1
-rel_rvc.data = 1
-rel_rvc.fdata = 1
+rel_rvc.compute = 0
+rel_rvc.sp = 0
+rel_rvc.data = 0
+rel_rvc.fdata = 0
 
-rel_rv32c.compute = 1
+rel_rv32c.compute = 0
 rel_rv32c.ctrl = 0
-rel_rv32c.fdata = 1
+rel_rv32c.fdata = 0
 
-rel_rv64c.compute = 1
-rel_rv64c.data = 1
+rel_rv64c.compute = 0
+rel_rv64c.data = 0
 
 [branch-control]
 backward-probability = 0.5
@@ -122,6 +122,17 @@ size = 8
 # ---------------------------------------------------------------------------------
 [access-sections]
 section1 = 0x81000000,0x81010000
+
+# ---------------------------------------------------------------------------------
+# User template sections
+# Allows users to specify call to a custom function with number of times to call
+# User should ensure that function does not modify 
+#                       
+# Section Template: Specify user template function calls with the number of times
+#       function_name = number_of_times
+# ---------------------------------------------------------------------------------
+[user-functions]
+_test = 10
 '''
 def print_sample_config():
     """

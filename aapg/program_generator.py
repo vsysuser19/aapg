@@ -91,6 +91,11 @@ class BasicGenerator(object):
         self.q.put(('instruction', ['li', 't6', '0']))
         self.total_instructions += 1
 
+        # Setup the user function call 
+        self.user_calls_dict = {x[0] : int(x[1]) for x in args.items('user-functions')}
+        keys = ' '.join(self.user_calls_dict.keys())
+        logger.debug('User functions received {}'.format(' ', keys))
+
     def __iter__(self):
         return self
 
@@ -119,6 +124,22 @@ class BasicGenerator(object):
         if self.total_instructions == 0:
             logger.info("Total number of instructions required generated")
             return
+
+        # Randomly add a user-defined call
+        temp_dict = self.user_calls_dict
+        self.user_calls_dict = {x:temp_dict[x] for x in temp_dict if temp_dict[x] > 0}
+        user_defined_total_calls = sum(self.user_calls_dict.values())
+        logger.debug('User calls left {}'.format(user_defined_total_calls))
+
+        if user_defined_total_calls > 0 and random.random() > 0.8:
+            logger.debug('Adding a user call')
+
+            # Select the user call
+            user_call = random.choice(list(self.user_calls_dict.keys()))
+            self.q.put(('instruction', ('call', user_call)))
+            self.user_calls_dict[user_call] -= 1
+            return
+            
 
         # Select a random instruction
         if self.instructions_togen > 0:
