@@ -76,10 +76,6 @@ class BasicGenerator(object):
         # Set SP to a legal range
         self.add_memory_instruction(random_gen = False)
 
-        # Add recursion call
-        if self.recursion_enabled:
-            self.add_recursion_call()
-
         # Log debug messages
         logger.debug("Total instructions: {0}".format(self.total_instructions))
         logger.debug("Total instructions to generate: {0}".format(self.instructions_togen))
@@ -95,6 +91,11 @@ class BasicGenerator(object):
         self.user_calls_dict = {x[0] : int(x[1]) for x in args.items('user-functions')}
         keys = ' '.join(self.user_calls_dict.keys())
         logger.debug('User functions received {}'.format(' ', keys))
+
+        # Add recursion call
+        if self.recursion_enabled:
+            self.user_calls_dict['.recurse'] = int(args.get(
+                    'recursion-options', 'recursion-calls'))
 
     def __iter__(self):
         return self

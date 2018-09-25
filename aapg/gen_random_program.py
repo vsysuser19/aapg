@@ -70,7 +70,7 @@ def gen_random_program(ofile, args, arch, seed):
             for inst in line[1][:-1]:
                 if offset_string in inst:
                     inst[-1] = offset_label
-                writer.write_pseudo(*inst, indent = 2)
+                writer.write_pseudo(*inst, indent = 4)
             writer.write('')
 
     writer.write('write_tohost:', indent = 0)
