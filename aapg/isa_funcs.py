@@ -319,7 +319,13 @@ fp_instrs = [inst.split(' ')[0] for inst_set in inst_store_fp_set.values() for i
 
 atomic_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32a'] + inst_store_by_set['rv64a']]
 
-memory_insts = [x.split(' ')[0] for x in inst_store_by_set['rv32i.data'] + inst_store_by_set['rv64i.data']] + ['flw', 'fsw', 'fld', 'fsd']
+memory_insts = [x.split(' ')[0] for x in
+        inst_store_by_set['rv32i.data'] +
+        inst_store_by_set['rv64i.data'] +
+        inst_store_by_set['rvc.data'] + 
+        inst_store_by_set['rvc.fdata'] +
+        inst_store_by_set['rv64c.data']
+        ] + ['flw', 'fsw', 'fld', 'fsd']
 
 comp_insts = [x.split(' ')[0] for x in
         inst_store_by_set['rvc.ctrl'] + 
