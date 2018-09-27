@@ -251,7 +251,7 @@ inst_store_by_set = {
     ],
     'rv32c.fdata' : [
         'c.flwsp rdf sp s4uimm6',
-        'c.fswsp rs2f sp s4uimm6'
+        'c.fswsp rs2f sp s4uimm6',
         'c.flw rdprimef rsprime1 s4uimm5',
         'c.fsw rsprime2f rsprime1 s4uimm5',
     ],
@@ -324,6 +324,7 @@ memory_insts = [x.split(' ')[0] for x in
         inst_store_by_set['rv64i.data'] +
         inst_store_by_set['rvc.data'] + 
         inst_store_by_set['rvc.fdata'] +
+        inst_store_by_set['rv32c.fdata'] +
         inst_store_by_set['rv64c.data']
         ] + ['flw', 'fsw', 'fld', 'fsd']
 
