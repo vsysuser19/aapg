@@ -26,7 +26,7 @@ with io.open(os.path.join(here, 'README.rst'), encoding = 'utf-8') as f:
 
 if not VERSION:
     with io.open(os.path.join(here, NAME, '__version__.py')) as f:
-        VERSION = f.read().strip()
+        VERSION = re.match('version = \'(.*)\'', f.read().strip()).group(1)
 
 setup(
     name=NAME,

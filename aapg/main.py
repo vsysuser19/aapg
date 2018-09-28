@@ -16,12 +16,10 @@ import subprocess
 import aapg.gen_random_program
 import aapg.env.env_setup
 import aapg.utils
+from aapg.__version__ import version
 
 # Version read
-VERSION = None
-here = os.path.abspath(os.path.dirname(__file__))
-with io.open(os.path.join(here, '__version__.py')) as f:
-    VERSION = '(' + f.read().strip() + ')' + ' Automated Assembly Program Generator - aapg'
+VERSION = '(' + version + ')' + ' Automated Assembly Program Generator - aapg'
 
 def parse_cmdline_opts():
     """ Setup the cmdline parser
