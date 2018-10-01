@@ -80,7 +80,33 @@ def gen_random_program(ofile, args, arch, seed):
     writer.write_pseudo('li', 't5', '1')
     writer.write_pseudo('sw', 't5', 'tohost', 't4')
     writer.write('label: j label')
-    writer.write('\n')
+    writer.newline()
+
+    # I-cache thrash
+    writer.comment(" Cache thrashing routines")
+    thrash_generator = aapg.program_generator.ThrashGenerator('i-cache', args)
+
+    writer.write('i_cache_thrash:', indent = 0)
+
+    for line in thrash_generator:
+        if line is None:
+            continue
+
+        if line[0] == 'instruction':
+            writer.write_inst(*line[1], indent = 4)
+        elif line[0] == 'instructions':
+            for inst in line[1]:
+                writer.write_inst(*inst, indent = 4)
+        elif line[0] == 'label_instructions':
+            writer.write_inst(*line[2][0], label = line[1])
+            for inst in line[2][1:]:
+                writer.write_pseudo(*inst, indent = 4)
+        elif line[0] == 'label':
+            writer.write_inst(*line[2], label = line[1])
+        elif line[0] == 'byte':
+            writer.write_inst(*line[1], indent = 4)
+
+    writer.newline()
 
     # Data section writer
     writer.write('.data')

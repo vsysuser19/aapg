@@ -89,6 +89,7 @@ class BasicGenerator(object):
 
         # Setup the user function call 
         self.user_calls_dict = {x[0] : int(x[1]) for x in args.items('user-functions')}
+        self.user_calls_dict['i_cache_thrash'] = args.getint('i-cache', 'num_calls')
         keys = ' '.join(self.user_calls_dict.keys())
         logger.debug('User functions received {}'.format(' ', keys))
 
@@ -320,6 +321,10 @@ class DataGenerator(object):
     def __iter__(self):
         return self
 
+    def next(self):
+        """Python 2 compat"""
+        return self.__next__()
+
     def __next__(self):
         if self.num_dwords == 0:
             raise StopIteration("Data Section Generated")
@@ -328,3 +333,80 @@ class DataGenerator(object):
             value = random.randint(0, 1<<64)
             address = ('.dword', "{0:#0{1}x}".format(value, 18))
             return address
+
+class ThrashGenerator(object):
+    """ Object to generate the data section """
+
+    def __init__(self, cache_type, args):
+        """ Initialize the data generator """
+        logger.debug("Thrash generator instantiated")
+
+        # Read the args
+        self.num_bytes_per_block = int(args.getint(cache_type, 'num_bytes_per_block'))
+        self.num_blocks = int(args.getint(cache_type, 'num_blocks'))
+        self.num_cycles = int(args.getint(cache_type, 'num_cycles'))
+        
+        # Log configured args
+        logger.info("Cache thrasher type: {}".format(cache_type))
+        logger.info("Number of bytes per block: {}".format(self.num_bytes_per_block))
+        logger.info("Number of blocks: {}".format(self.num_blocks))
+        logger.info("Number of cycles: {}".format(self.num_cycles))
+
+        # Local variables
+        self.return_address_moved = False
+        self.finished = False
+
+        # Local counters
+        self.block_index = 0
+        self.byte_index = 0
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        """Python 2 compat"""
+        return self.__next__()
+
+    def __next__(self):
+        if self.finished:
+            raise StopIteration("Thrashing section generated")
+
+        if not self.return_address_moved:
+            self.return_address_moved = True
+            # Move the return address from x1 into x31
+            insts = [
+                ('addi', 'x31', 'x1', '0'),
+                ('li', 'x20', '{}'.format(self.num_cycles))]
+
+            insts_left = int((self.num_bytes_per_block - 8) / 4)
+            if insts_left > 0:
+                insts.extend([('addi', 'x0', 'x0', '0')] * insts_left)
+            return ('instructions', insts)
+
+        # Creating the i-cache instructions
+        if self.block_index < (2 * self.num_blocks):
+            if self.byte_index == 0:
+                self.byte_index = 2
+                return (
+                    'label',
+                    'it' + '{0:09x}'.format(self.block_index),
+                    ('j', 'it' + '{0:09x}'.format(self.block_index + 1)))
+
+            elif self.byte_index > 0 and self.byte_index < self.num_bytes_per_block:
+                self.byte_index += 1
+                value = random.randint(0, 1<<8)
+                data = ('byte',('.byte', "{0:#0{1}x}".format(value, 4)))
+                return data
+            elif self.byte_index == self.num_bytes_per_block:
+                self.byte_index = 0
+                self.block_index += 1
+        elif self.block_index == 2*self.num_blocks:
+            self.finished = True
+            return (
+                'label_instructions',
+                'it' + '{0:09x}'.format(self.block_index),
+                [
+                    ('addi', 'x20', 'x20', '-1'),
+                    ('bnez', 'x20', 'it' + '{0:09x}'.format(0)),
+                    ('jr', 'x31')
+                ])
