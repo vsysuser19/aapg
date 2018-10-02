@@ -244,4 +244,24 @@ tohost: .dword 0
 .align 6
 .globl fromhost
 fromhost: .dword 0
+
+# Exception generation numbers
+.align 4
+.globl ecause_num
+ecause_num:
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
+    .dword 0
 '''

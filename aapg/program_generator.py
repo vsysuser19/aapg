@@ -88,10 +88,17 @@ class BasicGenerator(object):
         self.total_instructions += 1
 
         # Setup the user function call 
-        self.user_calls_dict = {x[0] : int(x[1]) for x in args.items('user-functions')}
-        self.user_calls_dict['i_cache_thrash'] = args.getint('i-cache', 'num_calls')
+        self.user_calls_dict = {x[0] : ('f', int(x[1])) for x in args.items('user-functions') if int(x[1]) > 0}
+        self.user_calls_dict['i_cache_thrash'] = ('f', args.getint('i-cache', 'num_calls'))
+        
+        ecause_filtered = list(filter(lambda x: int(x[1]) > 0, args.items('exception-generation')))
+
+        for ecause in ecause_filtered:
+            self.user_calls_dict[ecause[0]] = ('m', int(ecause[1]))
+
         keys = ' '.join(self.user_calls_dict.keys())
-        logger.debug('User functions received {}'.format(' ', keys))
+
+        logger.info('User functions received {}'.format(keys))
 
         # Add recursion call
         if self.recursion_enabled:
@@ -129,8 +136,8 @@ class BasicGenerator(object):
 
         # Randomly add a user-defined call
         temp_dict = self.user_calls_dict
-        self.user_calls_dict = {x:temp_dict[x] for x in temp_dict if temp_dict[x] > 0}
-        user_defined_total_calls = sum(self.user_calls_dict.values())
+        self.user_calls_dict = {x:temp_dict[x] for x in temp_dict if temp_dict[x][1] > 0}
+        user_defined_total_calls = sum(map(lambda x: x[1], self.user_calls_dict.values()))
         logger.debug('User calls left {}'.format(user_defined_total_calls))
 
         if user_defined_total_calls > 0 and random.random() > 0.8:
@@ -138,8 +145,13 @@ class BasicGenerator(object):
 
             # Select the user call
             user_call = random.choice(list(self.user_calls_dict.keys()))
-            self.q.put(('instruction', ('call', user_call)))
-            self.user_calls_dict[user_call] -= 1
+
+            # Check if function call or macro
+            if self.user_calls_dict[user_call][0] == 'f':
+                self.q.put(('instruction', ('call', user_call)))
+            else:
+                self.q.put(('instruction', (user_call, )))
+            self.user_calls_dict[user_call] = (self.user_calls_dict[user_call][0], self.user_calls_dict[user_call][1] - 1)
             return
             
 

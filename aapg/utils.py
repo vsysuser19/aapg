@@ -142,6 +142,26 @@ num_calls = 10
 num_bytes_per_block = 16
 num_blocks = 8
 num_cycles = 10
+
+# ---------------------------------------------------------------------------------
+# Exception generation
+# ---------------------------------------------------------------------------------
+[exception-generation]
+ecause00 = 0
+ecause01 = 0
+ecause02 = 0
+ecause03 = 10
+ecause04 = 0
+ecause05 = 0
+ecause06 = 0
+ecause07 = 0
+ecause08 = 0
+ecause09 = 0
+ecause10 = 0
+ecause11 = 0
+ecause12 = 0
+ecause13 = 0
+ecause14 = 0
 '''
 def print_sample_config():
     """
