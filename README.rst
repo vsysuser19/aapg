@@ -4,9 +4,9 @@ Automated Assembly Program Generator (``aapg``) is a tool
 that is intended to generate random RISC-V programs
 to test RISC-V cores.
 
-Quickstart
-----------
-To get started, we first need to install ``aapg`` using the following command,
+Quick Install
+-------------
+There are two ways to get started with aapg. The easiest one is via pip.
 
 .. code-block:: python
 
@@ -18,22 +18,13 @@ Next, create a working directory for your project,
     mkdir ~/aapg-samples 
     cd ~/aapg-samples
 
-We need to setup a config file
-for ``aapg`` to read the configuration from.
-
-.. code-block:: bash
-
-    aapg sample
-
-A sample ``config.ini`` file should be created in your local directory.
-
 Now we setup the build environment by typing,
 
 .. code-block:: bash
 
     aapg setup
 
-This creates the folders for the outputs of each step that is compiling the assembly to machine code, dumping a disassemly and then running the simulator on spike (riscv-isa-sim).
+This creates the folders for the outputs of each step that is compiling the assembly to machine code, dumping a disassemly and then running the simulator on spike (riscv-isa-sim). It also creates a sample ``config.ini`` to configure each ``aapg`` run.
 
 Once the previous steps have been completed, we can run ``aapg``
 using the following command.
@@ -70,13 +61,16 @@ A sample config.ini with all options can be found in the ```samples``` directory
 
 Developing
 ----------
-If you want to develop aapg features and test them on your system, install aapg using the following command - 
+The other way to install it is by using Git. This allows you to stay updated with the latest developments
+and is required when you want to develop ``aapg`` further and push changes. You can follow these steps,
 
-.. code-block:: python
+.. code-block:: bash
+    
+    git clone https://gitlab.com/shaktiproject/tools/aapg
+    cd aapg
+    python3 setup.py install
 
-   sudo python3 setup.py develop
-
-This will create the command line tool ``aapg`` and any changes you make in the source will reflect in the command line tool. 
+This will install aapg on your path.
 
 Feature List
 ------------
