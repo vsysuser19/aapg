@@ -406,7 +406,7 @@ class ThrashGenerator(object):
 
             elif self.byte_index > 0 and self.byte_index < self.num_bytes_per_block:
                 self.byte_index += 1
-                value = random.randint(0, 1<<8)
+                value = random.randint(0, (1<<8) - 1)
                 data = ('byte',('.byte', "{0:#0{1}x}".format(value, 4)))
                 return data
             elif self.byte_index == self.num_bytes_per_block:
