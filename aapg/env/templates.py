@@ -16,6 +16,13 @@ templates_asm = '''
 _test:
     ret
 
+# Instructions to be inserted before and after the program
+.macro pre_program_macro
+.endm
+
+.macro post_program_macro
+.endm
+
 # Instructions to be inserted before and after branch
 .macro pre_branch_macro
 .endm

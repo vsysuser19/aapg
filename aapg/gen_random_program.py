@@ -54,7 +54,7 @@ def gen_random_program(ofile, args, arch, seed):
             logger.debug("Writing: " + " ".join(line[1]))
         elif line[0] == 'pseudo':
             label = 'i' + '{0:010x}'.format(root_index)
-            writer.write_pseudo(*line[1], label = label)
+            writer.write_pseudo(*line[1], label = label, indent = 4)
             root_index += 1
             logger.debug("Writing: " + " ".join(line[1]))
         elif line[0] == 'branch':
@@ -75,11 +75,15 @@ def gen_random_program(ofile, args, arch, seed):
                     inst[-1] = offset_label
                 writer.write_pseudo(*inst, indent = 4)
             writer.write('')
+        elif line[0] == 'instruction_nolabel':
+            writer.write_pseudo(*line[1], indent = 4)
+            logger.debug("Writing: " + " ".join(line[1]))
 
+    writer.newline()
     writer.write('write_tohost:', indent = 0)
-    writer.write_pseudo('li', 't5', '1')
-    writer.write_pseudo('sw', 't5', 'tohost', 't4')
-    writer.write('label: j label')
+    writer.write_pseudo('li', 't5', '1', indent = 4)
+    writer.write_pseudo('sw', 't5', 'tohost', 't4', indent = 4)
+    writer.write('label: j label', indent = 4)
     writer.newline()
 
     # I-cache thrash

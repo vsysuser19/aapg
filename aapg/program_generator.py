@@ -69,6 +69,9 @@ class BasicGenerator(object):
         # Setup the register file
         self.init_regfile(args.get('general', 'regs_not_use'))
 
+        # Add a call to the pre-program macro
+        logger.info("Adding pre-program macro")
+
         # Create Pre-lude
         logger.info("Creating Prelude")
         self.add_prelude()
@@ -114,7 +117,9 @@ class BasicGenerator(object):
 
         if self.q.empty():
             if not self.end:
+                self.q.put(('instruction_nolabel', ('post_program_macro', )))
                 self.q.put(('pseudo', ['j', 'write_tohost']))
+                self.total_instructions += 2
                 self.end = True
             elif self.recursion_enabled:
                 self.add_recursion_sections()
@@ -269,7 +274,8 @@ class BasicGenerator(object):
         """Add the prelude instructions to the queue to be written"""
         args = {'stack_size': 32}
         self.q.put(('section', 'main'))
-        self.total_instructions += 1
+        self.q.put(('instruction_nolabel', ('pre_program_macro', )))
+        self.total_instructions += 2
         for instruction in aapg.asm_templates.prelude_template(args):
             self.q.put(('instruction', instruction))
             self.total_instructions += 1
