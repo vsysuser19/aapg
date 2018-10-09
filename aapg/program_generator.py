@@ -39,6 +39,7 @@ class BasicGenerator(object):
         self.recursion_enabled = args.getboolean('recursion-options', 'recursion-enable')
         self.arch = arch
         self.seed = seed
+        self.current_access_section = None
         self.end = False
 
         # Create the data_access sections
@@ -48,7 +49,8 @@ class BasicGenerator(object):
             bounds = item[1].split(',')
             lower_bound = int(bounds[0], 16)
             upper_bound = int(bounds[1], 16)
-            self.access_sections.append((lower_bound, upper_bound))
+            read_write = bounds[2]
+            self.access_sections.append((lower_bound, upper_bound, read_write))
 
         # Seeding the PRNG generator
         random.seed(self.seed)
@@ -185,10 +187,35 @@ class BasicGenerator(object):
 
                     next_inst_found = True
 
-            # if memory_insts randomly displace sp
+            # if memory_insts, randomly displace sp
             if next_inst[0] in aapg.isa_funcs.memory_insts:
                 self.add_memory_instruction()
                 next_inst = tuple([next_inst[0], next_inst[1], 'sp', next_inst[3]])
+
+                # check data section and replace lw with sw
+                if next_inst[0][0] != 'c':
+                    if self.current_access_section[2] == 'w':
+                        if 'l' in next_inst[0]:
+                            next_inst_op = next_inst[0].replace('l', 's', 1)
+                            next_inst = (next_inst_op,) + next_inst[1:]
+                            logger.debug("Load to write section. Rewriting")
+                    if self.current_access_section[2] == 'r':
+                        if 's' in next_inst[0]:
+                            next_inst_op = next_inst[0].replace('s', 'l', 1)
+                            next_inst = (next_inst_op,) + next_inst[1:]
+                            logger.debug("Store to read section. Rewriting")
+                elif next_inst[0][0] == 'c':
+                    if self.current_access_section[2] == 'w':
+                        if 'l' in next_inst[0]:
+                            next_inst_op = next_inst[0].replace('l', 's', 1)
+                            next_inst = (next_inst_op,) + next_inst[1:]
+                            logger.debug("Load to write section. Rewriting")
+                    if self.current_access_section[2] == 'r':
+                        if 's' in next_inst[0] and 'l' not in next_inst[0]:
+                            next_inst_op = next_inst[0].replace('s', 'l', 1)
+                            next_inst = (next_inst_op,) + next_inst[1:]
+                            logger.debug("Store to read section. Rewriting")
+
 
             # if control instruction
             if isa_ext == 'rv32i.ctrl':
@@ -318,6 +345,7 @@ class BasicGenerator(object):
             sp_address = int(sp_address/8)*8
             self.q.put(('instruction', ['li', 'sp', hex(sp_address)]))
             self.total_instructions += 1
+            self.current_access_section = access_section
 
 class DataGenerator(object):
     """ Object to generate the data section """
