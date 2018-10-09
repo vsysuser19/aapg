@@ -59,8 +59,8 @@ You can check the logfiles in the ``log`` directory and the disassembled code in
 
 A sample config.ini with all options can be found in the ```samples``` directory. 
 
-Developing
-----------
+Developer Install
+-----------------
 The other way to install it is by using Git. This allows you to stay updated with the latest developments
 and is required when you want to develop ``aapg`` further and push changes. You can follow these steps,
 
@@ -72,14 +72,9 @@ and is required when you want to develop ``aapg`` further and push changes. You 
 
 This will install aapg on your path.
 
-Feature List
+Wiki
 ------------
-Currently, ``aapg`` supports the following controls for
-random program generation.
-
-* Total number of instructions
-* Recursion template with recursion parameters
-* Percentage distribution of ISA instructions - RV32/64 IMAFDC
+Head to `Wiki <https://gitlab.com/shaktiproject/tools/aapg/wikis/Wiki>`_ for detailed information.
 
 License
 -------
