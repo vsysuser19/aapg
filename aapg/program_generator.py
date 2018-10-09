@@ -405,6 +405,7 @@ class ThrashGenerator(object):
         # Local counters
         self.block_index = 0
         self.byte_index = 0
+        self.miss = True
 
     def __iter__(self):
         return self
@@ -422,37 +423,52 @@ class ThrashGenerator(object):
             # Move the return address from x1 into x31
             insts = [
                 ('addi', 'x31', 'x1', '0'),
-                ('li', 'x20', '{}'.format(self.num_cycles))]
+            ]
 
             insts_left = int((self.num_bytes_per_block - 8) / 4)
             if insts_left > 0:
                 insts.extend([('addi', 'x0', 'x0', '0')] * insts_left)
             return ('instructions', insts)
 
-        # Creating the i-cache instructions
-        if self.block_index < (2 * self.num_blocks):
+        # Creating the i-cache instruction
+        miss = self.miss
+        if self.block_index < (2 * self.num_cycles * self.num_blocks):
             if self.byte_index == 0:
                 self.byte_index = 2
-                return (
-                    'label',
-                    'it' + '{0:09x}'.format(self.block_index),
-                    ('j', 'it' + '{0:09x}'.format(self.block_index + 1)))
+                if miss == True:
+                    return (
+                        'label',
+                        'it' + '{0:09x}'.format(self.block_index),
+                        ('j', 'it' + '{0:09x}'.format(self.block_index + 1)))
+                elif miss == False:
+                    return (
+                        'label',
+                        'it' + '{0:09x}'.format(self.block_index),
+                        ('j', 'it' + '{0:09x} + 4'.format(self.block_index -1)))
 
-            elif self.byte_index > 0 and self.byte_index < self.num_bytes_per_block:
+            elif self.byte_index > 0 and self.byte_index < self.num_bytes_per_block - 2:
                 self.byte_index += 1
-                value = random.randint(0, (1<<8) - 1)
-                data = ('byte',('.byte', "{0:#0{1}x}".format(value, 4)))
-                return data
+                nop = ('instruction',('nop',))
+                return nop
+            elif self.byte_index == self.num_bytes_per_block - 2:
+                self.byte_index += 2
+                if miss == True:
+                    return (
+                        'instruction',
+                        ('j', 'it' + '{0:09x} + 4'.format(self.block_index +1))
+                    )
+                elif miss == False:
+                    nop = ('instruction',('nop',))
+                    return nop
             elif self.byte_index == self.num_bytes_per_block:
                 self.byte_index = 0
                 self.block_index += 1
-        elif self.block_index == 2*self.num_blocks:
+                self.miss = not self.miss
+        elif self.block_index == 2 * self.num_cycles * self.num_blocks:
             self.finished = True
             return (
                 'label_instructions',
                 'it' + '{0:09x}'.format(self.block_index),
                 [
-                    ('addi', 'x20', 'x20', '-1'),
-                    ('bnez', 'x20', 'it' + '{0:09x}'.format(0)),
-                    ('jr', 'x31')
+                    ('jr', 'x31'),
                 ])
