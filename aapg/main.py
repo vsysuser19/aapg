@@ -18,6 +18,8 @@ import aapg.env.env_setup
 import aapg.utils
 from aapg.__version__ import version
 
+from multiprocessing import Process
+
 # Version read
 VERSION = '(' + version + ')' + ' Automated Assembly Program Generator - aapg'
 
@@ -103,7 +105,8 @@ def execute():
         logger.info("Number of programs to generate: {}".format(args.num_programs))
         for index in range(args.num_programs):
             logger.info("Program number: {} started".format(index))
-            aapg.gen_random_program.run(args, index)
+            p = Process(target = aapg.gen_random_program.run, args = (args, index))
+            p.start()
     elif args.command == 'setup':
         logger.info("Command received: setup")
         aapg.env.env_setup.setup_build()
