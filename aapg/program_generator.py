@@ -434,7 +434,7 @@ class ThrashGenerator(object):
         miss = self.miss
         if self.block_index < (2 * self.num_cycles * self.num_blocks):
             if self.byte_index == 0:
-                self.byte_index = 2
+                self.byte_index = 4
                 if miss == True:
                     return (
                         'label',
@@ -446,12 +446,12 @@ class ThrashGenerator(object):
                         'it' + '{0:09x}'.format(self.block_index),
                         ('j', 'it' + '{0:09x} + 4'.format(self.block_index -1)))
 
-            elif self.byte_index > 0 and self.byte_index < self.num_bytes_per_block - 2:
-                self.byte_index += 1
+            elif self.byte_index > 0 and self.byte_index < self.num_bytes_per_block - 4:
+                self.byte_index += 4
                 nop = ('instruction',('nop',))
                 return nop
-            elif self.byte_index == self.num_bytes_per_block - 2:
-                self.byte_index += 2
+            elif self.byte_index == self.num_bytes_per_block - 4:
+                self.byte_index += 4
                 if miss == True:
                     return (
                         'instruction',
