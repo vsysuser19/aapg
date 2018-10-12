@@ -76,7 +76,7 @@ class BasicGenerator(object):
 
         # Create Pre-lude
         logger.info("Creating Prelude")
-        self.add_prelude()
+        self.add_prelude(args)
 
         # Set SP to a legal range
         self.add_memory_instruction(random_gen = False)
@@ -297,15 +297,18 @@ class BasicGenerator(object):
             if reg not in not_used_regs:
                 self.regfile[('f', i)] = 0
 
-    def add_prelude(self):
+    def add_prelude(self, args):
         """Add the prelude instructions to the queue to be written"""
-        args = {'stack_size': 32}
+
+        # Pre-program macro
         self.q.put(('section', 'main'))
         self.q.put(('instruction_nolabel', ('pre_program_macro', )))
         self.total_instructions += 2
-        for instruction in aapg.asm_templates.prelude_template(args):
-            self.q.put(('instruction', instruction))
-            self.total_instructions += 1
+
+        # User trap handler
+        if args.getboolean('general', 'user_trap_handler'):
+            self.q.put(('instruction_nolabel', ('la', 't0', 'user_trap_handler')))
+            self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
 
     def add_recursion_sections(self):
         """Add user-defined templates"""

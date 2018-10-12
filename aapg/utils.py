@@ -50,6 +50,7 @@ config_sample = '''
 [general]
 total_instructions = 1000
 regs_not_use = x1,x2
+user_trap_handler = false
 
 # ---------------------------------------------------------------------------------
 # Distribution of instructions according to ISA extensions
