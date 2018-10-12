@@ -40,6 +40,8 @@ _test:
 
 # Instruction access fault
 .macro ecause01
+li x15, -10
+jr x15
 .endm
 
 # Illegal Instruction
@@ -63,6 +65,7 @@ LREG x0, (REGBYTES-2)(sp)
 
 # Store/AMO address misaligned
 .macro ecause06
+SREG x0, (REGBYTES-2)(sp)
 .endm
 
 # Store/AMO access fault
