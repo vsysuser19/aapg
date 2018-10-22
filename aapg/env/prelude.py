@@ -72,6 +72,7 @@ _start:
   csrw mtvec, t0
 
   fssr    x0
+  FMV  f0, x1
   FMV  f1, x1
   FMV  f2, x2
   FMV  f3, x3
