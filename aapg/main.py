@@ -103,10 +103,23 @@ def execute():
     if args.command == 'gen':
         logger.info("Command received: gen")
         logger.info("Number of programs to generate: {}".format(args.num_programs))
+
+        process_list = []
         for index in range(args.num_programs):
             logger.info("Program number: {} started".format(index))
             p = Process(target = aapg.gen_random_program.run, args = (args, index))
             p.start()
+            process_list.append(p)
+
+            for p in process_list:
+                p.join()
+
+            for p in process_list:
+                if p.exitcode == 1:
+                    sys.exit(1)
+
+            sys.exit(0)
+
     elif args.command == 'setup':
         logger.info("Command received: setup")
         aapg.env.env_setup.setup_build()

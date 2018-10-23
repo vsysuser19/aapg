@@ -30,7 +30,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
     except ValueError as e:
         logger.error("Number of instructions required for branch threshold to low")
         logger.error("Increase count of non-branch instructions")
-        sys.exit(-1)
+        sys.exit(1)
 
     # if forward and number of insts not sufficient, switch to bwd
     if not backward and num_steps > kwargs['insts_left'] - 5:
