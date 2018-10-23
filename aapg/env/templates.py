@@ -17,6 +17,9 @@ _test:
     ret
 
 # Instructions to be inserted before and after the program
+# Possible setups inside this macro can be
+#   1. Privilege mode change
+#   2. PMP Configuration - csrw pmpcfg0 xxx, csrw pmpcfg1 xxx
 .macro pre_program_macro
 .endm
 
