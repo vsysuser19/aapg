@@ -106,7 +106,6 @@ def execute():
 
         process_list = []
         for index in range(args.num_programs):
-            print(index)
             logger.info("Program number: {} started".format(index))
             p = Process(target = aapg.gen_random_program.run, args = (args, index))
             p.start()
