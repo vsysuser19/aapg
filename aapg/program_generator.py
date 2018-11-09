@@ -305,11 +305,11 @@ class BasicGenerator(object):
         for i in range(32):
             reg = ('x', i)
             if reg not in not_used_regs:
-                self.regfile[('x', i)] = 0
+                self.regfile[('x', i)] = (0,0)
         for i in range(32):
             reg = ('f', i)
             if reg not in not_used_regs:
-                self.regfile[('f', i)] = 0
+                self.regfile[('f', i)] = (0,0)
 
     def add_prelude(self, args):
         """Add the prelude instructions to the queue to be written"""
