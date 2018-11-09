@@ -188,7 +188,7 @@ class BasicGenerator(object):
                     next_inst_found = True
 
             # if memory_insts, randomly displace sp
-            if next_inst[0] in aapg.isa_funcs.memory_insts:
+            if next_inst[0] in aapg.isa_funcs.memory_insts and len(self.access_sections) > 0:
                 self.add_memory_instruction()
                 next_inst = tuple([next_inst[0], next_inst[1], 'sp', next_inst[3]])
 
@@ -339,6 +339,10 @@ class BasicGenerator(object):
             access sections and then check the instruction type and create the
             offset
         """
+        if len(self.access_sections) == 0:
+            # No access section specified
+            return
+
         if random.random() < 0.2 or random_gen == False:
             # Select a random access section
             access_section = random.choice(self.access_sections)
