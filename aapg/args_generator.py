@@ -130,8 +130,21 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
         return [['addi', 'zero', 'zero', '0'], 'f,0']
     elif instr_name == 'bgeu':
         return [['addi', 'zero', 'zero', '0'], 'f,0']
+
     elif instr_name == 'jal':
-        return [['addi', 'zero', 'zero', '0'], 'f,0']
+        pre_insts = []
+        if backward:
+            pre_insts.append(['li', 'x30', '2'])
+            pre_insts.append(['addi', 'x31', 'x31', '1'])
+            pre_insts.append(['beq', 'x31', 'x30', '1f'])
+            pre_insts.append(['jal', 'x10', offset_string])
+            pre_insts.append(['1: li x31, 0'])
+        else:
+            pre_insts.append(['jal', 'x10', offset_string])
+
+        pre_insts.append(offset_string)
+        return pre_insts
+
     elif instr_name == 'jalr':
         return [['addi', 'zero', 'zero', '0'], 'f,0']
 
