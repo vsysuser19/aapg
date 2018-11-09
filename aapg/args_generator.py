@@ -175,6 +175,17 @@ def gen_memory_inst_offset(instr_name):
     if instr_name in ['lb', 'lbu', 'sb']:
         return random.choice(range(-2048, 2047))
 
+def incr_rw(reg_tup, read, write):
+    fst = reg_tup[0]
+    snd = reg_tup[1]
+
+    if read == True:
+        fst += 1
+    if write == True:
+        snd += 1
+
+    return (fst, snd)
+
 def gen_args(instruction, regfile, arch, *args, **kwargs):
     '''
         Function to generate the args for a given instruction
@@ -204,19 +215,19 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
 
         if arg == 'rd':
             register = random.choice(registers_int)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping[register])
             continue
 
         if arg == 'rs1':
             register = random.choice(registers_int)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
             continue
 
         if arg == 'rs2':
             register = random.choice(registers_int)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
             continue
 
@@ -268,44 +279,44 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
         # Floating point instructions
         if arg == 'rdf':
             register = random.choice(registers_float)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rs1f':
             register = random.choice(registers_float)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rs2f':
             register = random.choice(registers_float)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rs3f':
             register = random.choice(registers_float)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         # Compressed
         if arg == 'rdprime':
             register = random.choice(registers_comp)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping[register])
             continue
 
         if arg == 'rsprime1':
             register = random.choice(registers_comp)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
             continue
 
         if arg == 'rsprime2':
             register = random.choice(registers_comp)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
             continue
 
@@ -355,25 +366,25 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
 
         if arg == 'rdprimef':
             register = random.choice(registers_comp_float)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rsprime1f':
             register = random.choice(registers_comp_float)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rsprime2f':
             register = random.choice(registers_comp_float)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rd_rs1_prime':
             register = random.choice(registers_comp)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, True)
             reg_map = register_mapping[register]
             final_inst.append(reg_map)
             final_inst.append(reg_map)
@@ -381,7 +392,7 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
 
         if arg == 'rd_rs1':
             register = random.choice(registers_comp)
-            regfile[register] += 1
+            regfile[register] = incr_rw(regfile[register], True, True)
             reg_map = register_mapping[register]
             final_inst.append(reg_map)
             final_inst.append(reg_map)
