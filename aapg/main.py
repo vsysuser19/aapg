@@ -106,19 +106,20 @@ def execute():
 
         process_list = []
         for index in range(args.num_programs):
+            print(index)
             logger.info("Program number: {} started".format(index))
             p = Process(target = aapg.gen_random_program.run, args = (args, index))
             p.start()
             process_list.append(p)
 
-            for p in process_list:
-                p.join()
+        for p in process_list:
+            p.join()
 
-            for p in process_list:
-                if p.exitcode == 1:
-                    sys.exit(1)
+        for p in process_list:
+            if p.exitcode == 1:
+                sys.exit(1)
 
-            sys.exit(0)
+        sys.exit(0)
 
     elif args.command == 'setup':
         logger.info("Command received: setup")
