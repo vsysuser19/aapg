@@ -43,17 +43,19 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
         pre_insts = []
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '1'])
+                pre_insts.append(['li', 'x30', '11'])
                 pre_insts.append(['addi', 'x31', 'x31', '1'])
             else:
-                pre_insts.append(['li', 'x30', '1'])
-                pre_insts.append(['addi', 'x31', 'x31', '2'])
+                pre_insts.append(['li', 'x30', '0'])
         else:
-            pre_insts.append(['li', 'x31', '0']) 
+            if taken:
+                pre_insts.append(['li', 'x30', '10'])
+            else:
+                pre_insts.append(['li', 'x30', '0'])
         pre_insts.append(['pre_branch_macro'])
         pre_insts.append(['beq', 'x31', 'x30', offset_string]) 
         pre_insts.append(['post_branch_macro'])
-        pre_insts.append(['li', 'x31', '0'])
+        pre_insts.append(['li', 'x31', '10'])
 
         pre_insts.append(offset_string)
         return pre_insts
@@ -61,92 +63,106 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
         pre_insts = []
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '2'])
+                pre_insts.append(['li', 'x30', '12'])
                 pre_insts.append(['addi', 'x31', 'x31', '1'])
             else:
-                pre_insts.append(['li', 'x30', '1'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['li', 'x30', '10'])
         else:
             if taken:
-                pre_insts.append(['li', 'x30', '1'])
-                pre_insts.append(['li', 'x31', '0']) 
+                pre_insts.append(['li', 'x30', '11'])
+                pre_insts.append(['li', 'x31', '10']) 
             else:
-                pre_insts.append(['li', 'x30', '0'])
-                pre_insts.append(['li', 'x31', '0'])
+                pre_insts.append(['li', 'x30', '10'])
+                pre_insts.append(['li', 'x31', '10'])
         pre_insts.append(['pre_branch_macro'])
         pre_insts.append(['bne', 'x31', 'x30', offset_string]) 
         pre_insts.append(['post_branch_macro'])
-        pre_insts.append(['li', 'x31', '0'])
+        pre_insts.append(['li', 'x31', '10'])
 
         pre_insts.append(offset_string)
         return pre_insts
-    elif instr_name == 'blt':
+    elif instr_name == 'blt' or instr_name == 'bltu':
         pre_insts = []
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '2'])
+                pre_insts.append(['li', 'x30', '12'])
                 pre_insts.append(['addi', 'x31', 'x31', '1'])
             else:
-                pre_insts.append(['li', 'x30', '0'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['li', 'x30', '9'])
         else:
             if taken:
-                pre_insts.append(['li', 'x30', '1'])
-                pre_insts.append(['li', 'x31', '0']) 
+                pre_insts.append(['li', 'x30', '12'])
+                pre_insts.append(['li', 'x31', '10']) 
             else:
-                pre_insts.append(['li', 'x30', '0'])
-                pre_insts.append(['li', 'x31', '1'])
+                pre_insts.append(['li', 'x30', '9'])
+                pre_insts.append(['li', 'x31', '10'])
         pre_insts.append(['pre_branch_macro'])
         pre_insts.append(['blt', 'x31', 'x30', offset_string]) 
         pre_insts.append(['post_branch_macro'])
-        pre_insts.append(['li', 'x31', '0'])
+        pre_insts.append(['li', 'x31', '10'])
 
         pre_insts.append(offset_string)
         return pre_insts
-    elif instr_name == 'bge':
+    elif instr_name == 'bge' or instr_name == 'bgeu':
         pre_insts = []
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '2'])
+                pre_insts.append(['li', 'x30', '12'])
                 pre_insts.append(['addi', 'x31', 'x31', '1'])
             else:
-                pre_insts.append(['li', 'x30', '0'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['li', 'x30', '9'])
         else:
             if taken:
-                pre_insts.append(['li', 'x30', '1'])
-                pre_insts.append(['li', 'x31', '0']) 
+                pre_insts.append(['li', 'x30', '11'])
+                pre_insts.append(['li', 'x31', '10']) 
             else:
-                pre_insts.append(['li', 'x30', '0'])
-                pre_insts.append(['li', 'x31', '1'])
+                pre_insts.append(['li', 'x30', '9'])
+                pre_insts.append(['li', 'x31', '10'])
         pre_insts.append(['pre_branch_macro'])
         pre_insts.append(['bge', 'x30', 'x31', offset_string]) 
         pre_insts.append(['post_branch_macro'])
-        pre_insts.append(['li', 'x31', '0'])
-
+        pre_insts.append(['li', 'x31', '10'])
         pre_insts.append(offset_string)
         return pre_insts
-    elif instr_name == 'bltu':
-        return [['addi', 'zero', 'zero', '0'], 'f,0']
-    elif instr_name == 'bgeu':
-        return [['addi', 'zero', 'zero', '0'], 'f,0']
-
     elif instr_name == 'jal':
         pre_insts = []
         if backward:
-            pre_insts.append(['li', 'x30', '2'])
-            pre_insts.append(['addi', 'x31', 'x31', '1'])
-            pre_insts.append(['beq', 'x31', 'x30', '1f'])
-            pre_insts.append(['jal', 'x10', offset_string])
-            pre_insts.append(['1: li x31, 0'])
+            if taken:
+                pre_insts.append(['li', 'x30', '12'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['beq', 'x31', 'x30', '1f'])
+                pre_insts.append(['jal', 'x10', offset_string])
+                pre_insts.append(['1: li x31, 10'])
+            else:
+                pre_insts.append(['li', 'x30', '10'])
+                pre_insts.append(['beq', 'x31', 'x30', '1f'])
+                pre_insts.append(['jal', 'x10', offset_string])
+                pre_insts.append(['1: li x31, 10'])
         else:
             pre_insts.append(['jal', 'x10', offset_string])
-
         pre_insts.append(offset_string)
         return pre_insts
-
     elif instr_name == 'jalr':
-        return [['addi', 'zero', 'zero', '0'], 'f,0']
+        pre_insts = []
+        if backward:
+            if taken:
+                pre_insts.append(['li', 'x30', '12'])
+                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['beq', 'x31', 'x30', '1f'])
+                pre_insts.append(['la', 'x30', offset_string])
+                pre_insts.append(['jalr', 'x10', 'x30', '0'])
+                pre_insts.append(['1: li x31, 10'])
+            else:
+                pre_insts.append(['li', 'x30', '10'])
+                pre_insts.append(['beq', 'x31', 'x30', '1f'])
+                pre_insts.append(['la', 'x30', offset_string])
+                pre_insts.append(['jalr', 'x10', 'x30', '0'])
+                pre_insts.append(['1: li x31, 10'])
+        else:
+            pre_insts.append(['la', 'x30', offset_string])
+            pre_insts.append(['jalr', 'x10', 'x30', '0'])
+        pre_insts.append(offset_string)
+        return pre_insts
 
 def gen_memory_inst_offset(instr_name):
     """ Generate load/store offset for the instruction """
