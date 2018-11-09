@@ -89,7 +89,7 @@ class BasicGenerator(object):
         self.insts_since_last_branch = 0
         if 'rv32i.ctrl' in self.inst_dist:
             self.branch_bwd_prob = args.get('branch-control', 'backward-probability')
-        self.q.put(('instruction', ['li', 't6', '0']))
+        self.q.put(('instruction', ['li', 't6', '10']))
         self.total_instructions += 1
 
         # Setup the user function call 
