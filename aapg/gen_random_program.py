@@ -126,6 +126,9 @@ def gen_random_program(ofile, args, arch, seed):
     # Completed
     logger.info("Program generation completed")
 
+def gen_link_file(args):
+    pass
+
 def run(args, index):
     """ Entry point for generating new random assembly program
     

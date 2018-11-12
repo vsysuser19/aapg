@@ -57,6 +57,7 @@ def parse_cmdline_opts():
             help = 'Target architecture. Default: rv64', metavar = "")
     gen_parser.add_argument('--seed', action='store',\
             help = 'Seed to regenerate test.', metavar = "")
+    gen_parser.add_argument('--linker-only', action='store_true', help = 'Generate link.ld only')
 
     # Subparset: setup
     # Setup the current directory to build all asms
@@ -104,6 +105,15 @@ def execute():
         logger.info("Command received: gen")
         logger.info("Number of programs to generate: {}".format(args.num_programs))
 
+        # If linker-only true, then generate linker and quit
+        logger.info("Linker script generation started")
+        aapg.gen_random_program.gen_link_file(args)
+        logger.info("Linker script generation completed")
+        if args.linker_only:
+            logger.info("linker-only option selected. Exiting aapg")
+            sys.exit(0)
+
+        # Generate the asm programs
         process_list = []
         for index in range(args.num_programs):
             logger.info("Program number: {} started".format(index))
