@@ -7,10 +7,12 @@ import sys
 import os
 from six.moves import configparser
 import errno
+import re
 
 import aapg.asm_writer
 import aapg.program_generator
 import aapg.utils
+import aapg.env
 
 import datetime
 
@@ -113,21 +115,79 @@ def gen_random_program(ofile, args, arch, seed):
 
         writer.newline()
 
-    # Data section writer
-    writer.write('.data')
-    writer.write('.align 4')
-    writer.write('.globl data')
-    writer.write('data:', indent = 0)
+    # Create the required data sections
+    access_sections = args.items('access-sections')
 
-    data_generator = aapg.program_generator.DataGenerator(args)
-    for line in data_generator:
-        writer.write_inst(*line)
+    for index, section in enumerate(access_sections):
+        section_name = section[0]
+        section_start, section_end = section[1].split(',')[:2]
+
+        if (index + 1) == len(access_sections):
+            # Last section
+            section_size = int(section_end, 16) - int(section_start, 16)
+        else:
+            next_section_start = access_sections[index+1][1].split(',')[0]
+            section_size = int(next_section_start, 16) - int(section_start, 16)
+
+        writer.write('.data')
+        writer.write('.align 4')
+        writer.write('.globl ' + 'data_' + section_name)
+        writer.write('data_' + section_name + ':', indent = 0)
+
+        data_generator = aapg.program_generator.DataGenerator(section_size)
+        for line in data_generator:
+            writer.write_inst(*line)
+
+        writer.newline()
 
     # Completed
     logger.info("Program generation completed")
 
-def gen_link_file(args):
-    pass
+def gen_config_files(args):
+    """ generate the linker file based on the configuration """ 
+
+    # Read the config file
+    config_file_path = os.path.abspath(args.config_file)
+    config_file_name = os.path.basename(config_file_path.rstrip(os.sep))
+
+    # Setup the output dir
+    common_dir = os.path.join(os.path.abspath(args.output_dir), 'common')
+    link_ldfile = os.path.join(common_dir, 'link.ld')
+    crt_file = os.path.join(common_dir, 'crt.S')
+
+    # Check if valid config file provided
+    if not os.path.isfile(config_file_path):
+        logger.error("Config file not found. Please supply existing config file")
+        sys.exit(1)
+
+    # Read the program config
+    config_args = configparser.ConfigParser()
+    config_args.read(config_file_path)
+
+    # Configure linker template
+    linker_template = aapg.env.linker.linker_script.strip()
+
+    # Perform the linker script substitutions
+    start_address = config_args.get('general', 'code_start_address')
+    linker_template = re.sub(r"<!start_address!>", start_address, linker_template)
+
+    data_section_string = ""
+
+    start_address = config_args.items('access-sections')[0][1].split(',')[0]
+    data_section_string += ". = {};\n  ".format(start_address)
+    data_section_string += ".data : { *(data_*) }"
+
+    linker_template = re.sub(r"<!data_section!>", data_section_string, linker_template)
+
+    with open(link_ldfile, 'w') as f:
+        f.write(linker_template)
+
+    # Configure the crt.S
+    crt_template = aapg.env.prelude.crt_asm.strip()
+    section_name = 'data_' + config_args.items('access-sections')[0][0]
+    crt_template = re.sub(r"<!data_section!>", section_name, crt_template)
+    with open(crt_file, 'w') as f:
+        f.write(crt_template)
 
 def run(args, index):
     """ Entry point for generating new random assembly program
@@ -143,7 +203,7 @@ def run(args, index):
     config_file_path = os.path.abspath(args.config_file)
     config_file_name = os.path.basename(config_file_path.rstrip(os.sep))
 
-    output_dir = os.path.abspath(args.output_dir)
+    output_dir = os.path.join(os.path.abspath(args.output_dir), 'asm')
     output_asm_name = args.asm_name
 
     logger.info("Command [GEN] invoked. Random program generation started")

@@ -15,9 +15,10 @@ template_config = '''
 #                           reading/writing in the random generated instructions
 # ---------------------------------------------------------------------------------
 [general]
-total_instructions = 1000
+total_instructions = 100
 regs_not_use = x1,x2
 user_trap_handler = false
+code_start_address = 0x80000000
 
 # ---------------------------------------------------------------------------------
 # Distribution of instructions according to ISA extensions
@@ -28,7 +29,7 @@ user_trap_handler = false
 [isa-instruction-distribution]
 rel_sys = 0
 rel_rv32i.ctrl = 0
-rel_rv32i.compute = 0
+rel_rv32i.compute = 1
 rel_rv32i.data = 0
 rel_rv32i.fence = 0
 rel_rv64i.compute = 0
@@ -45,17 +46,17 @@ rel_rv64d = 0
 # Compressed instructions
 
 rel_rvc.ctrl = 0
-rel_rvc.compute = 1
+rel_rvc.compute = 0
 rel_rvc.sp = 0
-rel_rvc.data = 1
-rel_rvc.fdata = 1
+rel_rvc.data = 0
+rel_rvc.fdata = 0
 
-rel_rv32c.compute = 1
+rel_rv32c.compute = 0
 rel_rv32c.ctrl = 0
-rel_rv32c.fdata = 1
+rel_rv32c.fdata = 0
 
-rel_rv64c.compute = 1
-rel_rv64c.data = 1
+rel_rv64c.compute = 0
+rel_rv64c.data = 0
 
 [branch-control]
 backward-probability = 0.5
@@ -71,14 +72,6 @@ recursion-enable = false
 recursion-depth = 10
 
 # ---------------------------------------------------------------------------------
-# Data section options
-# Options:
-#       size: Size of data section in KB (kilobytes)
-# ---------------------------------------------------------------------------------
-[data-section]
-size = 1000
-
-# ---------------------------------------------------------------------------------
 # Data access sections
 # Specify which regions of memory will be accessed by the random program
 # Options:
@@ -89,7 +82,8 @@ size = 1000
 #       section_name =  section_low,section_high (HEX)     
 # ---------------------------------------------------------------------------------
 [access-sections]
-section1 = 0x8001f000,0x8003a000,rw
+section1 = 0x90000000,0x90001000,rw
+section2 = 0x90001000,0x90002000,r
 
 # ---------------------------------------------------------------------------------
 # User template sections
@@ -106,13 +100,13 @@ _test = 0
 # Instruction Cache and Data-Cache Thrashing
 # ---------------------------------------------------------------------------------
 [i-cache]
-num_calls = 10
+num_calls = 0
 num_bytes_per_block = 16
 num_blocks = 8
 num_cycles = 10
 
 [d-cache]
-num_calls = 10
+num_calls = 0
 num_bytes_per_block = 16
 num_blocks = 8
 num_cycles = 10
@@ -124,7 +118,7 @@ num_cycles = 10
 ecause00 = 0
 ecause01 = 0
 ecause02 = 0
-ecause03 = 10
+ecause03 = 0
 ecause04 = 0
 ecause05 = 0
 ecause06 = 0

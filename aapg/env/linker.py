@@ -22,12 +22,12 @@ SECTIONS
 {
 
   /* text: test code section */
-  . = 0x80000000;
+  . = <!start_address!>;
   .text.init : { *(.text.init) }
   .text : { *(.text) }
 
   /* data segment */
-  .data : { *(.data) }
+  <!data_section!>
 
   . = ALIGN(0x1000);
   .tohost : { *(.tohost) }

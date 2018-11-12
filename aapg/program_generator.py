@@ -357,19 +357,38 @@ class BasicGenerator(object):
 class DataGenerator(object):
     """ Object to generate the data section """
 
-    def __init__(self, args):
+    def __init__(self, size):
         """ Initialize the data generator """
-        logger.debug("Data generator instantiated")
+        logger.debug("Data generator instantiated of size %s bytes", size)
 
-        # Read the args
-        data_size = int(args.getint('data-section', 'size'))
-        
-        # Log configured args
-        logger.info("Data section size: {} KB".format(data_size))
+        # Upper bound for random value in abs
+        self.bounds = {
+            '.dword': 1<<64 - 1,
+            '.word' : 1<<32 - 1,
+            '.half' : 1<<16 - 1,
+            '.byte' : 1<<8 - 1
+        }
 
         # Local variables
-        self.num_dwords = data_size * 1024 / 64
-        logger.debug("Num dwords: {}".format(self.num_dwords))
+        if size % 64 == 0:
+            # Multiple of 64 bits / dword
+            size_prefix = '.dword'
+            num_lines = size / 8
+        elif size % 32 == 0:
+            # Multiple of 32 bits / word
+            size_prefix = '.word'
+            num_lines = size / 4
+        elif size % 16 == 0:
+            # Multiple of 16 bits / half
+            size_prefix = '.half'
+            num_lines = size / 2
+        else:
+            size_prefix = '.byte'
+            num_lines = size
+
+        self.size_prefix = size_prefix
+        self.num_lines = num_lines
+        logger.debug("Num {}: {}".format(size_prefix, num_lines))
 
     def __iter__(self):
         return self
@@ -379,12 +398,12 @@ class DataGenerator(object):
         return self.__next__()
 
     def __next__(self):
-        if self.num_dwords == 0:
+        if self.num_lines == 0:
             raise StopIteration("Data Section Generated")
         else:
-            self.num_dwords -= 1
-            value = random.randint(0, 1<<64)
-            address = ('.dword', "{0:#0{1}x}".format(value, 18))
+            self.num_lines -= 1
+            value = random.randint(0, self.bounds[self.size_prefix])
+            address = (self.size_prefix, "{0:#0{1}x}".format(value, 18))
             return address
 
 class ThrashGenerator(object):

@@ -51,7 +51,7 @@ def parse_cmdline_opts():
         help="Configuration file. Default: ./config.ini" )
     gen_parser.add_argument('--asm-name', action = 'store', default = 'out', \
             help = 'Assembly output file name. Default: out.asm', metavar = "")
-    gen_parser.add_argument('--output-dir', action='store', default = './asm', \
+    gen_parser.add_argument('--output-dir', action='store', default = '.', \
             help = 'Output directory for generated programs. Default: ./asm', metavar = "")
     gen_parser.add_argument('--arch', action='store', default = 'rv64', \
             help = 'Target architecture. Default: rv64', metavar = "")
@@ -62,7 +62,7 @@ def parse_cmdline_opts():
     # Subparset: setup
     # Setup the current directory to build all asms
     setup_parser = subparsers.add_parser('setup', help = 'Setup the current dir')
-
+    setup_parser.add_argument('--output-dir', action='store', default='.', help = 'Output directory for setup files. Default = ./', metavar = "")
     return (main_parser.parse_args(), main_parser)
 
 def setup_logging(log_level):
@@ -107,7 +107,7 @@ def execute():
 
         # If linker-only true, then generate linker and quit
         logger.info("Linker script generation started")
-        aapg.gen_random_program.gen_link_file(args)
+        aapg.gen_random_program.gen_config_files(args)
         logger.info("Linker script generation completed")
         if args.linker_only:
             logger.info("linker-only option selected. Exiting aapg")
@@ -132,7 +132,7 @@ def execute():
 
     elif args.command == 'setup':
         logger.info("Command received: setup")
-        aapg.env.env_setup.setup_build()
+        aapg.env.env_setup.setup_build(args.output_dir)
         aapg.utils.print_sample_config()
         logger.info("Sample config written to config.ini")
     else:
