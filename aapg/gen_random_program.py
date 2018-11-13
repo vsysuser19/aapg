@@ -81,12 +81,13 @@ def gen_random_program(ofile, args, arch, seed):
             writer.write_pseudo(*line[1], indent = 4)
             logger.debug("Writing: " + " ".join(line[1]))
 
-    writer.newline()
-    writer.write('write_tohost:', indent = 0)
-    writer.write_pseudo('li', 't5', '1', indent = 4)
-    writer.write_pseudo('sw', 't5', 'tohost', 't4', indent = 4)
-    writer.write('label: j label', indent = 4)
-    writer.newline()
+    if args.getboolean('general', 'default_program_exit'):
+        writer.newline()
+        writer.write('write_tohost:', indent = 0)
+        writer.write_pseudo('li', 't5', '1', indent = 4)
+        writer.write_pseudo('sw', 't5', 'tohost', 't4', indent = 4)
+        writer.write('label: j label', indent = 4)
+        writer.newline()
 
     # I-cache thrash
     if args.getint('i-cache', 'num_calls') > 0:
@@ -116,6 +117,7 @@ def gen_random_program(ofile, args, arch, seed):
         writer.newline()
 
     # Create the required data sections
+    writer.newline()
     access_sections = args.items('access-sections')
 
     for index, section in enumerate(access_sections):
@@ -179,6 +181,16 @@ def gen_config_files(args):
 
     linker_template = re.sub(r"<!data_section!>", data_section_string, linker_template)
 
+    tohost_section_pattern = r"<!\[tohost\]([\s\S]*)!>"
+    tohost_string = re.search(tohost_section_pattern, linker_template).group(1)
+    print(tohost_string)
+    if config_args.getboolean('general', 'default_program_exit'):
+        repl_string = tohost_string
+    else:
+        repl_string = ""
+
+    linker_template = re.sub(tohost_section_pattern, repl_string, linker_template)
+    
     with open(link_ldfile, 'w') as f:
         f.write(linker_template)
 

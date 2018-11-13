@@ -19,6 +19,7 @@ total_instructions = 100
 regs_not_use = x1,x2
 user_trap_handler = false
 code_start_address = 0x80000000
+default_program_exit = true
 
 # ---------------------------------------------------------------------------------
 # Distribution of instructions according to ISA extensions

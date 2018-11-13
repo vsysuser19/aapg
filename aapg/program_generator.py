@@ -120,8 +120,11 @@ class BasicGenerator(object):
         if self.q.empty():
             if not self.end:
                 self.q.put(('instruction_nolabel', ('post_program_macro', )))
-                self.q.put(('pseudo', ['j', 'write_tohost']))
-                self.total_instructions += 2
+
+                if self.args.getboolean('general', 'default_program_exit'):
+                    self.q.put(('pseudo', ['j', 'write_tohost']))
+                    self.total_instructions += 1
+                self.total_instructions += 1
                 self.end = True
             elif self.recursion_enabled:
                 self.add_recursion_sections()

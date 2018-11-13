@@ -29,8 +29,9 @@ SECTIONS
   /* data segment */
   <!data_section!>
 
+  <![tohost]
   . = ALIGN(0x1000);
-  .tohost : { *(.tohost) }
+  .tohost : { *(.tohost) } !>
 
   /* End of uninitalized data segement */
   _end = .;
