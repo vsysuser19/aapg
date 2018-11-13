@@ -16,7 +16,7 @@ crt_asm = '''
   .section ".text.init"
   .globl _start
 _start:
-  la sp, data
+  la sp, <!data_section!>
   LREG  x1, 0*REGBYTES(sp)
   LREG  x3, 1*REGBYTES(sp)
   LREG  x4, 2*REGBYTES(sp)

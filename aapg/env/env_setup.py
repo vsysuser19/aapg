@@ -12,7 +12,7 @@ import aapg.env.templates
 
 logger = logging.getLogger(__name__)
 
-def setup_build():
+def setup_build(output_dir):
     """ Setup the build directory
         This command does the following steps
         * Create the common directory and put crt.S and encoding.h there
@@ -20,15 +20,13 @@ def setup_build():
     """
 
     logger.info("Build setup started")
-
+    output_path = os.path.abspath(output_dir)
 
     dirs = ['common', 'bin', 'log', 'objdump']
-    common_dir = dirs[0]
+    common_dir = os.path.join(output_path, dirs[0])
 
-    prelude_file = 'crt.S'
     templates_file = 'templates.S'
     encoding_file = 'encoding.h'
-    linker_file = 'link.ld'
     make_file = 'Makefile'
 
     # Create the common directory 
@@ -39,14 +37,8 @@ def setup_build():
             logger.warning('Folder exists. Not overwriting {}'.format(e))
 
     # Put the files in common
-    with open(os.path.join(common_dir, prelude_file), 'w') as f:
-        f.write(aapg.env.prelude.crt_asm.strip('\n'))
-
     with open(os.path.join(common_dir, encoding_file), 'w') as f:
         f.write(aapg.env.encoding.encoding_header.strip('\n'))
-
-    with open(os.path.join(common_dir, linker_file), 'w') as f:
-        f.write(aapg.env.linker.linker_script.strip('\n'))
 
     with open(os.path.join(common_dir, templates_file), 'w') as f:
         f.write(aapg.env.templates.templates_asm.strip('\n'))
