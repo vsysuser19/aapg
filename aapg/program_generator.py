@@ -239,6 +239,17 @@ class BasicGenerator(object):
                 self.total_instructions -= 1
                 return
 
+            # if atomic instruction
+            if isa_ext == 'rv32a' or isa_ext == 'rv64a':
+                self.instructions_togen -= 1
+                self.total_instructions -= 1
+                next_inst_with_args = aapg.args_generator.gen_atomic_args(
+                    next_inst,
+                    self.regfile,
+                    self.arch)
+                self.q.put(('instruction', next_inst_with_args))
+                return
+
             # Create args for next instruction
             next_inst_with_args = aapg.args_generator.gen_args(
                     next_inst,
