@@ -407,3 +407,34 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
         final_inst[0] = aapg.isa_funcs.comp_insts_subs[final_inst[0]]
         
     return tuple(final_inst)
+
+def gen_atomic_args(instruction, regfile, arch, *args, **kwargs):
+    """ Generate args for atomic insts"""
+
+    instr_name = instruction[0]
+    instr_args = instruction[1:]
+
+    # Creating the registers
+    registers_int = [x for x in regfile if x[0] == 'x'] 
+    register_mapping = aapg.mappings.register_mapping_int
+    
+    final_inst = [instr_name,]
+    # Updating the args
+    for arg in instr_args:
+
+        if arg == 'rd':
+            register = random.choice(registers_int)
+            regfile[register] += 1
+            final_inst.append(register_mapping[register])
+
+        if arg == 'rs1':
+            register = random.choice(registers_int)
+            regfile[register] += 1
+            final_inst.append(register_mapping[register])
+
+        if arg == 'rs2':
+            final_inst.append('sp')
+
+    # Iterate over the args
+
+    return final_inst
