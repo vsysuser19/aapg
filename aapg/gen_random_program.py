@@ -183,7 +183,6 @@ def gen_config_files(args):
 
     tohost_section_pattern = r"<!\[tohost\]([\s\S]*)!>"
     tohost_string = re.search(tohost_section_pattern, linker_template).group(1)
-    print(tohost_string)
     if config_args.getboolean('general', 'default_program_exit'):
         repl_string = tohost_string
     else:
