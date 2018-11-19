@@ -15,7 +15,7 @@ template_config = '''
 #                           reading/writing in the random generated instructions
 # ---------------------------------------------------------------------------------
 [general]
-total_instructions = 100
+total_instructions = 1000
 regs_not_use = x1,x2
 user_trap_handler = false
 code_start_address = 0x80000000
@@ -131,4 +131,13 @@ ecause11 = 0
 ecause12 = 0
 ecause13 = 0
 ecause14 = 0
+
+# ---------------------------------------------------------------------------------
+# Data Hazards
+# ---------------------------------------------------------------------------------
+[data-hazards]
+raw_prob = 0.5
+war_prob = 0.5
+waw_prob = 0.5
+num_regs_lookbehind = 3
 '''

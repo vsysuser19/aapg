@@ -41,6 +41,7 @@ class BasicGenerator(object):
         self.seed = seed
         self.current_access_section = None
         self.end = False
+        self.data_hazards = args.items('data-hazards')
 
         # Create the data_access sections
         access_sections = args.items('access-sections')
@@ -256,7 +257,8 @@ class BasicGenerator(object):
                     self.regfile,
                     self.arch,
                     total = self.ref_total_instructions,
-                    current = self.instructions_togen)
+                    current = self.instructions_togen,
+                    data_hazards = self.data_hazards)
 
             # Put the instruction
             self.q.put(('instruction', next_inst_with_args))
@@ -296,7 +298,7 @@ class BasicGenerator(object):
         self.instructions_togen = self.total_instructions
 
     def init_regfile(self, not_used_reg_string):
-        """ Initialize the register file """
+        """ Initialize the register file | reg : (read, write) """
         not_used_regs = [(x[0], int(x[1:])) for x in not_used_reg_string.strip("'").split(',')]
 
         if 'rv32i.ctrl' in self.inst_dist:
@@ -305,11 +307,11 @@ class BasicGenerator(object):
         for i in range(32):
             reg = ('x', i)
             if reg not in not_used_regs:
-                self.regfile[('x', i)] = 0
+                self.regfile[('x', i)] = (0,0)
         for i in range(32):
             reg = ('f', i)
             if reg not in not_used_regs:
-                self.regfile[('f', i)] = 0
+                self.regfile[('f', i)] = (0,0)
 
     def add_prelude(self, args):
         """Add the prelude instructions to the queue to be written"""

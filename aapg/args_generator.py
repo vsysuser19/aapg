@@ -175,6 +175,17 @@ def gen_memory_inst_offset(instr_name):
     if instr_name in ['lb', 'lbu', 'sb']:
         return random.choice(range(-2048, 2047))
 
+def incr_rw(reg_tup, read, write):
+    fst = reg_tup[0]
+    snd = reg_tup[1]
+
+    if read == True:
+        fst += 1
+    if write == True:
+        snd += 1
+
+    return (fst, snd)
+
 def gen_args(instruction, regfile, arch, *args, **kwargs):
     '''
         Function to generate the args for a given instruction
@@ -190,12 +201,118 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
     instr_args = instruction[1:]
 
     # Creating the registers
+    register_mapping = aapg.mappings.register_mapping_int
+    register_mapping_float = aapg.mappings.register_mapping_float
+
+    # Filter the registers based on raw / war / waw deps
+    data_hazards_dict = {x[0] : x[1] for x in kwargs['data_hazards']}
+    num_regs = int(kwargs['data_hazards'][3][1])
+
+    # Generate the highest read and highest written thresholds
+    take_reg_set = lambda reg_set, regfile : {
+            x : regfile[x] for x in regfile if x[0] == reg_set
+    }
+
+    take_reg_set_cmp = lambda reg_set, regfile : {
+            x : regfile[x] for x in regfile if x[0] == reg_set and x[1] in range(8,16)}
+
+    reg_reads = lambda reg_set, regfile : [
+            regfile[x][0] for x in regfile if x[0] == reg_set]
+    reg_writes = lambda reg_set, regfile : [
+            regfile[x][1] for x in regfile if x[0] == reg_set]
+
+    reg_reads_filt = lambda reg_set, regfile, thresh : {
+            x : regfile[x] for x in regfile if x[0] == reg_set
+            and
+            regfile[x][0] >= thresh}
+
+    reg_writes_filt = lambda reg_set, regfile, thresh : {
+            x : regfile[x] for x in regfile if x[0] == reg_set
+            and
+            regfile[x][1] >= thresh}
+
+    def inverse(reg_set, regfile):
+        reg_ret = {x : regfile[x] for x in regfile if x not in reg_set}
+        if len(reg_ret.items()) == 0:
+            return regfile
+        else:
+            return reg_ret
+
+    intersect = lambda a, b : [
+            x for x in a if x in b
+    ]
+
+    max_read_int_thresh = sorted(reg_reads('x', regfile))[-num_regs] 
+    max_read_flt_thresh = sorted(reg_reads('f', regfile))[-num_regs]
+    max_read_regs_int = reg_reads_filt('x', regfile, max_read_int_thresh)
+    max_read_regs_flt = reg_reads_filt('f', regfile, max_read_flt_thresh)
+
+    max_write_int_thresh = sorted(reg_writes('x', regfile))[-num_regs] 
+    max_write_flt_thresh = sorted(reg_writes('f', regfile))[-num_regs] 
+    max_write_regs_int = reg_writes_filt('x', regfile, max_write_int_thresh)
+    max_write_regs_flt = reg_writes_filt('f', regfile, max_write_flt_thresh)
+
+    # Create the empty registers
+    registers_cmp_src = []
+    registers_cmp_dst = []
+
+    registers_cmp_flt_src = []
+    registers_cmp_flt_dst = []
+
+    registers_src = []
+    registers_dst = []
+
+    registers_flt_src = []
+    registers_flt_dst = []
+
     registers_comp = [x for x in regfile if x[1] in range(8,16) and x[0] == 'x']
     registers_comp_float = [x for x in regfile if x[1] in range(8,16) and x[0] == 'f']
     registers_int = [x for x in regfile if x[0] == 'x'] 
     registers_float = [x for x in regfile if x[0] == 'f']
-    register_mapping = aapg.mappings.register_mapping_int
-    register_mapping_float = aapg.mappings.register_mapping_float
+
+    if random.random() < float(data_hazards_dict['raw_prob']):
+        # Generate RAW Hazard. read registers should be
+        # the highest written to registers
+        registers_src.extend(take_reg_set('x', max_write_regs_int))
+        registers_flt_src.extend(take_reg_set('f', max_write_regs_flt))
+        registers_cmp_src.extend(take_reg_set_cmp('x', max_write_regs_int))
+        registers_cmp_flt_src.extend(take_reg_set_cmp('f', max_write_regs_flt))
+    else:
+        # RAW not generated, src registers should be the inverse of 
+        # max read regs
+        registers_src.extend(take_reg_set('x', inverse(max_write_regs_int, regfile)))
+        registers_flt_src.extend(take_reg_set('f', inverse(max_write_regs_flt, regfile)))
+        registers_cmp_src.extend(take_reg_set_cmp('x', inverse(max_write_regs_int, regfile)))
+        registers_cmp_flt_src.extend(take_reg_set_cmp('f', inverse(max_write_regs_flt, regfile)))
+
+    if random.random() < float(data_hazards_dict['war_prob']):
+        # Generate WAR hazard. write registers should be
+        # the highest read registers
+        registers_dst.extend(take_reg_set('x', max_read_regs_int))
+        registers_flt_dst.extend(take_reg_set('f', max_read_regs_flt))
+        registers_cmp_dst.extend(take_reg_set_cmp('x', max_read_regs_int))
+        registers_cmp_flt_dst.extend(take_reg_set_cmp('f', max_read_regs_flt))
+    else:
+        # WAR not generated. dst registers should be inverse of
+        # max read regs
+        registers_dst.extend(take_reg_set('x', inverse(max_read_regs_int, regfile)))
+        registers_flt_dst.extend(take_reg_set('f', inverse(max_read_regs_flt, regfile)))
+        registers_cmp_dst.extend(take_reg_set_cmp('x', inverse(max_read_regs_int, regfile)))
+        registers_cmp_flt_dst.extend(take_reg_set_cmp('f', inverse(max_read_regs_flt, regfile)))
+
+    if random.random() < float(data_hazards_dict['waw_prob']):
+        # Generate WAW hazard. write registers should be
+        # the highest written to registers
+        registers_dst.extend(intersect(registers_dst, max_write_regs_int))
+        registers_flt_dst.extend(intersect(registers_flt_dst, max_write_regs_flt))
+        registers_cmp_dst.extend(intersect(registers_cmp_dst, max_write_regs_int))
+        registers_cmp_flt_dst.extend(intersect(registers_cmp_flt_dst, max_write_regs_flt))
+    else:
+        # WAW not generated, intersect with inverse
+        registers_dst.extend(intersect(registers_dst, inverse(max_write_regs_int, regfile)))
+        registers_flt_dst.extend(intersect(registers_flt_dst, inverse(max_write_regs_flt, regfile)))
+        registers_cmp_dst.extend(intersect(registers_cmp_dst, inverse(max_write_regs_int, regfile)))
+        registers_cmp_flt_dst.extend(intersect(registers_cmp_flt_dst, inverse(max_write_regs_flt, regfile)))
 
     # Iterate over the args
     final_inst = [instr_name,]
@@ -203,20 +320,29 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
     for arg in instr_args:
 
         if arg == 'rd':
-            register = random.choice(registers_int)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_dst)
+            except IndexError as e:
+                register = random.choice(registers_int)
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping[register])
             continue
 
         if arg == 'rs1':
-            register = random.choice(registers_int)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_src)
+            except IndexError as e:
+                register = random.choice(registers_int)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
             continue
 
         if arg == 'rs2':
-            register = random.choice(registers_int)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_src)
+            except IndexError as e:
+                register = random.choice(registers_int)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
             continue
 
@@ -267,45 +393,66 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
 
         # Floating point instructions
         if arg == 'rdf':
-            register = random.choice(registers_float)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_flt_dst)
+            except IndexError as e:
+                register = random.choice(registers_float)
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rs1f':
-            register = random.choice(registers_float)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_flt_src)
+            except IndexError as e:
+                register = random.choice(registers_float)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rs2f':
-            register = random.choice(registers_float)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_flt_src)
+            except IndexError as e:
+                register = random.choice(registers_float)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rs3f':
-            register = random.choice(registers_float)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_flt_src)
+            except IndexError as e:
+                register = random.choice(registers_float)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         # Compressed
         if arg == 'rdprime':
-            register = random.choice(registers_comp)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_cmp_dst)
+            except IndexError as e:
+                register = random.choice(registers_comp)
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping[register])
             continue
 
         if arg == 'rsprime1':
-            register = random.choice(registers_comp)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_cmp_src)
+            except IndexError as e:
+                register = random.choice(registers_comp)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
             continue
 
         if arg == 'rsprime2':
-            register = random.choice(registers_comp)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_cmp_src)
+            except IndexError as e:
+                register = random.choice(registers_comp)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
             continue
 
@@ -354,34 +501,49 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
             continue
 
         if arg == 'rdprimef':
-            register = random.choice(registers_comp_float)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_cmp_flt_dst)
+            except IndexError as e:
+                register = random.choice(registers_comp_float)
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rsprime1f':
-            register = random.choice(registers_comp_float)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_cmp_flt_src)
+            except IndexError as e:
+                register = random.choice(registers_comp_float)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rsprime2f':
-            register = random.choice(registers_comp_float)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_cmp_flt_src)
+            except IndexError as e:
+                register = random.choice(registers_comp_float)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping_float[register])
             continue
 
         if arg == 'rd_rs1_prime':
-            register = random.choice(registers_comp)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_cmp_dst)
+            except IndexError as e:
+                register = random.choice(registers_comp)
+            regfile[register] = incr_rw(regfile[register], True, True)
             reg_map = register_mapping[register]
             final_inst.append(reg_map)
             final_inst.append(reg_map)
             continue
 
         if arg == 'rd_rs1':
-            register = random.choice(registers_comp)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_dst)
+            except IndexError as e:
+                register = random.choice(registers_int)
+            regfile[register] = incr_rw(regfile[register], True, True)
             reg_map = register_mapping[register]
             final_inst.append(reg_map)
             final_inst.append(reg_map)
