@@ -139,4 +139,5 @@ ecause14 = 0
 raw_prob = 0.5
 war_prob = 0.5
 waw_prob = 0.5
+num_regs_lookbehind = 3
 '''
