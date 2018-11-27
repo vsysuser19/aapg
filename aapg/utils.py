@@ -3,6 +3,7 @@
 """
 import logging
 import aapg.env.config
+import os
 
 class ColoredFormatter(logging.Formatter):
     """
@@ -31,10 +32,12 @@ class ColoredFormatter(logging.Formatter):
                 msg,
                 self.reset)
 
-def print_sample_config():
+def print_sample_config(output_dir = '.'):
     """
         Print sample config.ini
     """
     config_sample = aapg.env.config.template_config
-    with open('config.ini', 'w') as f:
+    output_abspath = os.path.abspath(output_dir)
+    output_file = os.path.join(output_abspath, 'config.ini')
+    with open(output_file, 'w') as f:
         f.write(config_sample.strip('\n'))
