@@ -153,7 +153,7 @@ def gen_config_files(args):
     config_file_name = os.path.basename(config_file_path.rstrip(os.sep))
 
     # Setup the output dir
-    common_dir = os.path.join(os.path.abspath(args.output_dir), 'common')
+    common_dir = os.path.join(os.path.abspath(args.setup_dir), 'common')
     link_ldfile = os.path.join(common_dir, 'link.ld')
     crt_file = os.path.join(common_dir, 'crt.S')
 

@@ -32,7 +32,7 @@ def setup_build(output_dir):
     # Create the common directory 
     for dirname in dirs:
         try:
-            os.makedirs(dirname)
+            os.makedirs(os.path.join(output_path, dirname))
         except FileExistsError as e:
             logger.warning('Folder exists. Not overwriting {}'.format(e))
 
@@ -43,5 +43,5 @@ def setup_build(output_dir):
     with open(os.path.join(common_dir, templates_file), 'w') as f:
         f.write(aapg.env.templates.templates_asm.strip('\n'))
 
-    with open(os.path.join(make_file), 'w') as f:
+    with open(os.path.join(output_path, make_file), 'w') as f:
         f.write(aapg.env.make.makefile.strip('\n'))
