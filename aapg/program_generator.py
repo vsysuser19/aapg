@@ -247,7 +247,9 @@ class BasicGenerator(object):
                 next_inst_with_args = aapg.args_generator.gen_atomic_args(
                     next_inst,
                     self.regfile,
-                    self.arch)
+                    self.arch,
+                    data_hazards = self.data_hazards
+                    )
                 self.q.put(('instruction', next_inst_with_args))
                 return
 

@@ -579,19 +579,99 @@ def gen_atomic_args(instruction, regfile, arch, *args, **kwargs):
     # Creating the registers
     registers_int = [x for x in regfile if x[0] == 'x'] 
     register_mapping = aapg.mappings.register_mapping_int
+    registers_src = []
+    registers_dst = []
     
+    # Filter the registers based on raw / war / waw deps
+    data_hazards_dict = {x[0] : x[1] for x in kwargs['data_hazards']}
+    num_regs = int(kwargs['data_hazards'][3][1])
+
+    # Generate the highest read and highest written thresholds
+    take_reg_set = lambda reg_set, regfile : {
+            x : regfile[x] for x in regfile if x[0] == reg_set
+    }
+
+    take_reg_set_cmp = lambda reg_set, regfile : {
+            x : regfile[x] for x in regfile if x[0] == reg_set and x[1] in range(8,16)}
+
+    reg_reads = lambda reg_set, regfile : [
+            regfile[x][0] for x in regfile if x[0] == reg_set]
+    reg_writes = lambda reg_set, regfile : [
+            regfile[x][1] for x in regfile if x[0] == reg_set]
+
+    reg_reads_filt = lambda reg_set, regfile, thresh : {
+            x : regfile[x] for x in regfile if x[0] == reg_set
+            and
+            regfile[x][0] >= thresh}
+
+    reg_writes_filt = lambda reg_set, regfile, thresh : {
+            x : regfile[x] for x in regfile if x[0] == reg_set
+            and
+            regfile[x][1] >= thresh}
+
+    def inverse(reg_set, regfile):
+        reg_ret = {x : regfile[x] for x in regfile if x not in reg_set}
+        if len(reg_ret.items()) == 0:
+            return regfile
+        else:
+            return reg_ret
+
+    intersect = lambda a, b : [
+            x for x in a if x in b
+    ]
+
+    max_read_int_thresh = sorted(reg_reads('x', regfile))[-num_regs] 
+    max_read_regs_int = reg_reads_filt('x', regfile, max_read_int_thresh)
+
+    max_write_int_thresh = sorted(reg_writes('x', regfile))[-num_regs] 
+    max_write_regs_int = reg_writes_filt('x', regfile, max_write_int_thresh)
+
+    # Data hazards
+    if random.random() < float(data_hazards_dict['raw_prob']):
+        # Generate RAW Hazard. read registers should be
+        # the highest written to registers
+        registers_src.extend(take_reg_set('x', max_write_regs_int))
+    else:
+        # RAW not generated, src registers should be the inverse of 
+        # max read regs
+        registers_src.extend(take_reg_set('x', inverse(max_write_regs_int, regfile)))
+
+    if random.random() < float(data_hazards_dict['war_prob']):
+        # Generate WAR hazard. write registers should be
+        # the highest read registers
+        registers_dst.extend(take_reg_set('x', max_read_regs_int))
+    else:
+        # WAR not generated. dst registers should be inverse of
+        # max read regs
+        registers_dst.extend(take_reg_set('x', inverse(max_read_regs_int, regfile)))
+
+    if random.random() < float(data_hazards_dict['waw_prob']):
+        # Generate WAW hazard. write registers should be
+        # the highest written to registers
+        registers_dst.extend(intersect(registers_dst, max_write_regs_int))
+    else:
+        # WAW not generated, intersect with inverse
+        registers_dst.extend(intersect(registers_dst, inverse(max_write_regs_int, regfile)))
+
     final_inst = [instr_name,]
+
     # Updating the args
     for arg in instr_args:
 
         if arg == 'rd':
-            register = random.choice(registers_int)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_dst)
+            except IndexError as e:
+                register = random.choice(registers_int)
+            regfile[register] = incr_rw(regfile[register], False, True)
             final_inst.append(register_mapping[register])
 
         if arg == 'rs1':
-            register = random.choice(registers_int)
-            regfile[register] += 1
+            try:
+                register = random.choice(registers_src)
+            except IndexError as e:
+                register = random.choice(registers_int)
+            regfile[register] = incr_rw(regfile[register], True, False)
             final_inst.append(register_mapping[register])
 
         if arg == 'rs2':
