@@ -108,8 +108,8 @@ class BasicGenerator(object):
 
         # Add recursion call
         if self.recursion_enabled:
-            self.user_calls_dict['.recurse'] = int(args.get(
-                    'recursion-options', 'recursion-calls'))
+            self.user_calls_dict['.recurse'] = ('f', int(args.get(
+                    'recursion-options', 'recursion-calls')))
 
     def __iter__(self):
         return self
