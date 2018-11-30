@@ -7,8 +7,11 @@ def prelude_template(args):
     return [
     ]
 
-def recurse_sections():
+def recurse_sections(depth):
     return {
+        'recurse_init': [
+            ('li', 'a0', '{}'.format(depth))
+        ],
         'recurse': [
             ('addi', 'sp', 'sp', '-32'),
             ('sd', 'ra', '24(sp)'),

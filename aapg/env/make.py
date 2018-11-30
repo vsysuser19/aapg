@@ -7,12 +7,14 @@ COMMON_DIR := common
 BIN_DIR := bin
 OBJ_DIR := objdump
 LOG_DIR := log
+ISA ?= rv64imafd
+ABI ?= lp64
 
 LINKER_SCRIPT := common/link.ld
 INCLUDE_DIRS := common
 CRT_FILE := common/crt.S
 TEMPLATE_FILE := common/templates.S
-GCC_OPTS := -DPREALLOCATE=1 -mcmodel=medany -static -std=gnu99 -O2 -fno-common -fno-builtin-printf
+GCC_OPTS := -march=$(ISA) -mabi=$(ABI) -DPREALLOCATE=1 -mcmodel=medany -static -std=gnu99 -O2 -fno-common -fno-builtin-printf
 LINKER_OPTIONS := -static -nostdlib -nostartfiles -lm -lgcc -T $(LINKER_SCRIPT)
 
 SRC_FILES := $(wildcard $(ASM_SRC_DIR)/*.S)
@@ -45,12 +47,11 @@ run: $(LOG_FILES)
 
 $(LOG_DIR)/%.log: $(BIN_DIR)/%.riscv
 \t$(info ==================== Simulating binary on Spike =========)
-\t spike -l $< 2> $@
+\tspike -l $< 2> $@
 
 
 .PHONY: clean
 clean:
-\trm bin/*
-\trm log/*
-\trm objdump/*
+\trm -rf bin log objdump
 '''
+
