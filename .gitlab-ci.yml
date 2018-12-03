@@ -10,7 +10,7 @@ conf1:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_eclass_bringup.ini
         - timeout 30 make ISA=rv64imac 
     only:
-        - ci-new
+        - master
     tags:
         - anmol-local
 
@@ -19,7 +19,7 @@ conf2:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_bringup.ini
         - timeout 30 make
     only:
-        - ci-new
+        - master
     tags:
         - anmol-local
 
@@ -28,7 +28,7 @@ conf3:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_config1.ini
         - timeout 30 make
     only:
-        - ci-new
+        - master
     tags:
         - anmol-local
 
@@ -37,6 +37,6 @@ conf4:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_igcar_bringup.ini
         - timeout 30 make
     only:
-        - ci-new
+        - master
     tags:
         - anmol-local
