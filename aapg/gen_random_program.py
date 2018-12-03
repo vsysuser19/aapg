@@ -197,6 +197,24 @@ def gen_config_files(args):
     crt_template = aapg.env.prelude.crt_asm.strip()
     section_name = 'data_' + config_args.items('access-sections')[0][0]
     crt_template = re.sub(r"<!data_section!>", section_name, crt_template)
+
+    # Add the config.ini as rodata
+    config_contents = ""
+    with open(config_file_path, 'rb') as config_file:
+        bytes_var = config_file.read(8)
+
+        while bytes_var != b'':
+            # Append the dwords to contents
+            if len(bytes_var) == 8:
+                config_contents += "\t.dword 0x{}\n".format(bytes_var.hex())
+            else:
+                for b in bytes_var:
+                    config_contents += "\t.byte {}\n".format(hex(b))
+            # Next chunk read
+            bytes_var = config_file.read(8)
+
+    crt_template = re.sub(r"<!rodata_config!>", config_contents, crt_template)
+
     with open(crt_file, 'w') as f:
         f.write(crt_template)
 

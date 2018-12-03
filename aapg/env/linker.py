@@ -32,6 +32,7 @@ SECTIONS
   <![tohost]
   . = ALIGN(0x1000);
   .tohost : { *(.tohost) } !>
+  .rodata : { *(rodata) }
 
   /* End of uninitalized data segement */
   _end = .;

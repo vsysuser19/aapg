@@ -265,4 +265,10 @@ ecause_num:
     .dword 0
     .dword 0
     .dword 0
+
+# Read only data
+.section ".rodata"
+.globl rodata
+rodata:
+    <!rodata_config!>
 '''
