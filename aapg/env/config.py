@@ -71,6 +71,7 @@ backward-probability = 0.5
 [recursion-options]
 recursion-enable = false
 recursion-depth = 10
+recursion-calls = 5
 
 # ---------------------------------------------------------------------------------
 # Data access sections
