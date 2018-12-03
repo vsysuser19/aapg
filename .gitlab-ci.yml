@@ -1,0 +1,42 @@
+image: iitmshakti/riscv-dev:0.5.0
+
+before_script:
+    - export PYTHONPATH=$(pwd)
+    - python3 -m pip install six
+    - python3 -m aapg.main setup; rm config.ini
+
+conf1:
+    script:
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_eclass_bringup.ini
+        - timeout 30 make ISA=rv64imac 
+    only:
+        - ci-new
+    tags:
+        - anmol-local
+
+conf2:
+    script:
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_bringup.ini
+        - timeout 30 make
+    only:
+        - ci-new
+    tags:
+        - anmol-local
+
+conf3:
+    script:
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_config1.ini
+        - timeout 30 make
+    only:
+        - ci-new
+    tags:
+        - anmol-local
+
+conf4:
+    script:
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_igcar_bringup.ini
+        - timeout 30 make
+    only:
+        - ci-new
+    tags:
+        - anmol-local

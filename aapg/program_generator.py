@@ -108,7 +108,7 @@ class BasicGenerator(object):
 
         # Add recursion call
         if self.recursion_enabled:
-            self.user_calls_dict['.recurse'] = ('f', int(args.get(
+            self.user_calls_dict['.recurse_init'] = ('f', int(args.get(
                     'recursion-options', 'recursion-calls')))
 
     def __iter__(self):
@@ -128,7 +128,7 @@ class BasicGenerator(object):
                 self.total_instructions += 1
                 self.end = True
             elif self.recursion_enabled:
-                self.add_recursion_sections()
+                self.add_recursion_sections(self.args.getint('recursion-options', 'recursion-depth'))
                 self.recursion_enabled = False
             else:
                 raise StopIteration('Instructions over')
@@ -328,13 +328,13 @@ class BasicGenerator(object):
             self.q.put(('instruction_nolabel', ('la', 't0', 'user_trap_handler')))
             self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
 
-    def add_recursion_sections(self):
+    def add_recursion_sections(self, depth):
         """Add user-defined templates"""
         recursion_template_enabled = self.recursion_enabled
         logger.info("Recursion Enabled? {}".format(recursion_template_enabled))
 
         if recursion_template_enabled:
-            recurse_sections = aapg.asm_templates.recurse_sections()
+            recurse_sections = aapg.asm_templates.recurse_sections(depth)
             for section in recurse_sections:
                 self.q.put(('section', '.' + section))
                 for instruction in recurse_sections[section]:
