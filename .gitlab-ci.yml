@@ -44,7 +44,7 @@ conf4_rv64:
 conf1_rv32:
     script:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_eclass_bringup.ini --arch rv32
-        - timeout 30 make XLEN=32
+        - timeout 30 make ISA=rv32imafd ABI=ilp32
     only:
         - master
     tags:
@@ -53,7 +53,7 @@ conf1_rv32:
 conf2_rv32:
     script:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_bringup.ini --arch rv32
-        - timeout 30 make XLEN=32
+        - timeout 30 make ISA=rv32imafd ABI=ilp32
     only:
         - master
     tags:
@@ -62,7 +62,7 @@ conf2_rv32:
 conf3_rv32:
     script:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_config1.ini --arch rv32
-        - timeout 30 make XLEN=32
+        - timeout 30 make ISA=rv32imafd ABI=ilp32
     only:
         - master
     tags:
@@ -71,7 +71,7 @@ conf3_rv32:
 conf4_rv32:
     script:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_igcar_bringup.ini --arch rv32
-        - timeout 30 make XLEN=32
+        - timeout 30 make ISA=rv32imafd ABI=ilp32
     only:
         - master
     tags:
