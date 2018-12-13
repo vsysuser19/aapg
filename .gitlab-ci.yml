@@ -5,16 +5,16 @@ before_script:
     - python3 -m pip install six
     - python3 -m aapg.main setup; rm config.ini
 
-conf1:
+conf1_rv64:
     script:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_eclass_bringup.ini
-        - timeout 30 make ISA=rv64imac 
+        - timeout 30 make
     only:
         - master
     tags:
         - anmol-local
 
-conf2:
+conf2_rv64:
     script:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_bringup.ini
         - timeout 30 make
@@ -23,7 +23,7 @@ conf2:
     tags:
         - anmol-local
 
-conf3:
+conf3_rv64:
     script:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_config1.ini
         - timeout 30 make
@@ -32,10 +32,46 @@ conf3:
     tags:
         - anmol-local
 
-conf4:
+conf4_rv64:
     script:
         - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_igcar_bringup.ini
         - timeout 30 make
+    only:
+        - master
+    tags:
+        - anmol-local
+
+conf1_rv32:
+    script:
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_eclass_bringup.ini --arch rv32
+        - timeout 30 make XLEN=32
+    only:
+        - master
+    tags:
+        - anmol-local
+
+conf2_rv32:
+    script:
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_bringup.ini --arch rv32
+        - timeout 30 make XLEN=32
+    only:
+        - master
+    tags:
+        - anmol-local
+
+conf3_rv32:
+    script:
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_config1.ini --arch rv32
+        - timeout 30 make XLEN=32
+    only:
+        - master
+    tags:
+        - anmol-local
+
+conf4_rv32:
+    script:
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_igcar_bringup.ini --arch rv32
+        - timeout 30 make XLEN=32
     only:
         - master
     tags:
