@@ -667,12 +667,15 @@ def gen_atomic_args(instruction, regfile, arch, *args, **kwargs):
             final_inst.append(register_mapping[register])
 
         if arg == 'rs1':
-            try:
-                register = random.choice(registers_src)
-            except IndexError as e:
-                register = random.choice(registers_int)
-            regfile[register] = incr_rw(regfile[register], True, False)
-            final_inst.append(register_mapping[register])
+            if instr_name == 'lr.w' or instr_name == 'lr.d':
+                final_inst.append('sp')
+            else:
+                try:
+                    register = random.choice(registers_src)
+                except IndexError as e:
+                    register = random.choice(registers_int)
+                regfile[register] = incr_rw(regfile[register], True, False)
+                final_inst.append(register_mapping[register])
 
         if arg == 'rs2':
             final_inst.append('sp')
