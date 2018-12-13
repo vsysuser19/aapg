@@ -14,28 +14,25 @@ def recurse_sections(depth):
         ],
         'recurse': [
             ('addi', 'sp', 'sp', '-32'),
-            ('sd', 'ra', '24(sp)'),
-            ('sd', 's0', '16(sp)'),
+            ('sw', 'ra', '28(sp)'),
+            ('sw', 's0', '24(sp)'),
             ('addi', 's0', 'sp', '32'),
-            ('mv', 'a5', 'a0'),
-            ('sw', 'a5', '-20(s0)'),
+            ('sw', 'a0', '-20(s0)'),
             ('lw', 'a5', '-20(s0)'),
-            ('sext.w', 'a5', 'a5'),
             ('bnez', 'a5', '.recurse.L4'),
             ('li', 'a5', '0'),
             ('j', '.recurse.L3')
         ],
         'recurse.L4': [
             ('lw', 'a5', '-20(s0)'),
-            ('addiw', 'a5', 'a5', '-1'),
-            ('sext.w', 'a5', 'a5'),
+            ('addi', 'a5', 'a5', '-1'),
             ('mv', 'a0', 'a5'),
             ('call', '.recurse')
         ],
         'recurse.L3': [
             ('mv', 'a0', 'a5'),
-            ('ld', 'ra', '24(sp)'),
-            ('ld', 's0', '16(sp)'),
+            ('lw', 'ra', '28(sp)'),
+            ('lw', 's0', '24(sp)'),
             ('addi', 'sp', 'sp', '32'),
             ('jr',  'ra')
         ]
