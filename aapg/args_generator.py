@@ -39,7 +39,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
     # Generate the args
     offset_string = '{0},{1}'.format('b' if backward else 'f', num_steps)
 
-    if instr_name == 'beq':
+    if instr_name == 'beq' or instr_name == 'c.beqz':
         pre_insts = []
         if backward:
             if taken:
@@ -59,7 +59,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
 
         pre_insts.append(offset_string)
         return pre_insts
-    elif instr_name == 'bne':
+    elif instr_name == 'bne' or instr_name == 'c.bnez':
         pre_insts = []
         if backward:
             if taken:
@@ -124,45 +124,63 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
         pre_insts.append(['li', 'x31', '10'])
         pre_insts.append(offset_string)
         return pre_insts
-    elif instr_name == 'jal':
+    elif instr_name == 'jal' or instr_name == 'c.j' or instr_name == 'c.jal':
         pre_insts = []
+
+        target_reg = 'x10'
+
+        if instr_name == 'c.j':
+            target_reg = 'x0'
+        elif instr_name == 'c.jal':
+            target_reg = 'x1'
+
         if backward:
             if taken:
                 pre_insts.append(['li', 'x30', '12'])
                 pre_insts.append(['addi', 'x31', 'x31', '1'])
                 pre_insts.append(['beq', 'x31', 'x30', '1f'])
-                pre_insts.append(['jal', 'x10', offset_string])
+                pre_insts.append(['jal', '{}'.format(target_reg), offset_string])
                 pre_insts.append(['1: li x31, 10'])
             else:
                 pre_insts.append(['li', 'x30', '10'])
                 pre_insts.append(['beq', 'x31', 'x30', '1f'])
-                pre_insts.append(['jal', 'x10', offset_string])
+                pre_insts.append(['jal', '{}'.format(target_reg), offset_string])
                 pre_insts.append(['1: li x31, 10'])
         else:
-            pre_insts.append(['jal', 'x10', offset_string])
+            pre_insts.append(['jal', '{}'.format(target_reg), offset_string])
         pre_insts.append(offset_string)
         return pre_insts
-    elif instr_name == 'jalr':
+    elif instr_name == 'jalr' or instr_name == 'c.jr' or instr_name == 'c.jalr':
         pre_insts = []
+
+        target_reg = 'x10'
+
+        if instr_name == 'c.jr':
+            target_reg = 'x0'
+        elif instr_name == 'c.jalr':
+            target_reg = 'x1'
+
         if backward:
             if taken:
                 pre_insts.append(['li', 'x30', '12'])
                 pre_insts.append(['addi', 'x31', 'x31', '1'])
                 pre_insts.append(['beq', 'x31', 'x30', '1f'])
                 pre_insts.append(['la', 'x30', offset_string])
-                pre_insts.append(['jalr', 'x10', 'x30', '0'])
+                pre_insts.append(['jalr', '{}'.format(target_reg), 'x30', '0'])
                 pre_insts.append(['1: li x31, 10'])
             else:
                 pre_insts.append(['li', 'x30', '10'])
                 pre_insts.append(['beq', 'x31', 'x30', '1f'])
                 pre_insts.append(['la', 'x30', offset_string])
-                pre_insts.append(['jalr', 'x10', 'x30', '0'])
+                pre_insts.append(['jalr', '{}'.format(target_reg), 'x30', '0'])
                 pre_insts.append(['1: li x31, 10'])
         else:
             pre_insts.append(['la', 'x30', offset_string])
-            pre_insts.append(['jalr', 'x10', 'x30', '0'])
+            pre_insts.append(['jalr', '{}'.format(target_reg), 'x30', '0'])
         pre_insts.append(offset_string)
         return pre_insts
+    else:
+        return [['addi', 'x0', 'x0', '0'], 'f,20']
 
 def gen_memory_inst_offset(instr_name):
     """ Generate load/store offset for the instruction """

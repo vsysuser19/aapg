@@ -88,9 +88,13 @@ class BasicGenerator(object):
 
         # Branch control
         self.insts_since_last_branch = 0
-        if 'rv32i.ctrl' in self.inst_dist:
+        if self.branch_ext_selected(self.inst_dist):
             self.branch_bwd_prob = args.get('branch-control', 'backward-probability')
+            logger.info("Branch instructions present")
+
+        # Adding this to act as counter for branches
         self.q.put(('instruction', ['li', 't6', '10']))
+
         self.total_instructions += 1
 
         # Setup the user function call 
@@ -174,9 +178,9 @@ class BasicGenerator(object):
                 # If we have crossed a certain threshold from the
                 # previous branch instruction, generate a branch
                 # instruction possibly, otherwise omit the key
-                if 'rv32i.ctrl' in self.inst_dist:
+                if self.branch_ext_selected(self.inst_dist):
                     if self.insts_since_last_branch > self.min_insts_threshold:
-                        isa_ext = 'rv32i.ctrl'
+                        isa_ext = random.choice(self.branch_exts(self.inst_dist))
                     else:
                         isa_ext = random.choice(list(self.inst_dist_nobranch.keys()))
                 else:
@@ -186,7 +190,7 @@ class BasicGenerator(object):
                     next_inst = aapg.isa_funcs.get_random_inst_from_set(isa_ext)
                     self.inst_dist[isa_ext] -= 1
 
-                    if isa_ext != 'rv32i.ctrl':
+                    if not self.is_branch_ext(isa_ext):
                         self.insts_since_last_branch += 1
 
                     next_inst_found = True
@@ -222,7 +226,7 @@ class BasicGenerator(object):
 
 
             # if control instruction
-            if isa_ext == 'rv32i.ctrl':
+            if self.is_branch_ext(isa_ext):
                 next_insts = aapg.args_generator.gen_branch_args(
                         next_inst,
                         self.regfile,
@@ -290,12 +294,21 @@ class BasicGenerator(object):
             cd[k] = int(cd[k]*self.total_instructions/total_sum)
 
         self.inst_dist = cd
-        self.inst_dist_nobranch = {k:cd[k] for k in self.inst_dist if k != 'rv32i.ctrl'}
-        if 'rv32i.ctrl' in self.inst_dist:
-            self.min_insts_threshold = int(sum(self.inst_dist_nobranch.values())/self.inst_dist['rv32i.ctrl']) - 1
+        self.inst_dist_nobranch = {k:cd[k] for k in self.inst_dist if
+                (k != 'rv32i.ctrl' and k != 'rvc.ctrl' and k != 'rv32c.ctrl')}
+        if self.branch_ext_selected(self.inst_dist):
+            num_branch_insts = 0
+            if 'rv32i.ctrl' in self.inst_dist:
+                num_branch_insts += self.inst_dist['rv32i.ctrl']
+            if 'rvc.ctrl' in self.inst_dist:
+                num_branch_insts += self.inst_dist['rvc.ctrl']
+            if 'rv32c.ctrl' in self.inst_dist:
+                num_branch_insts += self.inst_dist['rv32c.ctrl']
+            self.min_insts_threshold = int(sum(self.inst_dist_nobranch.values())/num_branch_insts) - 1
             logger.info("Branch threshold: {}".format(self.min_insts_threshold))
         else:
             self.min_insts_threshold = 0
+
         self.total_instructions = sum(self.inst_dist.values())
         self.instructions_togen = self.total_instructions
 
@@ -303,7 +316,7 @@ class BasicGenerator(object):
         """ Initialize the register file | reg : (read, write) """
         not_used_regs = [(x[0], int(x[1:])) for x in not_used_reg_string.strip("'").split(',')]
 
-        if 'rv32i.ctrl' in self.inst_dist:
+        if self.branch_ext_selected(self.inst_dist):
             not_used_regs.append(('x', 31))
 
         for i in range(32):
@@ -371,6 +384,28 @@ class BasicGenerator(object):
             self.q.put(('instruction', ['li', 'sp', hex(sp_address)]))
             self.total_instructions += 1
             self.current_access_section = access_section
+
+    def branch_ext_selected(self, inst_dist):
+        """ Check if a branch extension is present in supplied inst dist """
+        if 'rv32i.ctrl' in inst_dist or 'rvc.ctrl' in inst_dist or 'rv32c.ctrl' in inst_dist:
+                return True
+        else:
+                return False
+
+    def is_branch_ext(self, ext):
+        if ext == 'rv32i.ctrl' or ext == 'rvc.ctrl' or ext == 'rv32c.ctrl':
+            return True
+        else:
+            return False
+
+    def branch_exts(self, inst_dist):
+        """ Return the exts selected """
+        ret = []
+        for k in self.inst_dist:
+            if k == 'rv32i.ctrl' or k == 'rv32c.ctrl' or k == 'rvc.ctrl':
+                ret.append(k)
+
+        return ret
 
 class DataGenerator(object):
     """ Object to generate the data section """
