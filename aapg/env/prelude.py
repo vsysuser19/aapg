@@ -2,13 +2,15 @@ crt_asm = '''
 #include "encoding.h"
 
 #if __riscv_xlen == 64
-  #define LREG ld
-  #define SREG sd
-  #define REGBYTES 8
-  #define FMV fmv.d.x
+  # define LREG ld
+  # define LREGU lwu
+  # define SREG sd
+  # define REGBYTES 8
+  # define FMV fmv.d.x
 #else
   # define LREG lw
   # define SREG sw
+  # define LREGU lw
   # define REGBYTES 4
   # define FMV fmv.w.x
 #endif

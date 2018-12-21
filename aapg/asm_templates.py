@@ -31,8 +31,8 @@ def recurse_sections(depth):
         ],
         'recurse.L3': [
             ('mv', 'a0', 'a5'),
-            ('lw', 'ra', '28(sp)'),
-            ('lw', 's0', '24(sp)'),
+            ('LREGU', 'ra', '28(sp)'),
+            ('LREGU', 's0', '24(sp)'),
             ('addi', 'sp', 'sp', '32'),
             ('jr',  'ra')
         ]

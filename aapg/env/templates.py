@@ -2,13 +2,15 @@ templates_asm = '''
 #if __riscv_xlen == 64
   #define LREG ld
   #define SREG sd
+  #define LREGU lwu
   #define REGBYTES 8
   #define FMV fmv.d.x
 #else
-  # define LREG lw
-  # define SREG sw
-  # define REGBYTES 4
-  # define FMV fmv.w.x
+  #define LREG lw
+  #define LREGU lw
+  #define SREG sw
+  #define REGBYTES 4
+  #define FMV fmv.w.x
 #endif
 
 # User defined functions to be called
