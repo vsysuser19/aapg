@@ -459,6 +459,7 @@ class DataGenerator(object):
         return self.__next__()
 
     def __next__(self):
+        logger.debug("Lines left: {}".format(self.num_lines))
         if self.num_lines == 0:
             raise StopIteration("Data Section Generated")
         else:
