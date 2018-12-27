@@ -52,6 +52,6 @@ $(LOG_DIR)/%.log: $(BIN_DIR)/%.riscv
 
 .PHONY: clean
 clean:
-\trm -rf bin log objdump
+\trm -rf bin/* log/* objdump/*
 '''
 

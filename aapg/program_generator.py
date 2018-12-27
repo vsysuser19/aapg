@@ -200,7 +200,7 @@ class BasicGenerator(object):
                 self.add_memory_instruction()
                 
                 if (random.random() > 0.8):
-                    self.q.put(('instruction', ['addi', 'ra', 'sp', '0']))
+                    self.q.put(('instruction', ['addi', 'a0', 'sp', '0']))
                     self.total_instructions += 1
                     off_reg = 'a0'
                 else:
