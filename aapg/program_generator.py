@@ -207,7 +207,6 @@ class BasicGenerator(object):
                     off_reg = 'sp'
 
                 next_inst = tuple([next_inst[0], next_inst[1], off_reg , next_inst[3]])
-                print(next_inst)
 
                 # check data section and replace lw with sw
                 if next_inst[0][0] != 'c':
