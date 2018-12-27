@@ -198,7 +198,16 @@ class BasicGenerator(object):
             # if memory_insts, randomly displace sp
             if next_inst[0] in aapg.isa_funcs.memory_insts and len(self.access_sections) > 0:
                 self.add_memory_instruction()
-                next_inst = tuple([next_inst[0], next_inst[1], 'sp', next_inst[3]])
+                
+                if (random.random() > 0.8):
+                    self.q.put(('instruction', ['addi', 'ra', 'sp', '0']))
+                    self.total_instructions += 1
+                    off_reg = 'a0'
+                else:
+                    off_reg = 'sp'
+
+                next_inst = tuple([next_inst[0], next_inst[1], off_reg , next_inst[3]])
+                print(next_inst)
 
                 # check data section and replace lw with sw
                 if next_inst[0][0] != 'c':

@@ -510,6 +510,10 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
             final_inst.append('sp')
             continue
 
+        if arg == 'a0':
+            final_inst.append('a0')
+            continue
+
         if arg == 's8uimm5':
             final_inst.append(str(8*random.randint(0, 1<<5 -1)))
             continue 
