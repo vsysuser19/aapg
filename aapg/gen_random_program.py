@@ -133,8 +133,8 @@ def gen_random_program(ofile, args, arch, seed):
 
         writer.write('.data')
         writer.write('.align 4')
-        writer.write('.globl ' + 'data_' + section_name)
-        writer.write('data_' + section_name + ':', indent = 0)
+        writer.write('.globl ' + section_name)
+        writer.write(section_name + ':', indent = 0)
 
         data_generator = aapg.program_generator.DataGenerator(section_size)
         for line in data_generator:
