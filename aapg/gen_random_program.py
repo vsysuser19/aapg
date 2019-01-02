@@ -177,7 +177,11 @@ def gen_config_files(args):
 
     start_address = config_args.items('access-sections')[0][1].split(',')[0]
     data_section_string += ". = {};\n  ".format(start_address)
-    data_section_string += ".data : { *(data_*) }"
+
+    # Generate data sections
+    data_section_names = map(lambda x: x[0], config_args.items('access-sections'))
+    data_section_strings = list(map(lambda x: "*({}*)".format(x), data_section_names))
+    data_section_string += '.data : {{ {0} }}'.format(" ".join(data_section_strings))
 
     linker_template = re.sub(r"<!data_section!>", data_section_string, linker_template)
 
@@ -195,7 +199,7 @@ def gen_config_files(args):
 
     # Configure the crt.S
     crt_template = aapg.env.prelude.crt_asm.strip()
-    section_name = 'data_' + config_args.items('access-sections')[0][0]
+    section_name = config_args.items('access-sections')[0][0]
     crt_template = re.sub(r"<!data_section!>", section_name, crt_template)
 
     # Add the config.ini as rodata
