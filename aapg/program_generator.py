@@ -42,6 +42,7 @@ class BasicGenerator(object):
         self.current_access_section = None
         self.end = False
         self.data_hazards = args.items('data-hazards')
+        self.curr_inst_nolabel = False
 
         # Create the data_access sections
         access_sections = args.items('access-sections')
@@ -199,10 +200,12 @@ class BasicGenerator(object):
             if next_inst[0] in aapg.isa_funcs.memory_insts and len(self.access_sections) > 0:
                 self.add_memory_instruction()
                 
+                # Choose the offset register
                 if (random.random() > 0.8):
-                    self.q.put(('instruction', ['addi', 'a0', 'sp', '0']))
+                    self.q.put(('instruction_nolabel', ['addi', 'a0', 'sp', '0']))
                     self.total_instructions += 1
                     off_reg = 'a0'
+                    self.curr_inst_nolabel = True
                 else:
                     off_reg = 'sp'
 
@@ -275,7 +278,12 @@ class BasicGenerator(object):
                     data_hazards = self.data_hazards)
 
             # Put the instruction
-            self.q.put(('instruction', next_inst_with_args))
+            if self.curr_inst_nolabel:
+                self.q.put(('instruction_nolabel', next_inst_with_args))
+                self.curr_inst_nolabel = False
+            else:
+                self.q.put(('instruction', next_inst_with_args))
+
             self.instructions_togen -= 1
 
         # Decrement total number of instructions

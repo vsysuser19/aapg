@@ -78,7 +78,8 @@ def gen_random_program(ofile, args, arch, seed):
                 writer.write_pseudo(*inst, indent = 4)
             writer.write('')
         elif line[0] == 'instruction_nolabel':
-            writer.write_pseudo(*line[1], indent = 4)
+            writer.write_inst(*line[1], label = "", indent = 4)
+            root_index += 1
             logger.debug("Writing: " + " ".join(line[1]))
 
     if args.getboolean('general', 'default_program_exit'):
