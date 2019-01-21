@@ -29,6 +29,7 @@ default_program_exit = true
 # ---------------------------------------------------------------------------------
 [isa-instruction-distribution]
 rel_sys = 0
+rel_sys.csr = 0
 rel_rv32i.ctrl = 0
 rel_rv32i.compute = 1
 rel_rv32i.data = 0
