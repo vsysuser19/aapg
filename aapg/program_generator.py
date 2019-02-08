@@ -52,9 +52,8 @@ class BasicGenerator(object):
             lower_bound = int(bounds[0], 16)
             upper_bound = int(bounds[1], 16)
             read_write = bounds[2]
-            self.access_sections.append((lower_bound, upper_bound, read_write))
-
-        self.first_section_label = access_sections[0][0]
+            label = item[0]
+            self.access_sections.append((lower_bound, upper_bound, read_write, label))
 
         # Seeding the PRNG generator
         random.seed(self.seed)
@@ -399,9 +398,9 @@ class BasicGenerator(object):
 
             # Align to 64 bits
             sp_address = int(sp_address/8)*8
-            self.q.put(('instruction', ['la', 'sp', self.first_section_label]))
-            self.q.put(('instruction', ['li', 't6', str(sp_address - access_section[0])]))
-            self.q.put(('instruction', ['add', 'sp', 'sp', 't6']))
+            self.q.put(('instruction_nolabel', ['la', 'sp', access_section[3]]))
+            self.q.put(('instruction_nolabel', ['li', 't1', str(sp_address - access_section[0])]))
+            self.q.put(('instruction_nolabel', ['add', 'sp', 'sp', 't1']))
             self.total_instructions += 3
             self.current_access_section = access_section
 
