@@ -395,7 +395,7 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
             final_inst.append(str(random.randint(- 1<<5, 1<<5 - 1)))
 
         if arg == 'imm20':
-            final_inst.append(str(random.randint(0, 1<<20)))
+            final_inst.append(str(random.randint(0, 1<<20 - 1)))
             continue
 
         if arg == 'shamt':
