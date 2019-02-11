@@ -132,7 +132,7 @@ def gen_random_program(ofile, args, arch, seed):
             section_size = int(next_section_start, 16) - int(section_start, 16)
 
         writer.write('.data')
-        writer.write('.align 4')
+        writer.write('.align 1')
         writer.write('.globl ' + section_name)
         writer.write(section_name + ':', indent = 0)
 
