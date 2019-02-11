@@ -193,7 +193,7 @@ class BasicGenerator(object):
                     self.inst_dist[isa_ext] -= 1
 
                     if not self.is_branch_ext(isa_ext):
-                        self.insts_since_last_branch += 1
+                            self.insts_since_last_branch += 1
 
                     next_inst_found = True
 
@@ -202,13 +202,7 @@ class BasicGenerator(object):
                 self.add_memory_instruction()
                 
                 # Choose the offset register
-                if (random.random() > 0.8):
-                    self.q.put(('instruction_nolabel', ['addi', 'a0', 'sp', '0']))
-                    self.total_instructions += 1
-                    off_reg = 'a0'
-                    self.curr_inst_nolabel = True
-                else:
-                    off_reg = 'sp'
+                off_reg = 'sp'
 
                 next_inst = tuple([next_inst[0], next_inst[1], off_reg , next_inst[3]])
 
