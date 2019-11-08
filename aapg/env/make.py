@@ -47,7 +47,7 @@ run: $(LOG_FILES)
 
 $(LOG_DIR)/%.log: $(BIN_DIR)/%.riscv
 \t$(info ==================== Simulating binary on Spike =========)
-\tspike -l $< 2> $@
+\tspike -l --isa=$(ISA) $< 2> $@
 
 
 .PHONY: clean
