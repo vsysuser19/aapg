@@ -1,6 +1,5 @@
-image: iitmshakti/riscv-dev:0.5.0
-
 before_script:
+    - source /tools/setup.sh
     - export PYTHONPATH=$(pwd)
     - python3 -m pip install six
     - python3 -m aapg.main setup; rm config.ini
@@ -12,7 +11,7 @@ conf1_rv64:
     only:
         - master
     tags:
-        - anmol-local
+        - shakti-runner
 
 conf2_rv64:
     script:
@@ -21,7 +20,7 @@ conf2_rv64:
     only:
         - master
     tags:
-        - anmol-local
+        - shakti-runner
 
 conf3_rv64:
     script:
@@ -30,7 +29,7 @@ conf3_rv64:
     only:
         - master
     tags:
-        - anmol-local
+        - shakti-runner
 
 conf4_rv64:
     script:
@@ -39,4 +38,4 @@ conf4_rv64:
     only:
         - master
     tags:
-        - anmol-local
+        - shakti-runner
