@@ -4,38 +4,21 @@ before_script:
     - python3 -m pip install six
     - python3 -m aapg.main setup; rm config.ini
 
-conf1_rv64:
+conf_rv64:
     script:
-        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_eclass_bringup.ini
-        - timeout 30 make
+        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_eclass_rv64imac_bringup.ini
+        - timeout 30 make ISA=rv64imac
     only:
         - master
     tags:
         - shakti-runner
 
-conf2_rv64:
+conf_rv32:
     script:
-        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_bringup.ini
-        - timeout 30 make
+        - python3 -m aapg.main gen --arch rv32 --config $PWD/samples/shakti_configs/aapg_eclass_rv32imac_bringup.ini
+        - timeout 30 make ISA=rv32imac ABI=ilp32
     only:
         - master
     tags:
         - shakti-runner
 
-conf3_rv64:
-    script:
-        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_cclass_config1.ini
-        - timeout 30 make
-    only:
-        - master
-    tags:
-        - shakti-runner
-
-conf4_rv64:
-    script:
-        - python3 -m aapg.main gen --config $PWD/samples/shakti_configs/aapg_igcar_bringup.ini
-        - timeout 30 make
-    only:
-        - master
-    tags:
-        - shakti-runner
