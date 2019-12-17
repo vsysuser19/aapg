@@ -1,3 +1,7 @@
+stages:
+  - test
+  - release
+
 before_script:
     - source /tools/setup.sh
     - export PYTHONPATH=$(pwd)
@@ -14,3 +18,16 @@ test:
         - master
     tags:
         - shakti-runner
+
+release:
+    stage: release
+    script:
+        - python3 /scratch/version-extract.py
+    only:
+        refs:
+            - master
+    tags:
+        - shakti-runner
+    except:
+      - schedules
+
