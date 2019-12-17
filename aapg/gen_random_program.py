@@ -147,9 +147,25 @@ def gen_random_program(ofile, args, arch, seed):
 
 def gen_config_files(args):
     """ generate the linker file based on the configuration """ 
+    # traslates yaml to ini file
+    import yaml
+    config_yaml = yaml.safe_load(open(os.path.abspath(args.config_file)))
+    config_name = args.config_file
+    config_name = config_name.strip('.yaml')
+    logger.debug('Creating a config file with name : '+ config_name)
+    config_ini = config_name +'.ini'
+    logger.debug(config_ini)
+
+    f = open(config_ini,"w")
+    for key in config_yaml:
+        f.write('['+key+']'+'\n')
+        for innerkey in config_yaml[key]:
+            f.write(str(innerkey)+' = '+str(config_yaml[key][innerkey])+'\n')
+    f.close()
+
 
     # Read the config file
-    config_file_path = os.path.abspath(args.config_file)
+    config_file_path = os.path.abspath(config_ini)
     config_file_name = os.path.basename(config_file_path.rstrip(os.sep))
 
     # Setup the output dir
@@ -233,7 +249,11 @@ def run(args, index):
         Returns:
             None
     """
-    config_file_path = os.path.abspath(args.config_file)
+    config_name = args.config_file
+    config_name = config_name.strip('.yaml')
+    config_ini = config_name +'.ini'
+
+    config_file_path = os.path.abspath(config_ini)
     config_file_name = os.path.basename(config_file_path.rstrip(os.sep))
 
     output_dir = os.path.join(os.path.abspath(args.output_dir), 'asm')
