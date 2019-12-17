@@ -38,6 +38,6 @@ def print_sample_config(output_dir = '.'):
     """
     config_sample = aapg.env.config.template_config
     output_abspath = os.path.abspath(output_dir)
-    output_file = os.path.join(output_abspath, 'config.ini')
+    output_file = os.path.join(output_abspath, 'config.yaml')
     with open(output_file, 'w') as f:
         f.write(config_sample.strip('\n'))

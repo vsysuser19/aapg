@@ -47,8 +47,8 @@ def parse_cmdline_opts():
     gen_parser = subparsers.add_parser('gen', help = 'Generate a random program')
     gen_parser.add_argument('--num-programs', action = 'store', default = 1, type = int, dest = "num_programs", help = 'Number of programs to generate | Default = 1',
             metavar = '')
-    gen_parser.add_argument('--config-file', action = 'store', default = 'config.ini', metavar = "", \
-        help="Configuration file. Default: ./config.ini" )
+    gen_parser.add_argument('--config-file', action = 'store', default = 'config.yaml', metavar = "", \
+        help="Configuration file. Default: ./config.yaml" )
     gen_parser.add_argument('--asm-name', action = 'store', default = 'out', \
             help = 'Assembly output file name. Default: out.asm', metavar = "")
     gen_parser.add_argument('--setup-dir', action='store', default = '.', \
