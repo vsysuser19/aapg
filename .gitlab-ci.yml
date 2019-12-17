@@ -6,7 +6,7 @@ before_script:
     - source /tools/setup.sh
     - export PYTHONPATH=$(pwd)
     - python3 -m pip install six pyyaml
-    - python3 -m aapg.main setup; rm config.ini
+    - python3 -m aapg.main setup;
 
 test:
     script:
