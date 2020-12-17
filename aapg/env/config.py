@@ -5,7 +5,15 @@ template_config = '''
 # Each section commands a behaviour of aapg
 # and inline comments in each section will explain the
 # usage
-
+# ---------------------------------------------------------------------------------
+# Privlege mode that instruction are executed in
+# Options:
+#       mode: m/s/u
+# Note: If the privlege mode is either s or u, then the test_entry_macro
+# will be defined accordingly
+# ---------------------------------------------------------------------------------
+priv-mode:
+  mode: m
 # ---------------------------------------------------------------------------------
 # General directives to aapg
 # Options:
@@ -13,11 +21,14 @@ template_config = '''
 #                           by aapg. Actual may vary.
 #       regs_not_use:       Comma separated list of RISC-V registers to not use for
 #                           reading/writing in the random generated instructions
+#       switching_modes:    DONT NOT PROVIDE ANY USER DEFINED 
+#                           FUNCTIONS.
+#                           
 # ---------------------------------------------------------------------------------
 general:
   total_instructions: 1000
   regs_not_use: x1,x2
-  user_trap_handler: false
+  custom_trap_handler: false
   code_start_address: 0x80000000
   default_program_exit: true
 
@@ -94,10 +105,22 @@ access-sections:
 # User should ensure that function does not modify 
 #                       
 # Section Template: Specify user template function calls with the number of times
-#       function_name: number_of_times
+#       function_name: '{number_of_times:"function_body"}'
 # ---------------------------------------------------------------------------------
 user-functions:
-  _test: 0
+  func1: '{0:"add x0,x0,x0"}'
+
+# ---------------------------------------------------------------------------------
+# Switching Privledge modes in AAPG
+#       switching_modes:  true/false (Do not provide any user defined functions when
+#                         shifting mdoes is true)
+#       num_switches:     # of times privlege modes has to shift (This is randomised 
+#                         and shifting may result in same mode)
+# ---------------------------------------------------------------------------------
+switch-priv-modes:
+  switch_modes: true
+  num_switches: 10
+
 
 # ---------------------------------------------------------------------------------
 # Instruction Cache and Data-Cache Thrashing
@@ -116,6 +139,9 @@ d-cache:
 
 # ---------------------------------------------------------------------------------
 # Exception generation
+# options:
+#         switchmodes: Gives the number of times you want to shift between modes in
+#         the execution of the program.
 # ---------------------------------------------------------------------------------
 exception-generation:
   ecause00: 0
@@ -142,4 +168,10 @@ data-hazards:
   war_prob: 0.5
   waw_prob: 0.5
   num_regs_lookbehind: 3
+
+program-macro:
+  pre_program_macro: "add x0,x0,x0"
+  post_program_macro: "add x0,x0,x0"
+  pre_branch_macro: "add x0,x0,x0"
+  post_branch_macro: "add x0,x0,x0"
 '''

@@ -100,8 +100,9 @@ class BasicGenerator(object):
         self.total_instructions += 1
 
         # Setup the user function call 
-        self.user_calls_dict = {x[0] : ('f', int(x[1])) for x in args.items('user-functions') if int(x[1]) > 0}
+        self.user_calls_dict = {'user-functions' : args.items('user-functions')}
         self.user_calls_dict['i_cache_thrash'] = ('f', args.getint('i-cache', 'num_calls'))
+        self.user_calls_dict['switchmodes'] = ('m', args.getint('switch-priv-modes', 'num_switches'))
         
         ecause_filtered = list(filter(lambda x: int(x[1]) > 0, args.items('exception-generation')))
 
@@ -111,6 +112,27 @@ class BasicGenerator(object):
         keys = ' '.join(self.user_calls_dict.keys())
 
         logger.info('User functions received {}'.format(keys))
+        new_dict = {} 
+
+        for key, value in self.user_calls_dict.items():
+            if key.startswith('ecause'):
+                (mode,number) = value
+                for i in range(number):
+                    new_key = key+'_{:05d}'.format(i)
+                    new_value = ('m',1)
+                    new_dict.update({new_key:new_value})
+            elif key.startswith('user-functions'):
+                for (key_in,value_in) in value:
+                    new_key = key_in
+                    in_dict = eval(value_in)
+                    for k,v in in_dict.items():
+                        new_value = ('f',int(k))
+                    new_dict.update({new_key:new_value})
+            else:
+                new_dict.update({key:value})
+
+        self.user_calls_dict = new_dict
+        #logger.info(self.user_calls_dict)
 
         # Add recursion call
         if self.recursion_enabled:
@@ -157,7 +179,7 @@ class BasicGenerator(object):
         user_defined_total_calls = sum(map(lambda x: x[1], self.user_calls_dict.values()))
         logger.debug('User calls left {}'.format(user_defined_total_calls))
 
-        if user_defined_total_calls > 0 and random.random() > 0.8:
+        if user_defined_total_calls > 0 and random.uniform(0,1) < (user_defined_total_calls/self.total_instructions):  #0.84 for 80%
             logger.debug('Adding a user call')
 
             # Select the user call
@@ -243,7 +265,9 @@ class BasicGenerator(object):
                         bwd_prob = self.branch_bwd_prob
                 )
 
+                #self.q.put(('instruction_nolabel', ('pre_branch_macro', )))
                 self.q.put(('branch', next_insts))
+                #self.q.put(('instruction_nolabel', ('post_branch_macro', )))
                 # Reset the counters
                 self.insts_since_last_branch = 0
                 self.instructions_togen -= 1
@@ -345,12 +369,18 @@ class BasicGenerator(object):
         # Pre-program macro
         self.q.put(('section', 'main'))
         self.q.put(('instruction_nolabel', ('pre_program_macro', )))
+        if args.getboolean('switch-priv-modes', 'switch_modes'):
+            self.q.put(('instruction_nolabel', ('la', 't0', 'switch_mode_handler')))
+            self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
+        elif args.getboolean('general', 'custom_trap_handler'):
+            self.q.put(('instruction_nolabel', ('la', 't0', 'custom_trap_handler')))
+            self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
+        self.q.put(('instruction_nolabel', ('test_entry_macro', )))
+        self.q.put(('instruction_nolabel', ['123:']))
         self.total_instructions += 2
 
         # User trap handler
-        if args.getboolean('general', 'user_trap_handler'):
-            self.q.put(('instruction_nolabel', ('la', 't0', 'user_trap_handler')))
-            self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
+        
 
     def add_recursion_sections(self, depth):
         """Add user-defined templates"""

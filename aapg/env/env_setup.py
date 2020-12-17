@@ -22,8 +22,9 @@ def setup_build(output_dir):
     logger.info("Build setup started")
     output_path = os.path.abspath(output_dir)
 
-    dirs = ['common', 'bin', 'log', 'objdump']
+    dirs = ['common', 'bin', 'log', 'objdump','asm']
     common_dir = os.path.join(output_path, dirs[0])
+    out_dir = os.path.join(output_path, dirs[4])
 
     templates_file = 'templates.S'
     encoding_file = 'encoding.h'
@@ -40,8 +41,8 @@ def setup_build(output_dir):
     with open(os.path.join(common_dir, encoding_file), 'w') as f:
         f.write(aapg.env.encoding.encoding_header.strip('\n'))
 
-    with open(os.path.join(common_dir, templates_file), 'w') as f:
-        f.write(aapg.env.templates.templates_asm.strip('\n'))
+    # with open(os.path.join(out_dir, templates_file), 'w') as f:
+    #     f.write(aapg.env.templates.templates_asm.strip('\n'))
 
     with open(os.path.join(output_path, make_file), 'w') as f:
         f.write(aapg.env.make.makefile.strip('\n'))
