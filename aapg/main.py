@@ -13,9 +13,11 @@ import io
 import sys
 import subprocess
 import click
+import yaml
 
 import aapg.gen_random_program
 import aapg.env.templates
+import aapg.env.comments
 # curdir = os.getcwd()
 # os.chdir('aapg')
 # import gen_random_program
@@ -84,15 +86,17 @@ VERSION = '(' + version + ')' + ' Automated Assembly Program Generator - aapg'
 @click.pass_context
 def cli(ctx):
     if ctx.invoked_subcommand is None:
-        click.echo('Either provide build or gen command')
+        click.echo('Please Provide Command')
     elif ctx.invoked_subcommand == 'version':
         click.echo('Checking version...')
     elif ctx.invoked_subcommand == 'gen':
-        click.echo('gen Invoked %s' % ctx.invoked_subcommand)
+        click.echo('aapg Invoked %s' % ctx.invoked_subcommand)
     elif ctx.invoked_subcommand == 'setup':
-        click.echo('setup invoked %s' % ctx.invoked_subcommand)
+        click.echo('aapg invoked %s' % ctx.invoked_subcommand)
     elif ctx.invoked_subcommand == 'clean':
-        click.echo('clean invoked %s' % ctx.invoked_subcommand)
+        click.echo('aapg invoked %s' % ctx.invoked_subcommand)
+    elif ctx.invoked_subcommand == 'convert':
+        click.echo('aapg invoked %s' % ctx.invoked_subcommand)
 
 
 def setup_logging(log_level):
@@ -245,7 +249,136 @@ def version():
     setup_logging('info')
     logger = logging.getLogger()
     logger.info(VERSION)
+
+def yaml_2_yaml(file,logger):
     
+    try:
+        old_config_yaml = yaml.safe_load(open(file))
+    except:
+        logger.info('Unable to Load Yaml File')
+        exit()
+    new_config_yaml = {}
+    
+    if 'priv-mode' not in old_config_yaml.keys():
+        new_config_yaml['priv-mode'] = {'mode':'m'}
+    else:
+        new_config_yaml['priv-mode'] = old_config_yaml['priv-mode']
+
+    new_config_yaml['general'] = old_config_yaml['general']
+    if 'custom_trap_handler' not in old_config_yaml['general'].keys():
+        new_config_yaml['general']['custom_trap_handler'] = old_config_yaml['general']['user_trap_handler']
+        del new_config_yaml['general']['user_trap_handler']
+
+    new_config_yaml['general']['code_start_address'] = hex(old_config_yaml['general']['code_start_address'])
+    new_config_yaml['branch-control'] = old_config_yaml['branch-control']
+    new_config_yaml['isa-instruction-distribution'] = old_config_yaml['isa-instruction-distribution']
+    new_config_yaml['recursion-options'] = old_config_yaml['recursion-options']
+    new_config_yaml['access-sections'] = old_config_yaml['access-sections']
+    if '_test' in old_config_yaml['user-functions'].keys():
+        new_config_yaml['user-functions'] = {'func1':"{"+str(old_config_yaml['user-functions']['_test'])+":\"addi x0,x0,0\"}"}
+    else:
+        new_config_yaml['user-functions'] = old_config_yaml['user-functions']
+
+    if 'switch-priv-modes' in old_config_yaml.keys():
+        new_config_yaml['switch-priv-modes'] = old_config_yaml['switch-priv-modes']
+    else:
+        new_config_yaml['switch-priv-modes'] = {'switch_modes': False, 'num_switches': 0}
+
+    new_config_yaml['i-cache'] = old_config_yaml['i-cache']
+    new_config_yaml['d-cache'] = old_config_yaml['d-cache']
+    new_config_yaml['exception-generation'] = old_config_yaml['exception-generation']
+    new_config_yaml['data-hazards'] = old_config_yaml['data-hazards']
+
+    if 'program-macro' not in old_config_yaml.keys():
+        new_config_yaml['program-macro'] =  {'pre_program_macro': 'add x0,x0,x0', 'post_program_macro': 'add x0,x0,x0', 'pre_branch_macro': 'add x0,x0,x0', 'post_branch_macro': 'add x0,x0,x0'}
+    else:
+        new_config_yaml['program-macro'] = old_config_yaml['program-macro']
+
+    #stream = open(file,'w')
+    f = open(file, 'w+')
+    yaml.dump(new_config_yaml, f, default_flow_style=False,sort_keys=False)
+    f.close()
+
+    new_content = ""
+    f = open(file,'r')
+    for line in f:
+        if not line:
+            break
+        if "code_start_address" in line:
+            line = line.replace("'","")
+            new_content = new_content + line
+        elif "priv-mode:" in line:
+            new_content = new_content + aapg.env.comments.priv_mode + line
+        elif "general:" in line:
+            new_content = new_content + aapg.env.comments.general + line
+        elif "isa-instruction-distribution:" in line:
+            new_content = new_content + aapg.env.comments.isadist + line
+        elif "recursion-options:" in line:
+            new_content = new_content + aapg.env.comments.recoptions + line
+        elif "access-sections:" in line:
+            new_content = new_content + aapg.env.comments.acc_sec + line
+        elif "user-functions:" in line:
+            new_content = new_content + aapg.env.comments.user_func + line
+        elif "switch-priv-modes:" in line:
+            new_content = new_content + aapg.env.comments.switching_priv_modes + line
+        elif "i-cache:" in line:
+            new_content = new_content + aapg.env.comments.i_cache + line
+        elif "exception-generation:" in line:
+            new_content = new_content + aapg.env.comments.exceptions + line
+        elif "data-hazards:" in line:
+            new_content = new_content + aapg.env.comments.data_hazards + line
+        else:
+            new_content = new_content + line
+    f.close()
+
+    f = open(file,'w+')
+    f.write(new_content)
+    f.close()
+
+@cli.command()
+@click.option('--file', default ='config.yaml', help='Path to old config file. Default ./config.py')
+def convert(file):
+    setup_logging('info')
+    logger = logging.getLogger()
+    logger.info('Updating existing configuration file')
+    if not os.path.isfile(file):
+        logger.info("Invalid File path")
+        exit()
+
+    name,ext = os.path.splitext(file)
+    if ext == '.yaml':
+        yaml_2_yaml(file,logger)
+    elif ext == '.ini':
+        new_filename = name+'.yaml'
+        out = """"""
+        f = open(file,'r')
+        while(True):
+            line = f.readline()
+            if not line:
+                break
+            if "#" in line:
+                out = out + line
+            elif "[" in line:
+                line = line.replace("[","")
+                line = line.replace("]","")
+                line = line[:-1]+":"+line[-1]
+                out = out + line
+            else:
+                line = '  ' + line
+                line = line.replace('=',': ')
+                out = out + line 
+        f.close()
+
+        with open(new_filename, 'w') as outfile:
+            outfile.write(out)
+        yaml_2_yaml(new_filename,logger)
+        
+
+
+
+
+
+     
 
 @cli.command()
 @click.option('--setup_dir', default ='work', help='Setup directory of env files. Default ./')

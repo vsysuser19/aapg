@@ -35,10 +35,10 @@ ecause12 = '''.macro ecause12'''
 ecause13 = '''.macro ecause13'''
 ecause14 = '''.macro ecause14'''
 
+#List of registers that must not be used if Branch is enabled
+no_use_regs = []
 
-
-
-reg1 = random.randint(0,30) + 1
+reg1 = random.randint(0,29) + 1
 reg2 = random.randint(0,27)
 if reg1 == 11 or reg1 == 2:
   reg1=reg1+1
@@ -47,6 +47,8 @@ if (reg1 == reg2):
 if (reg2 == 11 or reg2 == 2):
   reg2=reg2+1
 
+no_use_regs.append(reg1)
+no_use_regs.append(reg2)
 
 ecause00_r = ['''
 .macro ecause00
@@ -95,7 +97,7 @@ addi sp, sp, 3*REGBYTES
 '''.format(reg1=str(reg1),reg2=str(reg2))]
 
 
-reg1 = random.randint(0,30) + 1
+reg1 = random.randint(0,29) + 1
 reg2 = random.randint(0,27)
 if reg1 == 11 or reg1 == 2:
   reg1=reg1+1
@@ -103,7 +105,8 @@ if (reg1 == reg2):
   reg2=reg2+1
 if (reg2 == 11 or reg2 == 2):
   reg2=reg2+1
-
+no_use_regs.append(reg1)
+no_use_regs.append(reg2)
 ecause01_r = [
 '''
 .macro ecause01
@@ -199,7 +202,7 @@ ebreak
 ]
 
 
-reg1 = random.randint(0,30) + 1
+reg1 = random.randint(0,29) + 1
 reg2 = random.randint(0,27)
 if reg1 == 11 or reg1 == 2:
   reg1=reg1+1
@@ -207,7 +210,8 @@ if (reg1 == reg2):
   reg2=reg2+1
 if (reg2 == 11 or reg2 == 2):
   reg2=reg2+1
-
+no_use_regs.append(reg1)
+no_use_regs.append(reg2)
 ecause04_r = [
 '''
 .macro ecause04
@@ -874,7 +878,7 @@ addi sp, sp, 2*REGBYTES
 '''.format(reg1=reg1,reg2=reg2)
 ]
 
-reg1 = random.randint(0,30) + 1
+reg1 = random.randint(0,29) + 1
 reg2 = random.randint(0,27)
 if reg1 == 11 or reg1 == 2:
   reg1=reg1+1
@@ -882,7 +886,8 @@ if (reg1 == reg2):
   reg2=reg2+1
 if (reg2 == 11 or reg2 == 2):
   reg2=reg2+1
-
+no_use_regs.append(reg1)
+no_use_regs.append(reg2)
 ecause05_r = [
 '''
 .macro ecause05
@@ -1143,7 +1148,7 @@ addi sp, sp,  1*REGBYTES
 '''.format(reg1=reg1,reg2=reg2)
 ]
 
-reg1 = random.randint(0,30) + 1
+reg1 = random.randint(0,29) + 1
 reg2 = random.randint(0,27)
 if reg1 == 11 or reg1 == 2:
   reg1=reg1+1
@@ -1151,7 +1156,8 @@ if (reg1 == reg2):
   reg2=reg2+1
 if (reg2 == 11 or reg2 == 2):
   reg2=reg2+1
-
+no_use_regs.append(reg1)
+no_use_regs.append(reg2)
 ecause06_r = [
 '''
 .macro ecause06
@@ -1564,7 +1570,7 @@ addi sp, sp, 2*REGBYTES
 '''.format(reg1=reg1,reg2=reg2)
 ]
 
-reg1 = random.randint(0,30) + 1
+reg1 = random.randint(0,29) + 1
 reg2 = random.randint(0,27)
 if reg1 == 11 or reg1 == 2:
   reg1=reg1+1
@@ -1572,7 +1578,8 @@ if (reg1 == reg2):
   reg2=reg2+1
 if (reg2 == 11 or reg2 == 2):
   reg2=reg2+1
-
+no_use_regs.append(reg1)
+no_use_regs.append(reg2)
 ecause07_r = [
 '''
 .macro ecause07
@@ -1824,7 +1831,7 @@ def gen_random_program(ofile, args, arch, seed):
     writer.write('.type\t\tmain, @function');
 
     # Section instruction writer
-    basic_generator = aapg.program_generator.BasicGenerator(args, arch, seed) 
+    basic_generator = aapg.program_generator.BasicGenerator(args, arch, seed, no_use_regs) 
     root_index = 0
     for index, line in enumerate(basic_generator):
         if line[0] == 'section':

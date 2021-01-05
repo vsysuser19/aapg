@@ -139,9 +139,6 @@ d-cache:
 
 # ---------------------------------------------------------------------------------
 # Exception generation
-# options:
-#         switchmodes: Gives the number of times you want to shift between modes in
-#         the execution of the program.
 # ---------------------------------------------------------------------------------
 exception-generation:
   ecause00: 0

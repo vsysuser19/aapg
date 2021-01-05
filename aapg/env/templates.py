@@ -282,7 +282,6 @@ inst16_2:
   addi a1,a1,0x2                  # is 16-bit instruction then increment by 2
 1: 
   csrw mepc, a1                   # point mepc to the next instruction.
-  li t0,2
   LREG x1, 1*REGBYTES(sp)
   LREG x2, 2*REGBYTES(sp)
   LREG x3, 3*REGBYTES(sp)
@@ -315,44 +314,40 @@ inst16_2:
   LREG x30, 30*REGBYTES(sp)
   LREG x31, 31*REGBYTES(sp)
   addi sp, sp, 32*REGBYTES
-  #csrr a3,mcause
+  
   csrr a3,mepc
   andi a3,a3,12
-  #andi t1,t1,0x3
-  li t2, 0
-  li t3, 4
-  li t4, 8
-  li t5, 12
-  li t6, 15
-  beq a3,t2, eq1 # Jump to shift to supervisor from user
-  beq a3,t3, eq2 # Jump to shift to user from supervisor
-  beq a3,t4, eq3 # Jump to shift to user from machine
-  beq a3,t5, eq4 # Jump to shift to user from machine
+  
+  li t1, 0
+  beq a3,t1, eq1 # Jump to supervisor
+
+  li t1, 4
+  beq a3,t1, eq2 # Continue in same mode
+
+  li t1, 8
+  beq a3,t1, eq3 # Jump to machine
+
+  li t1, 12
+  beq a3,t1, eq4 # Jump to user  
+  
   mret
 eq1:
-  li                  t6, 0
   li t0, MSTATUS_MPP
   csrc mstatus, t0
   li t5, (MSTATUS_MPP & -MSTATUS_MPP) * PRV_S
   csrs mstatus, t5
   mret
 eq2:
-  #li                  t6, 4
-  #li t0, 0x200001800
-  #csrw 0x300, t0 # MSTATUS
-  #li t0, 0x0
-  #csrw 0x304, t0 # MIE
   mret
   
 eq3:
-  li                  t6, 8
   li t0, 0x200001800
   csrw 0x300, t0 # MSTATUS
   li t0, 0x0
   csrw 0x304, t0 # MIE
   mret
+
 eq4:
-  li                  t6, 12
   li t0, MSTATUS_MPP
   csrc mstatus, t0
   li t5, (MSTATUS_MPP & -MSTATUS_MPP) * PRV_U

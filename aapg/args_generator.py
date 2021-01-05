@@ -17,12 +17,42 @@ def set_seed_args_gen(seed):
 def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
     """ Generate the args for branch instructions """
     instr_name = instruction[0]
-
     # Forward or backward jump
     backward = random.random() < float(kwargs['bwd_prob'])
 
     # Taken or not taken
     taken = random.random() < 0.5
+
+    usable_regs = []
+    for (j,i) in regfile:
+        if j =="x":
+            usable_regs.append(i)
+
+    if 10 in usable_regs:
+        usable_regs.remove(10)
+    if 6 in usable_regs:
+        usable_regs.remove(6)
+    if 5 in usable_regs:
+        usable_regs.remove(5)
+    if 11 in usable_regs:
+        usable_regs.remove(11)
+    if 12 in usable_regs:
+        usable_regs.remove(12)
+    if 13 in usable_regs:
+        usable_regs.remove(13)
+    if 30 in usable_regs:
+        usable_regs.remove(30)
+    if 1 in usable_regs:
+        usable_regs.remove(1)
+    if 0 in usable_regs:
+        usable_regs.remove(0)
+    if 15 in usable_regs:
+        usable_regs.remove(15)
+
+    try:
+        comp_reg = random.choice(usable_regs)
+    except:
+        comp_reg = 7
 
     # Number of steps to jump
     try:
@@ -43,87 +73,87 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
         pre_insts = []
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '11'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '11'])
+                pre_insts.append(['addi', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '1'])
             else:
-                pre_insts.append(['li', 'x30', '0'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '0'])
         else:
             if taken:
-                pre_insts.append(['li', 'x30', '10'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '10'])
             else:
-                pre_insts.append(['li', 'x30', '0'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '0'])
         pre_insts.append(['pre_branch_macro'])
-        pre_insts.append(['beq', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['beq', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{comp_reg}'.format(comp_reg=comp_reg), offset_string]) 
         pre_insts.append(['post_branch_macro'])
-        pre_insts.append(['li', 'x31', '10'])
+        pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10'])
 
         pre_insts.append(offset_string)
-        return pre_insts
+        return (pre_insts,comp_reg)
     elif instr_name == 'bne' or instr_name == 'c.bnez':
         pre_insts = []
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '12'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '12'])
+                pre_insts.append(['addi', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '1'])
             else:
-                pre_insts.append(['li', 'x30', '10'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '10'])
         else:
             if taken:
-                pre_insts.append(['li', 'x30', '11'])
-                pre_insts.append(['li', 'x31', '10']) 
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '11'])
+                pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10']) 
             else:
-                pre_insts.append(['li', 'x30', '10'])
-                pre_insts.append(['li', 'x31', '10'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '10'])
+                pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10'])
         pre_insts.append(['pre_branch_macro'])
-        pre_insts.append(['bne', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['bne', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{comp_reg}'.format(comp_reg=comp_reg), offset_string]) 
         pre_insts.append(['post_branch_macro'])
-        pre_insts.append(['li', 'x31', '10'])
+        pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10'])
 
         pre_insts.append(offset_string)
-        return pre_insts
+        return (pre_insts,comp_reg)
     elif instr_name == 'blt' or instr_name == 'bltu':
         pre_insts = []
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '12'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '12'])
+                pre_insts.append(['addi', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '1'])
             else:
-                pre_insts.append(['li', 'x30', '9'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '9'])
         else:
             if taken:
-                pre_insts.append(['li', 'x30', '12'])
-                pre_insts.append(['li', 'x31', '10']) 
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '12'])
+                pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10']) 
             else:
-                pre_insts.append(['li', 'x30', '9'])
-                pre_insts.append(['li', 'x31', '10'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '9'])
+                pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10'])
         pre_insts.append(['pre_branch_macro'])
-        pre_insts.append(['blt', 'x31', 'x30', offset_string]) 
+        pre_insts.append(['blt', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{comp_reg}'.format(comp_reg=comp_reg), offset_string]) 
         pre_insts.append(['post_branch_macro'])
-        pre_insts.append(['li', 'x31', '10'])
+        pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10'])
 
         pre_insts.append(offset_string)
-        return pre_insts
+        return (pre_insts,comp_reg)
     elif instr_name == 'bge' or instr_name == 'bgeu':
         pre_insts = []
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '12'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '12'])
+                pre_insts.append(['addi', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '1'])
             else:
-                pre_insts.append(['li', 'x30', '9'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '9'])
         else:
             if taken:
-                pre_insts.append(['li', 'x30', '11'])
-                pre_insts.append(['li', 'x31', '10']) 
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '11'])
+                pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10']) 
             else:
-                pre_insts.append(['li', 'x30', '9'])
-                pre_insts.append(['li', 'x31', '10'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '9'])
+                pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10'])
         pre_insts.append(['pre_branch_macro'])
-        pre_insts.append(['bge', 'x30', 'x31', offset_string]) 
+        pre_insts.append(['bge', 'x{comp_reg}'.format(comp_reg=comp_reg), 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), offset_string]) 
         pre_insts.append(['post_branch_macro'])
-        pre_insts.append(['li', 'x31', '10'])
+        pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10'])
         pre_insts.append(offset_string)
-        return pre_insts
+        return (pre_insts,comp_reg)
     elif instr_name == 'jal' or instr_name == 'c.j' or instr_name == 'c.jal':
         pre_insts = []
 
@@ -136,20 +166,20 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
 
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '12'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
-                pre_insts.append(['beq', 'x31', 'x30', '1f'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '12'])
+                pre_insts.append(['addi', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '1'])
+                pre_insts.append(['beq', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{comp_reg}'.format(comp_reg=comp_reg), '1f'])
                 pre_insts.append(['jal', '{}'.format(target_reg), offset_string])
-                pre_insts.append(['1: li x31, 10'])
+                pre_insts.append(['1: li x{branch_use_reg}, 10'.format(branch_use_reg=kwargs['branch_use_reg'])])
             else:
-                pre_insts.append(['li', 'x30', '10'])
-                pre_insts.append(['beq', 'x31', 'x30', '1f'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '10'])
+                pre_insts.append(['beq', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{comp_reg}'.format(comp_reg=comp_reg), '1f'])
                 pre_insts.append(['jal', '{}'.format(target_reg), offset_string])
-                pre_insts.append(['1: li x31, 10'])
+                pre_insts.append(['1: li x{branch_use_reg}, 10'.format(branch_use_reg=kwargs['branch_use_reg'])])
         else:
             pre_insts.append(['jal', '{}'.format(target_reg), offset_string])
         pre_insts.append(offset_string)
-        return pre_insts
+        return (pre_insts,comp_reg)
     elif instr_name == 'jalr' or instr_name == 'c.jr' or instr_name == 'c.jalr':
         pre_insts = []
 
@@ -162,25 +192,25 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
 
         if backward:
             if taken:
-                pre_insts.append(['li', 'x30', '12'])
-                pre_insts.append(['addi', 'x31', 'x31', '1'])
-                pre_insts.append(['beq', 'x31', 'x30', '1f'])
-                pre_insts.append(['la', 'x30', offset_string])
-                pre_insts.append(['jalr', '{}'.format(target_reg), 'x30', '0'])
-                pre_insts.append(['1: li x31, 10'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '12'])
+                pre_insts.append(['addi', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '1'])
+                pre_insts.append(['beq', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{comp_reg}'.format(comp_reg=comp_reg), '1f'])
+                pre_insts.append(['la', 'x{comp_reg}'.format(comp_reg=comp_reg), offset_string])
+                pre_insts.append(['jalr', '{}'.format(target_reg), 'x{comp_reg}'.format(comp_reg=comp_reg), '0'])
+                pre_insts.append(['1: li x{branch_use_reg}, 10'.format(branch_use_reg=kwargs['branch_use_reg'])])
             else:
-                pre_insts.append(['li', 'x30', '10'])
-                pre_insts.append(['beq', 'x31', 'x30', '1f'])
-                pre_insts.append(['la', 'x30', offset_string])
-                pre_insts.append(['jalr', '{}'.format(target_reg), 'x30', '0'])
-                pre_insts.append(['1: li x31, 10'])
+                pre_insts.append(['li', 'x{comp_reg}'.format(comp_reg=comp_reg), '10'])
+                pre_insts.append(['beq', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), 'x{comp_reg}'.format(comp_reg=comp_reg), '1f'])
+                pre_insts.append(['la', 'x{comp_reg}'.format(comp_reg=comp_reg), offset_string])
+                pre_insts.append(['jalr', '{}'.format(target_reg), 'x{comp_reg}'.format(comp_reg=comp_reg), '0'])
+                pre_insts.append(['1: li x{branch_use_reg}, 10'.format(branch_use_reg=kwargs['branch_use_reg'])])
         else:
-            pre_insts.append(['la', 'x30', offset_string])
-            pre_insts.append(['jalr', '{}'.format(target_reg), 'x30', '0'])
+            pre_insts.append(['la', 'x{comp_reg}'.format(comp_reg=comp_reg), offset_string])
+            pre_insts.append(['jalr', '{}'.format(target_reg), 'x{comp_reg}'.format(comp_reg=comp_reg), '0'])
         pre_insts.append(offset_string)
-        return pre_insts
+        return (pre_insts,comp_reg)
     else:
-        return [['addi', 'x0', 'x0', '0'], 'f,20']
+        return ([['addi', 'x0', 'x0', '0'], 'f,20'],None)
 
 def gen_memory_inst_offset(instr_name):
     """ Generate load/store offset for the instruction """
@@ -204,7 +234,7 @@ def incr_rw(reg_tup, read, write):
 
     return (fst, snd)
 
-def gen_args(instruction, regfile, arch, *args, **kwargs):
+def gen_args(instruction, regfile, arch, reg_ignore, *args, **kwargs):
     '''
         Function to generate the args for a given instruction
 
@@ -217,7 +247,6 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
     '''
     instr_name = instruction[0]
     instr_args = instruction[1:]
-
     # Creating the registers
     register_mapping = aapg.mappings.register_mapping_int
     register_mapping_float = aapg.mappings.register_mapping_float
@@ -284,6 +313,7 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
     registers_flt_dst = []
 
     registers_comp = [x for x in regfile if x[1] in range(8,16) and x[0] == 'x']
+    #logger.info(registers_comp)
     registers_comp_float = [x for x in regfile if x[1] in range(8,16) and x[0] == 'f']
     registers_int = [x for x in regfile if x[0] == 'x'] 
     registers_float = [x for x in regfile if x[0] == 'f']
@@ -592,7 +622,7 @@ def gen_args(instruction, regfile, arch, *args, **kwargs):
         
     return tuple(final_inst)
 
-def gen_atomic_args(instruction, regfile, arch, *args, **kwargs):
+def gen_atomic_args(instruction, regfile, arch, reg_ignore, *args, **kwargs):
     """ Generate args for atomic insts"""
 
     instr_name = instruction[0]
