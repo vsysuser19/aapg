@@ -100,7 +100,10 @@ class BasicGenerator(object):
 			logger.info("Branch instructions present")
 
 		# Adding this to act as counter for branches
-		self.q.put(('instruction', ['li', 'x{branch_use_reg}'.format(branch_use_reg=self.branch_use_reg), '10']))
+		if self.branch_use_reg!=None:
+			self.q.put(('instruction', ['li', 'x{branch_use_reg}'.format(branch_use_reg=self.branch_use_reg), '10']))
+		else:
+			self.q.put(('instruction', ['li', 'x31', '10']))
 
 		self.total_instructions += 1
 
