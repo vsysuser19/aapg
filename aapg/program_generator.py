@@ -288,7 +288,7 @@ class BasicGenerator(object):
 					if rem in self.local_regfile.keys():
 						del self.local_regfile[rem]
 
-				no_pre_insts = random.randint(3,7)
+				no_pre_insts = random.randint(3,10)
 				comp_string_begin = ['beq','bne','blt','bge','jal','jalr','pre_branch_macro']
 				comp_string_end = ['beq','bne','blt','bge','jal','jalr','post_branch_macro']
 

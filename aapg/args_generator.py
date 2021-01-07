@@ -28,26 +28,26 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
         if j =="x":
             usable_regs.append(i)
 
-    # if 10 in usable_regs:
-    #     usable_regs.remove(10)
-    # if 6 in usable_regs:
-    #     usable_regs.remove(6)
-    # if 5 in usable_regs:
-    #     usable_regs.remove(5)
-    # if 11 in usable_regs:
-    #     usable_regs.remove(11)
-    # if 12 in usable_regs:
-    #     usable_regs.remove(12)
-    # if 13 in usable_regs:
-    #     usable_regs.remove(13)
+    if 10 in usable_regs:
+        usable_regs.remove(10)
+    if 6 in usable_regs:
+        usable_regs.remove(6)
+    if 5 in usable_regs:
+        usable_regs.remove(5)
+    if 11 in usable_regs:
+        usable_regs.remove(11)
+    if 12 in usable_regs:
+        usable_regs.remove(12)
+    if 13 in usable_regs:
+        usable_regs.remove(13)
     if 30 in usable_regs:
         usable_regs.remove(30)
-    # if 1 in usable_regs:
-    #     usable_regs.remove(1)
-    # if 0 in usable_regs:
-    #     usable_regs.remove(0)
-    # if 15 in usable_regs:
-    #     usable_regs.remove(15)
+    if 1 in usable_regs:
+        usable_regs.remove(1)
+    if 0 in usable_regs:
+        usable_regs.remove(0)
+    if 15 in usable_regs:
+        usable_regs.remove(15)
     if 31 in usable_regs:
         usable_regs.remove(31)
 
