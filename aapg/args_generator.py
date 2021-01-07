@@ -48,8 +48,6 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
         usable_regs.remove(0)
     if 15 in usable_regs:
         usable_regs.remove(15)
-    if 31 in usable_regs:
-        usable_regs.remove(31)
 
     try:
         comp_reg = random.choice(usable_regs)
