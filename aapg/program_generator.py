@@ -501,7 +501,7 @@ class BasicGenerator(object):
 
 		if self.branch_ext_selected(self.inst_dist):
 			while(True):
-				branch_use_reg = random.randint(3, 31)
+				branch_use_reg = random.randint(16, 31)
 				if ('x',branch_use_reg) not in not_used_regs and branch_use_reg not in dont_use_regs:
 					self.branch_use_reg = branch_use_reg
 					not_used_regs.append(('x', branch_use_reg))
