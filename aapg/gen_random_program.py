@@ -37,1763 +37,1780 @@ ecause14 = '''.macro ecause14'''
 
 #List of registers that must not be used if Branch is enabled
 no_use_regs = []
+ecause00_r = []
+ecause01_r = []
+ecause02_r = []
+ecause03_r = []
+ecause04_r = []
+ecause05_r = []
+ecause06_r = []
+ecause07_r = []
+ecause08_r = []
+ecause09_r = []
+ecause10_r = []
+ecause11_r = []
+ecause12_r = []
+ecause13_r = []
+ecause14_r = []
 
-reg1 = random.randint(0,29) + 1
-reg2 = random.randint(0,27)
-if reg1 == 11 or reg1 == 2:
-  reg1=reg1+1
-if (reg1 == reg2):
-  reg2=reg2+1
-if (reg2 == 11 or reg2 == 2):
-  reg2=reg2+1
 
-no_use_regs.append(reg1)
-no_use_regs.append(reg2)
+def init_global_wth_seed(seed):
+  random.seed(seed)
+  reg1 = random.randint(0,29) + 1
+  reg2 = random.randint(0,27)
+  if reg1 == 11 or reg1 == 2:
+    reg1=reg1+1
+  if (reg1 == reg2):
+    reg2=reg2+1
+  if (reg2 == 11 or reg2 == 2):
+    reg2=reg2+1
 
-ecause00_r = ['''
-.macro ecause00
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG a1,  1*REGBYTES(sp)
-SREG x{reg1},  2*REGBYTES(sp)
-  
-# exception
-la x{reg1}, 2f
-la a1, 1f
+  no_use_regs.append(reg1)
+  no_use_regs.append(reg2)
+
+  ecause00_r = ['''
+  .macro ecause00
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG a1,  1*REGBYTES(sp)
+  SREG x{reg1},  2*REGBYTES(sp)
+    
+  # exception
+  la x{reg1}, 2f
+  la a1, 1f
+    1:
+  jr 2(x{reg1})
+    2: 
+  nop
+  nop
+  # stack pop
+  LREG a1, 1*REGBYTES(sp)
+  LREG x{reg1}, 2*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''  
+  .macro ecause00
+  # stack push
+  addi sp, sp, -3*REGBYTES
+  SREG a1, 1*REGBYTES(sp)
+  SREG x{reg1}, 2*REGBYTES(sp)
+  SREG x{reg2}, 3*REGBYTES(sp)
+    
+  # exception
+  la x{reg1}, 2f
+  la a1, 1f
   1:
-jr 2(x{reg1})
-  2: 
-nop
-nop
-# stack pop
-LREG a1, 1*REGBYTES(sp)
-LREG x{reg1}, 2*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''  
-.macro ecause00
-# stack push
-addi sp, sp, -3*REGBYTES
-SREG a1, 1*REGBYTES(sp)
-SREG x{reg1}, 2*REGBYTES(sp)
-SREG x{reg2}, 3*REGBYTES(sp)
-  
-# exception
-la x{reg1}, 2f
-la a1, 1f
-1:
-jalr x{reg2}, 2(x{reg1})
-2:
-nop
-nop
-# stack pop
-LREG a1, 1*REGBYTES(sp)
-LREG x{reg1}, 2*REGBYTES(sp)
-LREG x{reg2}, 3*REGBYTES(sp)
-addi sp, sp, 3*REGBYTES
+  jalr x{reg2}, 2(x{reg1})
+  2:
+  nop
+  nop
+  # stack pop
+  LREG a1, 1*REGBYTES(sp)
+  LREG x{reg1}, 2*REGBYTES(sp)
+  LREG x{reg2}, 3*REGBYTES(sp)
+  addi sp, sp, 3*REGBYTES
 
-.endm
-'''.format(reg1=str(reg1),reg2=str(reg2))]
+  .endm
+  '''.format(reg1=str(reg1),reg2=str(reg2))]
 
 
-reg1 = random.randint(0,29) + 1
-reg2 = random.randint(0,27)
-if reg1 == 11 or reg1 == 2:
-  reg1=reg1+1
-if (reg1 == reg2):
-  reg2=reg2+1
-if (reg2 == 11 or reg2 == 2):
-  reg2=reg2+1
-no_use_regs.append(reg1)
-no_use_regs.append(reg2)
-ecause01_r = [
-'''
-.macro ecause01
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG a1,  1*REGBYTES(sp)
-  
-# exception
-la a1, 1f
-  1:
-jr x0
-
-# stack pop
-LREG a1,  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  reg1 = random.randint(0,29) + 1
+  reg2 = random.randint(0,27)
+  if reg1 == 11 or reg1 == 2:
+    reg1=reg1+1
+  if (reg1 == reg2):
+    reg2=reg2+1
+  if (reg2 == 11 or reg2 == 2):
+    reg2=reg2+1
+  no_use_regs.append(reg1)
+  no_use_regs.append(reg2)
+  ecause01_r = [
   '''
-.macro ecause01
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG a1,  1*REGBYTES(sp)
-SREG x{reg1},  2*REGBYTES(sp)
-  
-# exception
-la a1, 1f
-  1:
-jalr x{reg1}, x0
-  
-# stack pop
-LREG a1,  1*REGBYTES(sp)
-LREG x{reg1},  2*REGBYTES(sp)
-addi sp, sp,  2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  .macro ecause01
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG a1,  1*REGBYTES(sp)
+    
+  # exception
+  la a1, 1f
+    1:
+  jr x0
+
+  # stack pop
+  LREG a1,  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause01
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG a1,  1*REGBYTES(sp)
+  SREG x{reg1},  2*REGBYTES(sp)
+    
+  # exception
+  la a1, 1f
+    1:
+  jalr x{reg1}, x0
+    
+  # stack pop
+  LREG a1,  1*REGBYTES(sp)
+  LREG x{reg1},  2*REGBYTES(sp)
+  addi sp, sp,  2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause01
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG a1,  1*REGBYTES(sp)
+  SREG x{reg1},  2*REGBYTES(sp)
+    
+  # exception
+  la a1, 1f
+  li x{reg1}, 0
+    1: 
+  jr x{reg1}
+
+  # stack pop
+  LREG a1,  1*REGBYTES(sp)
+  LREG x{reg1},  2*REGBYTES(sp)
+  addi sp, sp,  2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause01
+  # stack push
+  addi sp, sp, -3*REGBYTES
+  SREG a1,  1*REGBYTES(sp)
+  SREG x{reg1},  2*REGBYTES(sp)
+  SREG x{reg2},  3*REGBYTES(sp)
+    
+  # exception
+  la a1, 1f
+  li x{reg1}, 0
+    1: 
+  jalr x{reg2}, x{reg1}
+
+  # stack pop
+  LREG a1,  1*REGBYTES(sp)
+  LREG x{reg1},  2*REGBYTES(sp)
+  LREG x{reg2},  3*REGBYTES(sp)
+  addi sp, sp,  3*REGBYTES
+    
+  .endm
+  '''.format(reg1=reg1,reg2=reg2)
+  ]
+
+  ecause02_r=[
   '''
-.macro ecause01
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG a1,  1*REGBYTES(sp)
-SREG x{reg1},  2*REGBYTES(sp)
-  
-# exception
-la a1, 1f
-li x{reg1}, 0
-  1: 
-jr x{reg1}
-
-# stack pop
-LREG a1,  1*REGBYTES(sp)
-LREG x{reg1},  2*REGBYTES(sp)
-addi sp, sp,  2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  .macro ecause02
+  .word 0x4B04183B
+  .endm
   '''
-.macro ecause01
-# stack push
-addi sp, sp, -3*REGBYTES
-SREG a1,  1*REGBYTES(sp)
-SREG x{reg1},  2*REGBYTES(sp)
-SREG x{reg2},  3*REGBYTES(sp)
-  
-# exception
-la a1, 1f
-li x{reg1}, 0
-  1: 
-jalr x{reg2}, x{reg1}
+  ]
 
-# stack pop
-LREG a1,  1*REGBYTES(sp)
-LREG x{reg1},  2*REGBYTES(sp)
-LREG x{reg2},  3*REGBYTES(sp)
-addi sp, sp,  3*REGBYTES
-  
-.endm
-'''.format(reg1=reg1,reg2=reg2)
-]
-
-ecause02_r=[
-'''
-.macro ecause02
-.word 0x4B04183B
-.endm
-'''
-]
-
-ecause03_r=[
-'''
-.macro ecause03
-ebreak
-.endm
-'''
-]
-
-
-reg1 = random.randint(0,29) + 1
-reg2 = random.randint(0,27)
-if reg1 == 11 or reg1 == 2:
-  reg1=reg1+1
-if (reg1 == reg2):
-  reg2=reg2+1
-if (reg2 == 11 or reg2 == 2):
-  reg2=reg2+1
-no_use_regs.append(reg1)
-no_use_regs.append(reg2)
-ecause04_r = [
-'''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-LREG x{reg2}, 1(sp)
-
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  ecause03_r=[
   '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-LREG x{reg2}, 2(sp)
+  .macro ecause03
+  ebreak
+  .endm
+  '''
+  ]
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-LREG x{reg2}, 3(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  reg1 = random.randint(0,29) + 1
+  reg2 = random.randint(0,27)
+  if reg1 == 11 or reg1 == 2:
+    reg1=reg1+1
+  if (reg1 == reg2):
+    reg2=reg2+1
+  if (reg2 == 11 or reg2 == 2):
+    reg2=reg2+1
+  no_use_regs.append(reg1)
+  no_use_regs.append(reg2)
+  ecause04_r = [
   '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-LREGU x{reg2}, 1(sp)
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  LREG x{reg2}, 1(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-LREGU x{reg2}, 2(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  LREG x{reg2}, 2(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-LREGU x{reg2}, 3(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  LREG x{reg2}, 3(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-lw x{reg2}, 1(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  LREGU x{reg2}, 1(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-lw x{reg2}, 2(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  LREGU x{reg2}, 2(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-lw x{reg2}, 3(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  LREGU x{reg2}, 3(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-lh x{reg2}, 1(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  lw x{reg2}, 1(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-lh x{reg2}, 3(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  lw x{reg2}, 2(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-lhu x{reg2}, 1(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  lw x{reg2}, 3(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-lhu x{reg2}, 3(sp)
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  lh x{reg2}, 1(sp)
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-LREG x{reg2}, 1(x{reg1})
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  lh x{reg2}, 3(sp)
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-LREG x{reg2}, 2(x{reg1})
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  lhu x{reg2}, 1(sp)
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-LREG x{reg2}, 3(x{reg1})
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  lhu x{reg2}, 3(sp)
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-LREGU x{reg2}, 1(x{reg1})
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  LREG x{reg2}, 1(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-LREGU x{reg2}, 2(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  LREG x{reg2}, 2(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-LREGU x{reg2}, 3(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  LREG x{reg2}, 3(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-lw x{reg2}, 1(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  LREGU x{reg2}, 1(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-lw x{reg2}, 2(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  LREGU x{reg2}, 2(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-lw x{reg2}, 3(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  LREGU x{reg2}, 3(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-lh x{reg2}, 1(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  lw x{reg2}, 1(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-lh x{reg2}, 3(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  lw x{reg2}, 2(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-lhu x{reg2}, 1(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  lw x{reg2}, 3(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-lhu x{reg2}, 3(x{reg1})
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  lh x{reg2}, 1(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-LREG x{reg2}, 1(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  lh x{reg2}, 3(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-LREG x{reg2}, 2(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  lhu x{reg2}, 1(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-LREG x{reg2}, 3(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  lhu x{reg2}, 3(x{reg1})
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-LREGU x{reg2}, 1(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  LREG x{reg2}, 1(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-LREGU x{reg2}, 2(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  LREG x{reg2}, 2(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-LREGU x{reg2}, 3(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  LREG x{reg2}, 3(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-lw x{reg2}, 1(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  LREGU x{reg2}, 1(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-lw x{reg2}, 2(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  LREGU x{reg2}, 2(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-lw x{reg2}, 3(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  LREGU x{reg2}, 3(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-lh x{reg2}, 1(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  lw x{reg2}, 1(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-lh x{reg2}, 3(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  lw x{reg2}, 2(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-lhu x{reg2}, 1(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  lw x{reg2}, 3(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause04
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-lhu x{reg2}, 3(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  lh x{reg2}, 1(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2)
-]
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  lh x{reg2}, 3(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
 
-reg1 = random.randint(0,29) + 1
-reg2 = random.randint(0,27)
-if reg1 == 11 or reg1 == 2:
-  reg1=reg1+1
-if (reg1 == reg2):
-  reg2=reg2+1
-if (reg2 == 11 or reg2 == 2):
-  reg2=reg2+1
-no_use_regs.append(reg1)
-no_use_regs.append(reg2)
-ecause05_r = [
-'''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-LREG x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  lhu x{reg2}, 1(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause04
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  lhu x{reg2}, 3(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2)
+  ]
+
+  reg1 = random.randint(0,29) + 1
+  reg2 = random.randint(0,27)
+  if reg1 == 11 or reg1 == 2:
+    reg1=reg1+1
+  if (reg1 == reg2):
+    reg2=reg2+1
+  if (reg2 == 11 or reg2 == 2):
+    reg2=reg2+1
+  no_use_regs.append(reg1)
+  no_use_regs.append(reg2)
+  ecause05_r = [
   '''
-.macro ecause05
-# exception
-LREG x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-LREG x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-LREGU x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# exception
-LREGU x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-LREGU x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  LREG x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # exception
+  LREG x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  LREG x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  LREGU x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # exception
+  LREGU x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  LREGU x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    # ------------------------------------
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lw x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # exception
+  lw x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lw x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
   # ------------------------------------
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lh x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # exception
+  lh x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lw x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    # ------------------------------------
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lhu x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # exception
+  lhu x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lhu x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    # ------------------------------------
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lb x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # exception
+  lb x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lb x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    # ------------------------------------
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lbu x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # exception
+  lbu x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause05
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  lbu x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2)
+  ]
+
+  reg1 = random.randint(0,29) + 1
+  reg2 = random.randint(0,27)
+  if reg1 == 11 or reg1 == 2:
+    reg1=reg1+1
+  if (reg1 == reg2):
+    reg2=reg2+1
+  if (reg2 == 11 or reg2 == 2):
+    reg2=reg2+1
+  no_use_regs.append(reg1)
+  no_use_regs.append(reg2)
+  ecause06_r = [
   '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lw x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  .macro ecause06
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  SREG x{reg2}, 1(sp)
+
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  SREG x{reg2}, 2(sp)
+
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  SREG x{reg2}, 3(sp)
+
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  sw x{reg2}, 1(sp)
+
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  sw x{reg2}, 2(sp)
+
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  sw x{reg2}, 3(sp)
+
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  sh x{reg2}, 1(sp)
+
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg2},  1*REGBYTES(sp)
+    
+  #exception
+  sh x{reg2}, 3(sp)
+
+  # stack pop
+  LREG x{reg2}, 1*REGBYTES(sp)
+  addi sp, sp, 1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  LREG x{reg2}, 1(x{reg1})
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  SREG x{reg2}, 2(x{reg1})
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  SREG x{reg2}, 3(x{reg1})
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  sw x{reg2}, 1(x{reg1})
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  sw x{reg2}, 2(x{reg1})
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  sw x{reg2}, 3(x{reg1})
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  sh x{reg2}, 1(x{reg1})
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  sh x{reg2}, 3(x{reg1})
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  SREG x{reg2}, 1(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  SREG x{reg2}, 2(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  SREG x{reg2}, 3(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  sw x{reg2}, 1(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  sw x{reg2}, 2(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  sw x{reg2}, 3(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  sh x{reg2}, 1(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause06
+  # stack push
+  addi sp, sp, -2*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+  SREG x{reg2},  2*REGBYTES(sp)
+    
+  #exception
+  mv x{reg1}, sp
+  li x{reg2}, 1
+  mul x{reg1}, x{reg1}, x{reg2}
+  sh x{reg2}, 3(x{reg1})
+  mul x{reg1}, x{reg1}, x{reg2}
+
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  LREG x{reg2},  2*REGBYTES(sp)
+  addi sp, sp, 2*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2)
+  ]
+
+  reg1 = random.randint(0,29) + 1
+  reg2 = random.randint(0,27)
+  if reg1 == 11 or reg1 == 2:
+    reg1=reg1+1
+  if (reg1 == reg2):
+    reg2=reg2+1
+  if (reg2 == 11 or reg2 == 2):
+    reg2=reg2+1
+  no_use_regs.append(reg1)
+  no_use_regs.append(reg2)
+  ecause07_r = [
   '''
-.macro ecause05
-# exception
-lw x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lw x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-# ------------------------------------
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lh x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# exception
-lh x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lw x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  .macro ecause07
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  SREG x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause07
+  # exception
+  SREG x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause07
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  SREG x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    # ------------------------------------
+    '''
+  .macro ecause07
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  sw x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause07
+  # exception
+  sw x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause07
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  sw x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
   # ------------------------------------
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lhu x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# exception
-lhu x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lhu x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  # ------------------------------------
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lb x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# exception
-lb x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lb x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  # ------------------------------------
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lbu x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# exception
-lbu x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause05
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-lbu x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2)
-]
+    '''
+  .macro ecause07
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  sh x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause07
+  # exception
+  sh x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause07
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  sh x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    # ------------------------------------
+    '''
+  .macro ecause07
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  sb x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause07
+  # exception
+  sb x0, (x0)
+  .endm
+  '''.format(reg1=reg1,reg2=reg2),
+    '''
+  .macro ecause07
+  # stack push
+  addi sp, sp, -1*REGBYTES
+  SREG x{reg1},  1*REGBYTES(sp)
+    
+  # exception 
+  li x{reg1}, 0
+  sb x{reg1}, (x{reg1})
+    
+  # stack pop
+  LREG x{reg1},  1*REGBYTES(sp)
+  addi sp, sp,  1*REGBYTES
+  .endm
+  '''.format(reg1=reg1,reg2=reg2)
+  ]
 
-reg1 = random.randint(0,29) + 1
-reg2 = random.randint(0,27)
-if reg1 == 11 or reg1 == 2:
-  reg1=reg1+1
-if (reg1 == reg2):
-  reg2=reg2+1
-if (reg2 == 11 or reg2 == 2):
-  reg2=reg2+1
-no_use_regs.append(reg1)
-no_use_regs.append(reg2)
-ecause06_r = [
-'''
-.macro ecause06
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-SREG x{reg2}, 1(sp)
-
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  ecause08_r = [
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-SREG x{reg2}, 2(sp)
-
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  # Env call from U-mode
+  .macro ecause08
+  .endm
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-SREG x{reg2}, 3(sp)
-
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  ]
+  ecause09_r = [
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-sw x{reg2}, 1(sp)
-
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  # Env call from S-mode
+  .macro ecause09
+  .endm
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-sw x{reg2}, 2(sp)
-
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  ]
+  ecause10_r = [
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-sw x{reg2}, 3(sp)
-
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  # Reserved
+  .macro ecause10
+  .endm
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-sh x{reg2}, 1(sp)
+  ]
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  ecause11_r = [
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg2},  1*REGBYTES(sp)
-  
-#exception
-sh x{reg2}, 3(sp)
+  # Env call from M-mode
+  .macro ecause11
+  ecall
+  .endm
+  '''
+  ]
 
-# stack pop
-LREG x{reg2}, 1*REGBYTES(sp)
-addi sp, sp, 1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  ecause12_r = [
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-LREG x{reg2}, 1(x{reg1})
+  # Instruction page fault
+  .macro ecause12
+  .endm
+  '''
+  ]
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  ecause13_r = [
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-SREG x{reg2}, 2(x{reg1})
+  # Load page fault
+  .macro ecause13
+  .endm
+  '''
+  ]
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
+  ecause14_r = [
   '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-SREG x{reg2}, 3(x{reg1})
+  # Reserved
+  .macro ecause14
+  .endm
+  '''
+  ]
+  ecause15_r = [
+  '''
+  # Store/AMO page fault
+  .macro ecause15
+  .endm
+  '''
+  ]
 
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-sw x{reg2}, 1(x{reg1})
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-sw x{reg2}, 2(x{reg1})
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-sw x{reg2}, 3(x{reg1})
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-sh x{reg2}, 1(x{reg1})
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-sh x{reg2}, 3(x{reg1})
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-SREG x{reg2}, 1(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-SREG x{reg2}, 2(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-SREG x{reg2}, 3(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-sw x{reg2}, 1(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-sw x{reg2}, 2(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-sw x{reg2}, 3(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-sh x{reg2}, 1(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause06
-# stack push
-addi sp, sp, -2*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-SREG x{reg2},  2*REGBYTES(sp)
-  
-#exception
-mv x{reg1}, sp
-li x{reg2}, 1
-mul x{reg1}, x{reg1}, x{reg2}
-sh x{reg2}, 3(x{reg1})
-mul x{reg1}, x{reg1}, x{reg2}
-
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-LREG x{reg2},  2*REGBYTES(sp)
-addi sp, sp, 2*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2)
-]
-
-reg1 = random.randint(0,29) + 1
-reg2 = random.randint(0,27)
-if reg1 == 11 or reg1 == 2:
-  reg1=reg1+1
-if (reg1 == reg2):
-  reg2=reg2+1
-if (reg2 == 11 or reg2 == 2):
-  reg2=reg2+1
-no_use_regs.append(reg1)
-no_use_regs.append(reg2)
-ecause07_r = [
-'''
-.macro ecause07
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-SREG x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause07
-# exception
-SREG x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause07
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-SREG x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  # ------------------------------------
-  '''
-.macro ecause07
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-sw x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause07
-# exception
-sw x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause07
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-sw x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-# ------------------------------------
-  '''
-.macro ecause07
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-sh x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause07
-# exception
-sh x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause07
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-sh x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  # ------------------------------------
-  '''
-.macro ecause07
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-sb x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause07
-# exception
-sb x0, (x0)
-.endm
-'''.format(reg1=reg1,reg2=reg2),
-  '''
-.macro ecause07
-# stack push
-addi sp, sp, -1*REGBYTES
-SREG x{reg1},  1*REGBYTES(sp)
-  
-# exception 
-li x{reg1}, 0
-sb x{reg1}, (x{reg1})
-  
-# stack pop
-LREG x{reg1},  1*REGBYTES(sp)
-addi sp, sp,  1*REGBYTES
-.endm
-'''.format(reg1=reg1,reg2=reg2)
-]
-
-ecause08_r = [
-'''
-# Env call from U-mode
-.macro ecause08
-.endm
-'''
-]
-ecause09_r = [
-'''
-# Env call from S-mode
-.macro ecause09
-.endm
-'''
-]
-ecause10_r = [
-'''
-# Reserved
-.macro ecause10
-.endm
-'''
-]
-
-ecause11_r = [
-'''
-# Env call from M-mode
-.macro ecause11
-ecall
-.endm
-'''
-]
-
-ecause12_r = [
-'''
-# Instruction page fault
-.macro ecause12
-.endm
-'''
-]
-
-ecause13_r = [
-'''
-# Load page fault
-.macro ecause13
-.endm
-'''
-]
-
-ecause14_r = [
-'''
-# Reserved
-.macro ecause14
-.endm
-'''
-]
-ecause15_r = [
-'''
-# Store/AMO page fault
-.macro ecause15
-.endm
-'''
-]
-
-
-
+  return (ecause00_r,ecause01_r,ecause02_r,ecause03_r,ecause04_r,ecause05_r,ecause06_r,ecause07_r,ecause08_r,ecause09_r,ecause10_r,ecause11_r,ecause12_r,ecause13_r,ecause14_r,ecause15_r)
 
 
 class myClass:
@@ -1943,9 +1960,16 @@ def gen_config_files(args):
     perl_file = os.path.join(args.setup_dir,"common","illegal.pl")
     outfile = os.path.join(args.setup_dir,"common","illegal_insts.txt")
     if args.seed != None:
-      perl_seed = "5"
-    else:
       perl_seed = str(args.seed)
+      temp_seed = args.seed
+      # random.seed(args.seed)
+    else:
+      perl_seed = "5"
+      temp_seed = 5
+      # random.seed(5)
+      
+
+    (ecause00_r,ecause01_r,ecause02_r,ecause03_r,ecause04_r,ecause05_r,ecause06_r,ecause07_r,ecause08_r,ecause09_r,ecause10_r,ecause11_r,ecause12_r,ecause13_r,ecause14_r,ecause15_r) = init_global_wth_seed(temp_seed)
     perl_cmd = "perl {infile} {outfile} {seed}".format(infile=perl_file,outfile=outfile,seed=perl_seed)
 
     try:

@@ -2,7 +2,7 @@ perl_file = """
 #!/usr/bin/env perl
 use v5.10.0;
 use warnings;
-srand($ARGV[1])
+srand($ARGV[1]);
 my @illegal_instr_list = ();
 foreach my $count (0 .. 100) {
     my $d = int(rand(4294967295));
