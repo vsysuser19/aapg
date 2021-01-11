@@ -188,7 +188,7 @@ addi sp, sp,  3*REGBYTES
 ecause02_r=[
 '''
 .macro ecause02
-.word 0x01239239812981
+.word 0x4B04183B
 .endm
 '''
 ]
@@ -1940,6 +1940,27 @@ def gen_config_files(args):
     """ generate the linker file based on the configuration """ 
     # traslates yaml to ini file
     
+    perl_file = os.path.join(args.setup_dir,"common","illegal.pl")
+    outfile = os.path.join(args.setup_dir,"common","illegal_insts.txt")
+    perl_cmd = "perl {infile} {outfile}".format(infile=perl_file,outfile=outfile)
+    try:
+      os.system(perl_cmd)
+      ecause02_r = []
+      ill_insts = open(outfile,'r')
+      ecause02_append_str = """
+.macro ecause02
+replace_word
+.endm
+      """
+      while(True):
+        line = ill_insts.readline()
+        if not line:
+          break
+        line = line.replace("\n","")
+        ins = ecause02_append_str.replace('replace_word',line)
+        ecause02_r.append(ins)
+    except:
+      logger.info('perl script not run')
     import yaml
     ppm_avail = True
 

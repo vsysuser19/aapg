@@ -9,6 +9,7 @@ import aapg.env.encoding
 import aapg.env.linker
 import aapg.env.make
 import aapg.env.templates
+import aapg.env.illegal_perl
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ def setup_build(output_dir):
 
     templates_file = 'templates.S'
     encoding_file = 'encoding.h'
+    illegal_list = 'illegal.pl'
     make_file = 'Makefile'
 
     # Create the common directory 
@@ -40,6 +42,9 @@ def setup_build(output_dir):
     # Put the files in common
     with open(os.path.join(common_dir, encoding_file), 'w') as f:
         f.write(aapg.env.encoding.encoding_header.strip('\n'))
+
+    with open(os.path.join(common_dir, illegal_list), 'w') as f:
+        f.write(aapg.env.illegal_perl.perl_file.strip('\n'))
 
     # with open(os.path.join(out_dir, templates_file), 'w') as f:
     #     f.write(aapg.env.templates.templates_asm.strip('\n'))
