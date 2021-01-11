@@ -1942,7 +1942,12 @@ def gen_config_files(args):
     
     perl_file = os.path.join(args.setup_dir,"common","illegal.pl")
     outfile = os.path.join(args.setup_dir,"common","illegal_insts.txt")
-    perl_cmd = "perl {infile} {outfile}".format(infile=perl_file,outfile=outfile)
+    if args.seed != None:
+      perl_seed = "5"
+    else:
+      perl_seed = str(args.seed)
+    perl_cmd = "perl {infile} {outfile} {seed}".format(infile=perl_file,outfile=outfile,seed=perl_seed)
+
     try:
       os.system(perl_cmd)
       ecause02_r = []
