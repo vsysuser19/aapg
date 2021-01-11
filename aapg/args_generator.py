@@ -51,7 +51,6 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
 
     try:
         comp_reg = random.choice(usable_regs)
-        logger.info(usable_regs)
     except:
         comp_reg = 7
 
