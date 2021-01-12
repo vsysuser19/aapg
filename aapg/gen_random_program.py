@@ -3008,7 +3008,7 @@ replace_word
             os.system('cp {link_ldfile} {new_file_name}'.format(link_ldfile=link_ldfile,new_file_name=link_ldfile[:-8]+'{:05d}'.format(i)+'.ld'))
             #os.system('cp {first_template_name} {new_template_name}'.format(first_template_name=first_template_name,new_template_name=first_template_name[:-16]+'{:05d}'.format(i)+'_template.S'))
 
-    return seed_def
+    return args.seed
 
 
 def run(args, index):
