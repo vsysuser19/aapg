@@ -207,7 +207,7 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
 
     # If linker-only true, then generate linker and quit
     logger.info("Linker script generation started")
-    aapg.gen_random_program.gen_config_files(args)
+    args.seed = aapg.gen_random_program.gen_config_files(args)
     logger.info("Linker script generation completed")
     if args.linker_only:
         logger.info("linker-only option selected. Exiting aapg")

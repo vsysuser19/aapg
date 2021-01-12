@@ -1959,14 +1959,13 @@ def gen_config_files(args):
     
     perl_file = os.path.join(args.setup_dir,"common","illegal.pl")
     outfile = os.path.join(args.setup_dir,"common","illegal_insts.txt")
-    if args.seed != None:
-      perl_seed = str(args.seed)
-      temp_seed = args.seed
-      # random.seed(args.seed)
-    else:
-      perl_seed = "5"
-      temp_seed = 5
-      # random.seed(5)
+    seed_def = int.from_bytes(os.urandom(8), byteorder = 'big')
+    if args.seed == None:
+      args.seed = seed_def
+    
+    perl_seed = str(args.seed)
+    temp_seed = args.seed
+    random.seed(args.seed)
       
 
     (ecause00_r,ecause01_r,ecause02_r,ecause03_r,ecause04_r,ecause05_r,ecause06_r,ecause07_r,ecause08_r,ecause09_r,ecause10_r,ecause11_r,ecause12_r,ecause13_r,ecause14_r,ecause15_r) = init_global_wth_seed(temp_seed)
@@ -3008,6 +3007,8 @@ replace_word
         for i in range(1,args.num_programs):
             os.system('cp {link_ldfile} {new_file_name}'.format(link_ldfile=link_ldfile,new_file_name=link_ldfile[:-8]+'{:05d}'.format(i)+'.ld'))
             #os.system('cp {first_template_name} {new_template_name}'.format(first_template_name=first_template_name,new_template_name=first_template_name[:-16]+'{:05d}'.format(i)+'_template.S'))
+
+    return seed_def
 
 
 def run(args, index):
