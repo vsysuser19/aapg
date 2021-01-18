@@ -10,12 +10,11 @@ LOG_DIR := log
 ISA ?= rv64imafd
 ABI ?= lp64
 
-LINKER_SCRIPT := common/link.ld
 INCLUDE_DIRS := common
 CRT_FILE := common/crt.S
 TEMPLATE_FILE := common/templates.S
 GCC_OPTS := -march=$(ISA) -mabi=$(ABI) -DPREALLOCATE=1 -mcmodel=medany -static -std=gnu99 -O2 -fno-common -fno-builtin-printf
-LINKER_OPTIONS := -static -nostdlib -nostartfiles -lm -lgcc -T $(LINKER_SCRIPT)
+LINKER_OPTIONS := -static -nostdlib -nostartfiles -lm -lgcc -T 
 
 SRC_FILES := $(wildcard $(ASM_SRC_DIR)/*.S)
 BIN_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(BIN_DIR)/%.riscv, $(SRC_FILES))
@@ -31,7 +30,8 @@ build: $(BIN_FILES)
 
 $(BIN_DIR)/%.riscv: $(ASM_SRC_DIR)/%.S 
 \t$(info ==================== Compiling asm to binary ============)
-\t${RISCVPREFIX}-gcc $(GCC_OPTS) -I $(INCLUDE_DIRS) -o $@ $< $(CRT_FILE) $(LINKER_OPTIONS)
+\t${RISCVPREFIX}-gcc $(GCC_OPTS) -I $(INCLUDE_DIRS) -o $@ $< $(CRT_FILE) $(LINKER_OPTIONS) $(<D)/$*.ld
+
 
 objdump: $(OBJ_FILES)
 \t$(info ==================== Objdump Completed ==================)
