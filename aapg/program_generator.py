@@ -48,6 +48,8 @@ class BasicGenerator(object):
 		self.branch_use_reg = None
 		self.no_use_regs = no_use_regs
 		self.reg_ignore = None
+		self.rec_use_reg1 = None
+		self.rec_use_reg2 = None
 
 		# Create the data_access sections
 		access_sections = args.items('access-sections')
@@ -495,6 +497,14 @@ class BasicGenerator(object):
 		""" Initialize the register file | reg : (read, write) """
 		not_used_regs = [(x[0], int(x[1:])) for x in not_used_reg_string.strip("'").split(',')]
 		dont_use_regs = [5,6,10,11,12,13,30] # 6 is for data section load, 10 is branch target
+		self.rec_use_reg1 = random.randint(0,5)
+		self.rec_use_reg2 = random.randint(0,5)
+		while self.rec_use_reg2 == self.rec_use_reg1:
+			self.rec_use_reg2 = random.randint(0,5)
+
+		dont_use_regs.append(self.rec_use_reg1)
+		dont_use_regs.append(self.rec_use_reg2)
+
 		for i in self.no_use_regs:
 			dont_use_regs.append(i)
 		
@@ -542,7 +552,7 @@ class BasicGenerator(object):
 		logger.info("Recursion Enabled? {}".format(recursion_template_enabled))
 
 		if recursion_template_enabled:
-			recurse_sections = aapg.asm_templates.recurse_sections(depth)
+			recurse_sections = aapg.asm_templates.recurse_sections(depth,self.rec_use_reg1,self.rec_use_reg2)
 			for section in recurse_sections:
 				self.q.put(('section', '.' + section))
 				for instruction in recurse_sections[section]:
