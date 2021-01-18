@@ -16,7 +16,8 @@ TEMPLATE_FILE := common/templates.S
 GCC_OPTS := -march=$(ISA) -mabi=$(ABI) -DPREALLOCATE=1 -mcmodel=medany -static -std=gnu99 -O2 -fno-common -fno-builtin-printf
 LINKER_OPTIONS := -static -nostdlib -nostartfiles -lm -lgcc -T 
 
-SRC_FILES := $(wildcard $(ASM_SRC_DIR)/*.S)
+BASE_SRC_FILES := $(wildcard $(ASM_SRC_DIR)/*.S)
+SRC_FILES := $(filter-out $(wildcard $(ASM_SRC_DIR)/*template.S),$(BASE_SRC_FILES))
 BIN_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(BIN_DIR)/%.riscv, $(SRC_FILES))
 OBJ_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(OBJ_DIR)/%.objdump, $(SRC_FILES))
 LOG_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(LOG_DIR)/%.log, $(SRC_FILES))
