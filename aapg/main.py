@@ -87,16 +87,16 @@ VERSION = '(' + version + ')' + ' Automated Assembly Program Generator - aapg'
 def cli(ctx):
     if ctx.invoked_subcommand is None:
         click.echo('Please Provide Command')
-    elif ctx.invoked_subcommand == 'version':
-        click.echo('Checking version...')
-    elif ctx.invoked_subcommand == 'gen':
-        click.echo('aapg Invoked %s' % ctx.invoked_subcommand)
-    elif ctx.invoked_subcommand == 'setup':
-        click.echo('aapg invoked %s' % ctx.invoked_subcommand)
-    elif ctx.invoked_subcommand == 'clean':
-        click.echo('aapg invoked %s' % ctx.invoked_subcommand)
-    elif ctx.invoked_subcommand == 'convert':
-        click.echo('aapg invoked %s' % ctx.invoked_subcommand)
+    # elif ctx.invoked_subcommand == 'version':
+    #     #click.echo('Checking version...')
+    # elif ctx.invoked_subcommand == 'gen':
+    #     #click.echo('aapg Invoked %s' % ctx.invoked_subcommand)
+    # elif ctx.invoked_subcommand == 'setup':
+    #     #click.echo('aapg invoked %s' % ctx.invoked_subcommand)
+    # elif ctx.invoked_subcommand == 'clean':
+    #     #click.echo('aapg invoked %s' % ctx.invoked_subcommand)
+    # elif ctx.invoked_subcommand == 'convert':
+    #     #click.echo('aapg invoked %s' % ctx.invoked_subcommand)
 
 
 def setup_logging(log_level):
@@ -203,7 +203,8 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
     ch.setFormatter(aapg.utils.ColoredFormatter())
     logger.addHandler(ch)
     logger.info("aapg started")
-    click.echo('The subcommand gen')
+    logger.info(VERSION)
+    #click.echo('The subcommand gen')
     logger.info("Command received: gen")
     logger.info("Number of programs to generate: {}".format(args.num_programs))
 
@@ -241,6 +242,7 @@ def setup(setup_dir):
     ch.setFormatter(aapg.utils.ColoredFormatter())
     logger.addHandler(ch)
     logger.info("aapg started")
+    logger.info(VERSION)
     logger.info("Command received: setup")
     aapg.env.env_setup.setup_build(setup_dir)
     aapg.utils.print_sample_config(setup_dir)
@@ -341,6 +343,7 @@ def yaml_2_yaml(file,logger):
 @click.option('--file', default ='config.yaml', help='Path to old config file. Default ./config.py')
 def convert(file):
     setup_logging('info')
+    logger.info(VERSION)
     logger = logging.getLogger()
     logger.info('Updating existing configuration file')
     if not os.path.isfile(file):
@@ -387,6 +390,7 @@ def convert(file):
 @click.option('--output_dir', default ='work', help='Output directory for generated programs. Default: ./asm')
 def clean(setup_dir,output_dir):
     setup_logging('info')
+    logger.info(VERSION)
     logger = logging.getLogger()
     logger.info('Cleaning setup files....')
     # if setup_dir != '.':
