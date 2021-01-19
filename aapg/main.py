@@ -173,7 +173,7 @@ def setup_logging(log_level):
 #         logger.error("No command received")
 
 class myClass:
-    def __init__(self,num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only):
+    def __init__(self,num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers):
         self.num_programs = num_programs
         self.config_file = config_file
         self.asm_name = asm_name
@@ -182,6 +182,7 @@ class myClass:
         self.arch = arch
         self.seed = seed
         self.linker_only = linker_only
+        self.no_headers = no_headers
 
 @cli.command()
 @click.option('--num_programs', default=1, help='Number of programs to be generated')
@@ -192,8 +193,9 @@ class myClass:
 @click.option('--arch', default ='rv64', help='Target architecture. Default: rv64')
 @click.option('--seed', help='Seed to regenerate test.')
 @click.option('--linker_only', is_flag='True',help='Generate link.ld only',default='False')
-def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only):
-    args = myClass(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only)
+@click.option('--no_headers', is_flag='True',help='Add configuration info in Generated test',default='True')
+def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers):
+    args = myClass(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers)
     setup_logging('info')
     logger = logging.getLogger()
     logger.handlers = []

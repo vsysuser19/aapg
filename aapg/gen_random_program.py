@@ -9,11 +9,13 @@ from six.moves import configparser
 import errno
 import re
 import random
+import pytz
 
 import aapg.asm_writer
 import aapg.program_generator
 import aapg.utils
 import aapg.env
+from aapg.__init__ import __version__ as version
 
 import datetime
 
@@ -1824,7 +1826,7 @@ class myClass:
         self.seed = seed
         self.linker_only = linker_only
 
-def gen_random_program(ofile, args, arch, seed):
+def gen_random_program(ofile, args, arch, seed, no_headers):
     """ Function to generate one random assembly program
 
         Args:
@@ -1837,10 +1839,22 @@ def gen_random_program(ofile, args, arch, seed):
 
     # Header Section
     writer.comment(" Random Assembly Program Generated using aapg")
-    writer.comment(" Generated at: {}".format(datetime.datetime.now().strftime("%H %T")))
+    writer.comment(" Generated at: {}".format(datetime.datetime.now(pytz.timezone('GMT')).strftime("%Y-%m-%d %H:%M GMT")))
     writer.comment(" Seed: {}".format(seed))
     writer.newline()
     writer.comment("include \"templates.S\"")
+    writer.newline()
+    writer.comment("aapg version: {}".format(version))
+    writer.newline()
+    if(no_headers):
+      writer.comment(" Arguments:")
+      config_sections = args.sections()
+      for section in config_sections:
+        options = args.options(section)
+        writer.comment("  {}:".format(section))
+        for option in options:
+          writer.comment("    {option}: {value}".format(option=option,value = args.get(section,option)))
+
     writer.newline()
     writer.write('.text')
     writer.write('.align\t\t4')
@@ -3085,7 +3099,7 @@ def run(args, index):
     with open(output_file_path, 'w') as output_file:
         seed_def = int.from_bytes(os.urandom(8), byteorder = 'big')
         seed = seed_def if args.seed is None else int(args.seed)
-        gen_random_program(output_file, config_args, args.arch, seed)
+        gen_random_program(output_file, config_args, args.arch, seed, args.no_headers)
 
     line_add = os.path.basename(output_file_path.rstrip(os.sep))
     line_add = line_add[:-2]+'_template.S'
