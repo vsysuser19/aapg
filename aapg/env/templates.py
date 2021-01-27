@@ -206,6 +206,11 @@ ecall
 #define PRV_S 1
 #define PRV_U 0
 #define MSTATUS_MPP 0x00001800
+#define MSTATUS_FS          0x00006000
+#define RVTEST_FP_ENABLE                                                \
+  li a0, MSTATUS_FS & (MSTATUS_FS >> 1);                                \
+  csrs mstatus, a0;                                                     \
+  csrwi fcsr, 0
 #if __riscv_xlen == 64
   #define LREG ld
   #define SREG sd
@@ -280,8 +285,64 @@ inst32_2:                           # is 32-bit instruction then increment by 4
   beqz x0,1f
 inst16_2:
   addi a1,a1,0x2                  # is 16-bit instruction then increment by 2
+
 1: 
   csrw mepc, a1                   # point mepc to the next instruction.
+  csrr a3, mcause
+  li t1, 8
+  beq a3,t1, sw1
+  li t1, 9
+  beq a3,t1, sw1
+  li t1, 11
+  beq a3,t1, sw1
+  mret
+
+sw1:
+  csrr a3,mepc
+  andi a3,a3,12
+  
+  li t1, 0
+  beq a3,t1, eq1 # Jump to supervisor
+
+  li t1, 4
+  beq a3,t1, eq2 # Continue in same mode
+
+  li t1, 8
+  beq a3,t1, eq3 # Jump to machine
+
+  li t1, 12
+  beq a3,t1, eq4 # Jump to user  
+  beq x0, x0, 1f
+
+
+eq1:
+  li t0, MSTATUS_MPP
+  csrc mstatus, t0
+  li t5, (MSTATUS_MPP & -MSTATUS_MPP) * PRV_S
+  csrs mstatus, t5
+  RVTEST_FP_ENABLE;
+  beq x0, x0, 1f
+eq2:
+  RVTEST_FP_ENABLE;
+  beq x0, x0, 1f
+  
+eq3:
+  li t0, 0x200001800
+  csrw 0x300, t0 # MSTATUS
+  li t0, 0x0
+  csrw 0x304, t0 # MIE
+  RVTEST_FP_ENABLE;
+  beq x0, x0, 1f
+
+eq4:
+  li t0, MSTATUS_MPP
+  csrc mstatus, t0
+  li t5, (MSTATUS_MPP & -MSTATUS_MPP) * PRV_U
+  csrs mstatus, t5
+  RVTEST_FP_ENABLE;
+  beq x0, x0, 1f
+
+1:
   LREG x1, 1*REGBYTES(sp)
   LREG x2, 2*REGBYTES(sp)
   LREG x3, 3*REGBYTES(sp)
@@ -314,55 +375,6 @@ inst16_2:
   LREG x30, 30*REGBYTES(sp)
   LREG x31, 31*REGBYTES(sp)
   addi sp, sp, 32*REGBYTES
-  
-  csrr a3, mcause
-  li t1, 8
-  beq a3,t1, sw1
-  li t1, 9
-  beq a3,t1, sw1
-  li t1, 11
-  beq a3,t1, sw1
-  mret
-
-sw1:
-  csrr a3,mepc
-  andi a3,a3,12
-  
-  li t1, 0
-  beq a3,t1, eq1 # Jump to supervisor
-
-  li t1, 4
-  beq a3,t1, eq2 # Continue in same mode
-
-  li t1, 8
-  beq a3,t1, eq3 # Jump to machine
-
-  li t1, 12
-  beq a3,t1, eq4 # Jump to user  
-  mret
-
-
-eq1:
-  li t0, MSTATUS_MPP
-  csrc mstatus, t0
-  li t5, (MSTATUS_MPP & -MSTATUS_MPP) * PRV_S
-  csrs mstatus, t5
-  mret
-eq2:
-  mret
-  
-eq3:
-  li t0, 0x200001800
-  csrw 0x300, t0 # MSTATUS
-  li t0, 0x0
-  csrw 0x304, t0 # MIE
-  mret
-
-eq4:
-  li t0, MSTATUS_MPP
-  csrc mstatus, t0
-  li t5, (MSTATUS_MPP & -MSTATUS_MPP) * PRV_U
-  csrs mstatus, t5
   mret
 
 
