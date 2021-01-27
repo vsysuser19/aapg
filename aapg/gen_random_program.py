@@ -1857,7 +1857,7 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
         options = args.options(section)
         writer.comment("  {}:".format(section))
         for option in options:
-          writer.comment("    {option}: {value}".format(option=option,value = args.get(section,option)))
+          writer.comment("    {option}: {value}".format(option=option,value = str(args.get(section,option)).replace('\n','\t')))
 
     writer.newline()
     writer.write('.text')
