@@ -211,6 +211,11 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
     # If linker-only true, then generate linker and quit
     logger.info("Linker script generation started")
     args.seed = aapg.gen_random_program.gen_config_files(args)
+    list_of_args = []
+
+    for i in range(args.num_programs):
+        list_of_args.append(myClass(num_programs,config_file,asm_name,setup_dir,output_dir,arch,int(args.seed)+i,linker_only,no_headers))
+
     logger.info("Linker script generation completed")
     if args.linker_only:
         logger.info("linker-only option selected. Exiting aapg")
@@ -219,9 +224,10 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
     process_list = []
     for index in range(args.num_programs):
         logger.info("Program number: {} started".format(index))
-        p = Process(target = aapg.gen_random_program.run, args = (args, index))
+        p = Process(target = aapg.gen_random_program.run, args = (list_of_args[index], index))
         p.start()
         process_list.append(p)
+        #args.seed = args.seed+1
 
     for p in process_list:
         p.join()
