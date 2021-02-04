@@ -18,11 +18,6 @@ import yaml
 import aapg.gen_random_program
 import aapg.env.templates
 import aapg.env.comments
-# curdir = os.getcwd()
-# os.chdir('aapg')
-# import gen_random_program
-# from gen_random_program import gen_config_files
-# os.chdir(curdir)
 import aapg.env.env_setup
 import aapg.utils
 from aapg.__init__ import __version__ as version
@@ -36,68 +31,11 @@ from multiprocessing import Process
 # Version read
 VERSION = '(' + version + ')' + ' Automated Assembly Program Generator - aapg'
 
-# def parse_cmdline_opts():
-#     """ Setup the cmdline parser
-
-#         Main parser args
-#         and subparsers setup here
-
-#         Args:
-#             None
-
-#         Returns:
-#             args: (dict) Command line arguments
-#     """
-#     # Main Parser
-#     main_parser = argparse.ArgumentParser(prog = 'aapg', description = 'Automated Assembly Program Generator for RISC-V')
-#     main_parser.add_argument('--version', action = 'version', version = VERSION)
-#     main_parser.add_argument('--verbose', action = 'store', default = 'info', \
-#             help = 'debug | info | warning | error', metavar = "")
-    
-#     subparsers = main_parser.add_subparsers(help = 'Available sub-commands', dest='command')
-
-#     # Subparser: gen action
-#     gen_parser = subparsers.add_parser('gen', help = 'Generate a random program')
-#     gen_parser.add_argument('--num-programs', action = 'store', default = 1, type = int, dest = "num_programs", help = 'Number of programs to generate | Default = 1',
-#             metavar = '')
-#     gen_parser.add_argument('--config-file', action = 'store', default = 'config.yaml', metavar = "", \
-#         help="Configuration file. Default: ./config.yaml" )
-#     gen_parser.add_argument('--asm-name', action = 'store', default = 'out', \
-#             help = 'Assembly output file name. Default: out.asm', metavar = "")
-#     gen_parser.add_argument('--setup-dir', action='store', default = '.', \
-#             help = 'Setup directory of env files. Default ./', metavar = "")
-#     gen_parser.add_argument('--output-dir', action='store', default = '.', \
-#             help = 'Output directory for generated programs. Default: ./asm', metavar = "")
-#     gen_parser.add_argument('--arch', action='store', default = 'rv64', \
-#             help = 'Target architecture. Default: rv64', metavar = "")
-#     gen_parser.add_argument('--seed', action='store',\
-#             help = 'Seed to regenerate test.', metavar = "")
-#     gen_parser.add_argument('--linker-only', action='store_true', help = 'Generate link.ld only')
-
-#     # Subparset: setup
-#     # Setup the current directory to build all asms
-#     setup_parser = subparsers.add_parser('setup', help = 'Setup the current dir')
-#     setup_parser.add_argument('--setup-dir', action='store', default='.', help = 'Output directory for setup files. Default = ./', metavar = "")
-
-#     return (main_parser.parse_args(), main_parser)
-
-
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
     if ctx.invoked_subcommand is None:
         click.echo('Please Provide Command')
-    # elif ctx.invoked_subcommand == 'version':
-    #     #click.echo('Checking version...')
-    # elif ctx.invoked_subcommand == 'gen':
-    #     #click.echo('aapg Invoked %s' % ctx.invoked_subcommand)
-    # elif ctx.invoked_subcommand == 'setup':
-    #     #click.echo('aapg invoked %s' % ctx.invoked_subcommand)
-    # elif ctx.invoked_subcommand == 'clean':
-    #     #click.echo('aapg invoked %s' % ctx.invoked_subcommand)
-    # elif ctx.invoked_subcommand == 'convert':
-    #     #click.echo('aapg invoked %s' % ctx.invoked_subcommand)
-
 
 def setup_logging(log_level):
     """Setup logging
@@ -118,59 +56,6 @@ def setup_logging(log_level):
 
     logging.basicConfig(level = numeric_level)
 
-# def execute():
-#     """ Entry point for the AAPG program
-    
-#         Invoked by
-#         * console-scripts section in pip
-#         * python -m aapg.main
-#     """
-#     args, parser = parse_cmdline_opts()
-#     setup_logging(args.verbose)
-#     logger = logging.getLogger()
-#     logger.handlers = []
-#     ch = logging.StreamHandler()
-#     ch.setFormatter(aapg.utils.ColoredFormatter())
-#     logger.addHandler(ch)
-#     logger.info("aapg started")
-
-#     # Call the required function for the sub-command
-#     if args.command == 'gen':
-#         logger.info("Command received: gen")
-#         logger.info("Number of programs to generate: {}".format(args.num_programs))
-
-#         # If linker-only true, then generate linker and quit
-#         logger.info("Linker script generation started")
-#         aapg.gen_random_program.gen_config_files(args)
-#         logger.info("Linker script generation completed")
-#         if args.linker_only:
-#             logger.info("linker-only option selected. Exiting aapg")
-#             sys.exit(0)
-
-#         # Generate the asm programs
-#         process_list = []
-#         for index in range(args.num_programs):
-#             logger.info("Program number: {} started".format(index))
-#             p = Process(target = aapg.gen_random_program.run, args = (args, index))
-#             p.start()
-#             process_list.append(p)
-
-#         for p in process_list:
-#             p.join()
-
-#         for p in process_list:
-#             if p.exitcode == 1:
-#                 sys.exit(1)
-
-#         sys.exit(0)
-
-#     elif args.command == 'setup':
-#         logger.info("Command received: setup")
-#         aapg.env.env_setup.setup_build(args.setup_dir)
-#         aapg.utils.print_sample_config(args.setup_dir)
-#         logger.info("Setup directory built in {}".format(os.path.abspath(args.setup_dir)))
-#     else:
-#         logger.error("No command received")
 
 class myClass:
     def __init__(self,num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers):
@@ -195,6 +80,11 @@ class myClass:
 @click.option('--linker_only', is_flag='True',help='Generate link.ld only',default='False')
 @click.option('--no_headers', is_flag='True',help='Add configuration info in Generated test',default='True')
 def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers):
+    '''
+    Function:   To generate the actuall assembly files
+    Usage:      To be run after the `aapg setup` command
+                aapg gen --help to understand the arguments
+    '''
     args = myClass(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers)
     setup_logging('info')
     logger = logging.getLogger()
@@ -204,7 +94,6 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
     logger.addHandler(ch)
     logger.info("aapg started")
     logger.info(VERSION)
-    #click.echo('The subcommand gen')
     logger.info("Command received: gen")
     logger.info("Number of programs to generate: {}".format(args.num_programs))
 
@@ -239,8 +128,13 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
     sys.exit(0)
 
 @cli.command()
-@click.option('--setup_dir', default ='work', help='Setup directory of env files. Default ./')
+@click.option('--setup_dir', default ='work', help='Setup directory of env files. Default ./work')
 def setup(setup_dir):
+    '''
+    Function:   To setup directory structure to generate ASM programs
+    Usage:      To be run before the `aapg gen` command
+                aapg setup --help to understand the arguments
+    '''
     setup_logging('info')
     logger = logging.getLogger()
     logger.handlers = []
@@ -256,6 +150,9 @@ def setup(setup_dir):
 
 @cli.command()
 def version():
+    '''
+    Function:   To return the current varsion of AAPG
+    '''
     setup_logging('info')
     logger = logging.getLogger()
     logger.info(VERSION)
@@ -281,6 +178,8 @@ def yaml_2_yaml(file,logger):
 
     new_config_yaml['general']['code_start_address'] = hex(old_config_yaml['general']['code_start_address'])
     new_config_yaml['branch-control'] = old_config_yaml['branch-control']
+    if 'block-size' not in old_config_yaml['branch-control'].keys():
+        new_config_yaml['branch-control']['block-size'] = 7
     new_config_yaml['isa-instruction-distribution'] = old_config_yaml['isa-instruction-distribution']
     new_config_yaml['recursion-options'] = old_config_yaml['recursion-options']
     new_config_yaml['access-sections'] = old_config_yaml['access-sections']
@@ -294,6 +193,11 @@ def yaml_2_yaml(file,logger):
     else:
         new_config_yaml['switch-priv-modes'] = {'switch_modes': False, 'num_switches': 0}
 
+    if 'csr-sections' in old_config_yaml.keys():
+        new_config_yaml['csr-sections'] = old_config_yaml['switch-priv-modes']
+    else:
+        new_config_yaml['csr-sections'] = {'sections':'0x000:0xfff'}
+
     new_config_yaml['i-cache'] = old_config_yaml['i-cache']
     new_config_yaml['d-cache'] = old_config_yaml['d-cache']
     new_config_yaml['exception-generation'] = old_config_yaml['exception-generation']
@@ -304,7 +208,6 @@ def yaml_2_yaml(file,logger):
     else:
         new_config_yaml['program-macro'] = old_config_yaml['program-macro']
 
-    #stream = open(file,'w')
     f = open(file, 'w+')
     yaml.dump(new_config_yaml, f, default_flow_style=False,sort_keys=False)
     f.close()
@@ -337,6 +240,8 @@ def yaml_2_yaml(file,logger):
             new_content = new_content + aapg.env.comments.exceptions + line
         elif "data-hazards:" in line:
             new_content = new_content + aapg.env.comments.data_hazards + line
+        elif "csr-sections:" in line:
+            new_content = new_content + aapg.env.comments.csr_sections + line
         else:
             new_content = new_content + line
     f.close()
@@ -346,11 +251,16 @@ def yaml_2_yaml(file,logger):
     f.close()
 
 @cli.command()
-@click.option('--file', default ='config.yaml', help='Path to old config file. Default ./config.py')
+@click.option('--file', default ='config.yaml', help='Path to old config file. Default ./config.yaml')
 def convert(file):
+    '''
+    Function:   To convert old formats of config files to newer versions
+    Usage:      Takes path to old config file as argument and replaces it with the latest version of the config file
+                Works with both .ini and .yaml files
+    '''
     setup_logging('info')
-    logger.info(VERSION)
     logger = logging.getLogger()
+    logger.info(VERSION)
     logger.info('Updating existing configuration file')
     if not os.path.isfile(file):
         logger.info("Invalid File path")
@@ -385,77 +295,32 @@ def convert(file):
         yaml_2_yaml(new_filename,logger)
         
 
-
-
-
-
-     
-
 @cli.command()
 @click.option('--setup_dir', default ='work', help='Setup directory of env files. Default ./')
 @click.option('--output_dir', default ='work', help='Output directory for generated programs. Default: ./asm')
 def clean(setup_dir,output_dir):
+    '''
+    Function:   To clean the directory where tests were generated
+    Usage:      Takes path to setup and output directory and removes them
+    '''
     setup_logging('info')
-    logger.info(VERSION)
     logger = logging.getLogger()
+    logger.info(VERSION)
     logger.info('Cleaning setup files....')
-    # if setup_dir != '.':
-    #     if os.path.isdir(setup_dir):
-    #         os.system('rm -r {setup_dir}'.format(setup_dir=setup_dir))
-    #     else:
-    #         logger.info('The provided setup directory does not exist')
-    # else:
-    #     if os.path.exists('bin'):
-    #         os.system('rm -r bin')
-    #     if os.path.exists('common'):
-    #         os.system('rm -r common')
-    #     if os.path.exists('log'):
-    #         os.system('rm -r log')
-    #     if os.path.exists('objdump'):
-    #         os.system('rm -r objdump')
-    #     if os.path.exists('Makefile'):
-    #         os.system('rm -r Makefile')
-    #     if os.path.exists('asm'):
-    #         os.system('rm -r asm')
-        
-    #     yaml_files = []
-    #     ini_files = []
-    #     for file in os.listdir("."):
-    #         if file.endswith(".yaml"):
-    #             yaml_files.append(file)
-    #         if file.endswith(".ini"):
-    #             ini_files.append(file)
-
-    #     for item in yaml_files:
-    #         os.system('rm -r {yaml_file}'.format(yaml_file=item))
-    #     for item in ini_files:
-    #         os.system('rm -r {ini_file}'.format(ini_file=item))
-
-    # logger.info('Cleaning gen files...')
-    # if output_dir != '.':
-    #     if os.path.isdir(output_dir):
-    #         os.system('rm -r {output_dir}'.format(output_dir=output_dir))
-    #     else:
-    #         logger.info('The provided output directory does not exist')
-
-    # else:
-    #     if os.path.exists('asm'):
-    #         os.system('rm -r asm')
-
     if os.path.isdir(setup_dir):
         os.system('rm -r {setup_dir}'.format(setup_dir=setup_dir))
     else:
         if setup_dir=='work':
             logger.info('The default setup directory "work" does not exist')
         else:
-            logger.info('The given setup directory does not exist!')
+            logger.error('The given setup directory does not exist!')
 
     if setup_dir != output_dir:
         logger.info('Cleaning gen files....')
         if os.path.isdir(output_dir):
             os.system('rm -r {output_dir}'.format(output_dir=output_dir))
         else:
-            logger.info('Default output directory "work" does not exist. \n Maybe gen command was not run? \n Maybe setup_dir and output_dir are same?')
+            logger.warn('Default output directory "work" does not exist. \n Maybe gen command was not run? \n Maybe setup_dir and output_dir are same?')
 
     logger.info('Finished cleaning')
 

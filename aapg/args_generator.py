@@ -25,9 +25,10 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
 
     usable_regs = []
     for (j,i) in regfile:
-        if j =="x":
+        if j =="x" and i>15:
             usable_regs.append(i)
 
+    # Don't touch registers used elsewhere in aapg
     if 10 in usable_regs:
         usable_regs.remove(10)
     if 6 in usable_regs:
@@ -49,10 +50,12 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
     if 15 in usable_regs:
         usable_regs.remove(15)
 
+    # Find register for comparison with branch 
     try:
         comp_reg = random.choice(usable_regs)
     except:
-        comp_reg = 7
+        logger.error("Unable to find usable register for branch comparison. Remove registers >15 from no use registers. Exitting")
+        sys.exit(1)
 
     # Number of steps to jump
     try:
@@ -234,7 +237,7 @@ def incr_rw(reg_tup, read, write):
 
     return (fst, snd)
 
-def gen_args(instruction, regfile, arch, reg_ignore, *args, **kwargs):
+def gen_args(instruction, regfile, arch, reg_ignore, csr_sections, *args, **kwargs):
     '''
         Function to generate the args for a given instruction
 
@@ -366,7 +369,6 @@ def gen_args(instruction, regfile, arch, reg_ignore, *args, **kwargs):
     final_inst = [instr_name,]
 
     for arg in instr_args:
-
         if arg == 'rd':
             try:
                 register = random.choice(registers_dst)
@@ -402,7 +404,27 @@ def gen_args(instruction, regfile, arch, reg_ignore, *args, **kwargs):
 
             else:
                 if arg == 'uimm12':
-                    imm12_val = random.randint(0,4095)
+                    if "csr" in instr_name:
+                        # Control CSR Access based on config file
+
+                        # Don't write to xstatus, xtvec, xepc, xcause
+                        csr_no_use = [0,5,65,66,256,261,321,322,768,773,833,834]
+                        valid_ranges = csr_sections.split(',')
+                        valid_csrs = []
+                        for item in valid_ranges:
+                            item = item.replace(' ','')
+                            if ':' in item:
+                                begin,end = item.split(':')
+                                begin = int(begin, 16)
+                                end = int(end,16)
+                                for int_val in range(begin,end+1):
+                                    if int_val not in csr_no_use:
+                                        valid_csrs.append(int_val)
+                            else:
+                                valid_csrs.append(int(item,16))
+                        imm12_val = random.choice(valid_csrs)
+                    else:
+                        imm12_val = random.randint(0,4095)
                 else:
                     imm12_val = random.randint(-2048, 2047)
 

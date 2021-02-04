@@ -21,16 +21,15 @@ priv-mode:
 #                           by aapg. Actual may vary.
 #       regs_not_use:       Comma separated list of RISC-V registers to not use for
 #                           reading/writing in the random generated instructions
-#       switching_modes:    DONT NOT PROVIDE ANY USER DEFINED 
-#                           FUNCTIONS.
 #                           
 # ---------------------------------------------------------------------------------
 general:
   total_instructions: 1000
   regs_not_use: x1,x2
-  custom_trap_handler: false
+  custom_trap_handler: true
   code_start_address: 0x80000000
   default_program_exit: true
+  delegation: true
 
 # ---------------------------------------------------------------------------------
 # Distribution of instructions according to ISA extensions
@@ -73,6 +72,7 @@ isa-instruction-distribution:
 
 branch-control:
   backward-probability: 0.5
+  block-size: 7
 
 # ---------------------------------------------------------------------------------
 # Recursion options
@@ -99,6 +99,19 @@ access-sections:
   section1: 0x90000000,0x90001000,rw
   section2: 0x90001000,0x90002000,r
 
+
+# ---------------------------------------------------------------------------------
+# CSR sections
+# Specify which CSRs will be accessed by the random program
+# Options:              
+#       sections:
+#                 start-value1:end-value1, value2, start-value3:end-value3 (HEX)
+#                 (Any Combination)
+# ---------------------------------------------------------------------------------
+csr-sections:
+  sections: 0x000:0xfff
+
+
 # ---------------------------------------------------------------------------------
 # User template sections
 # Allows users to specify call to a custom function with number of times to call
@@ -118,8 +131,8 @@ user-functions:
 #                         and shifting may result in same mode)
 # ---------------------------------------------------------------------------------
 switch-priv-modes:
-  switch_modes: true
-  num_switches: 10
+  switch_modes: false
+  num_switches: 0
 
 
 # ---------------------------------------------------------------------------------
@@ -171,4 +184,19 @@ program-macro:
   post_program_macro: "add x0,x0,x0"
   pre_branch_macro: "add x0,x0,x0"
   post_branch_macro: "add x0,x0,x0"
+  ecause00: "random"
+  ecause01: "random"
+  ecause02: "random"
+  ecause03: "random"
+  ecause04: "random"
+  ecause05: "random"
+  ecause06: "random"
+  ecause07: "random"
+  ecause08: "random"
+  ecause09: "random"
+  ecause10: "random"
+  ecause11: "random"
+  ecause12: "random"
+  ecause13: "random"
+  ecause14: "random"
 '''
