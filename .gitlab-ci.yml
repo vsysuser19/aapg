@@ -3,7 +3,7 @@ stages:
 
 before_script:
     - source /tools/setup.sh
-    - git checkout 77-csr-deleg-update
+    - git checkout 69-priv-modes
     - git pull
     - export PYTHONPATH=$(pwd)
     - export PATH="/home/lavanya/.pyenv/bin:$PATH"
