@@ -50,6 +50,8 @@ class BasicGenerator(object):
 		self.reg_ignore = None
 		self.rec_use_reg1 = None
 		self.rec_use_reg2 = None
+		self.csr_sections  = args.get('csr-sections','sections')
+		self.branch_block_size = args.get('branch-control','block-size')
 
 		# Create the data_access sections
 		access_sections = args.items('access-sections')
@@ -229,6 +231,7 @@ class BasicGenerator(object):
 
 					next_inst_found = True
 
+
 			# if memory_insts, randomly displace sp
 			if next_inst[0] in aapg.isa_funcs.memory_insts and len(self.access_sections) > 0:
 				self.add_memory_instruction()
@@ -290,7 +293,7 @@ class BasicGenerator(object):
 					if rem in self.local_regfile.keys():
 						del self.local_regfile[rem]
 
-				no_pre_insts = random.randint(3,10)
+				no_pre_insts = int(self.branch_block_size)
 				comp_string_begin = ['beq','bne','blt','bge','jal','jalr','pre_branch_macro']
 				comp_string_end = ['beq','bne','blt','bge','jal','jalr','post_branch_macro']
 
@@ -379,18 +382,15 @@ class BasicGenerator(object):
 							self.local_regfile,
 							self.arch,
 							self.reg_ignore,
+							self.csr_sections,
 							total = self.ref_total_instructions,
 							current = self.instructions_togen,
 							data_hazards = self.data_hazards)
 
-					
-					#logger.info(next_inst_with_args)
-
-					# Reset the counters
-
-					#self.q.put(('instruction_nolabel', next_inst_with_args))
+					#Add instruction to branch block
 					extra_instructions.append(('instruction_nolabel', next_inst_with_args))
 
+				#Split the instructions to be before and after the branch instruction
 				before = extra_instructions[:len(extra_instructions)//2]
 				after = extra_instructions[len(extra_instructions)//2:]
 
@@ -402,7 +402,6 @@ class BasicGenerator(object):
 					temp_list.append(next_insts[-1])
 				
 				self.q.put(('branch', temp_list))
-				#self.q.put(('branch', next_insts[begin:end]))
 
 				for i in range(len(after)):
 					self.q.put(after[i])
@@ -438,6 +437,7 @@ class BasicGenerator(object):
 					self.regfile,
 					self.arch,
 					self.reg_ignore,
+					self.csr_sections,
 					total = self.ref_total_instructions,
 					current = self.instructions_togen,
 					data_hazards = self.data_hazards)
@@ -485,8 +485,12 @@ class BasicGenerator(object):
 				num_branch_insts += self.inst_dist['rvc.ctrl']
 			if 'rv32c.ctrl' in self.inst_dist:
 				num_branch_insts += self.inst_dist['rv32c.ctrl']
-			self.min_insts_threshold = int(sum(self.inst_dist_nobranch.values())/num_branch_insts) - 1
-			logger.info("Branch threshold: {}".format(self.min_insts_threshold))
+			try:
+				self.min_insts_threshold = int(sum(self.inst_dist_nobranch.values())/num_branch_insts) - 1
+				logger.info("Branch threshold: {}".format(self.min_insts_threshold))
+			except:
+				logger.error("Number of Instructions too low for branch. Increase Total number of instructions")
+				exit(0)
 		else:
 			self.min_insts_threshold = 0
 
@@ -495,7 +499,10 @@ class BasicGenerator(object):
 
 	def init_regfile(self, not_used_reg_string):
 		""" Initialize the register file | reg : (read, write) """
+		# not_used_regs for all other instructions
 		not_used_regs = [(x[0], int(x[1:])) for x in not_used_reg_string.strip("'").split(',')]
+		
+		# dont_use_regs used for selecting register for branch use
 		dont_use_regs = [5,6,10,11,12,13,30] # 6 is for data section load, 10 is branch target
 		self.rec_use_reg1 = random.randint(0,5)
 		self.rec_use_reg2 = random.randint(0,5)
@@ -537,8 +544,17 @@ class BasicGenerator(object):
 			self.q.put(('instruction_nolabel', ('la', 't0', 'switch_mode_handler')))
 			self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
 		elif args.getboolean('general', 'custom_trap_handler'):
-			self.q.put(('instruction_nolabel', ('la', 't0', 'custom_trap_handler')))
-			self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
+			if args.getboolean('general', 'delegation'):
+				mode = args.get('priv-mode','mode')
+				if mode=="m":
+					self.q.put(('instruction_nolabel', ('la', 't0', 'custom_trap_handler')))
+					self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
+				if mode=="s":
+					self.q.put(('instruction_nolabel', ('la', 't0', 'custom_trap_handler')))
+					self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
+				if mode=="u":
+					self.q.put(('instruction_nolabel', ('la', 't0', 'custom_trap_handler')))
+					self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
 		self.q.put(('instruction_nolabel', ('test_entry_macro', )))
 		self.q.put(('instruction_nolabel', ['123:']))
 		self.total_instructions += 2

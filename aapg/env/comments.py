@@ -88,3 +88,13 @@ data_hazards = '''
 # Data Hazards
 # ---------------------------------------------------------------------------------
 '''
+csr_sections = '''
+# ---------------------------------------------------------------------------------
+# CSR sections
+# Specify which CSRs will be accessed by the random program
+# Options:              
+#       sections:
+#                 start-value1:end-value1, value2, start-value3:end-value3 (HEX)
+#                 (Any Combination)
+# ---------------------------------------------------------------------------------
+'''
