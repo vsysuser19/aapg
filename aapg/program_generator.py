@@ -52,6 +52,11 @@ class BasicGenerator(object):
 		self.rec_use_reg2 = None
 		self.csr_sections  = args.get('csr-sections','sections')
 		self.branch_block_size = args.get('branch-control','block-size')
+		try:
+			self.del_input = args.get('general','delegation-value')
+		except:
+			logger.warn('Delegation Value not provided, taking 0xfff by default')
+			self.del_input = 0xfff
 
 		# Create the data_access sections
 		access_sections = args.items('access-sections')

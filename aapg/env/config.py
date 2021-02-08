@@ -29,7 +29,8 @@ general:
   custom_trap_handler: true
   code_start_address: 0x80000000
   default_program_exit: true
-  delegation: true
+  delegation: false
+  delegation-value: 0xfff
 
 # ---------------------------------------------------------------------------------
 # Distribution of instructions according to ISA extensions
