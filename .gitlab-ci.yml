@@ -19,7 +19,7 @@ before_script:
 test:
     script:
         - pytest tests/test_aapg.py -m "serial" -v
-        - pytest tests/test_aapg.py -n auto -m "not serial" -v
+        - pytest tests/test_aapg.py -n 10 -m "not serial" -v
     tags:
         - mathsya-shakti
 
