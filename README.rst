@@ -15,7 +15,8 @@ There are two ways to get started with aapg. The easiest one is via pip.
 Next, Setup a working directory and build environment,
 
 .. code-block:: bash
-    aapg setup
+    
+    aapg setup  
 
 This creates the folders for the outputs of each step that is compiling the assembly to machine code, dumping a disassemly and then running the simulator on spike (riscv-isa-sim). It also creates a sample ``config.yaml`` to configure each ``aapg`` run.
 
