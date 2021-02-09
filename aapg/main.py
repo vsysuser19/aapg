@@ -71,10 +71,10 @@ class myClass:
 
 @cli.command()
 @click.option('--num_programs', default=1, help='Number of programs to be generated')
-@click.option('--config_file', default ='./config.yaml', help='Configuration file. Default: ./config.yaml')
+@click.option('--config_file', default ='./config.yaml', help='Configuration file. Default: ./work/config.yaml')
 @click.option('--asm_name', default ='out', help='Assembly output file name. Default: out.asm')
-@click.option('--setup_dir', default ='work', help='Setup directory of env files. Default ./')
-@click.option('--output_dir', default ='work', help='Output directory for generated programs. Default: ./asm')
+@click.option('--setup_dir', default ='work', help='Setup directory of env files. Default ./work')
+@click.option('--output_dir', default ='work', help='Output directory for generated programs. Default: ./work/asm')
 @click.option('--arch', default ='rv64', help='Target architecture. Default: rv64')
 @click.option('--seed', help='Seed to regenerate test.')
 @click.option('--linker_only', is_flag='True',help='Generate link.ld only',default='False')
@@ -175,6 +175,8 @@ def yaml_2_yaml(file,logger):
     if 'custom_trap_handler' not in old_config_yaml['general'].keys():
         new_config_yaml['general']['custom_trap_handler'] = old_config_yaml['general']['user_trap_handler']
         del new_config_yaml['general']['user_trap_handler']
+    if 'delegation' not in old_config_yaml['general'].keys():
+        new_config_yaml['general']['delegation'] = False
 
     new_config_yaml['general']['code_start_address'] = hex(old_config_yaml['general']['code_start_address'])
     new_config_yaml['branch-control'] = old_config_yaml['branch-control']
@@ -204,9 +206,43 @@ def yaml_2_yaml(file,logger):
     new_config_yaml['data-hazards'] = old_config_yaml['data-hazards']
 
     if 'program-macro' not in old_config_yaml.keys():
-        new_config_yaml['program-macro'] =  {'pre_program_macro': 'add x0,x0,x0', 'post_program_macro': 'add x0,x0,x0', 'pre_branch_macro': 'add x0,x0,x0', 'post_branch_macro': 'add x0,x0,x0'}
+        new_config_yaml['program-macro'] =  {'pre_program_macro': 'add x0,x0,x0', 'post_program_macro': 'add x0,x0,x0', 'pre_branch_macro': 'add x0,x0,x0', 'post_branch_macro': 'add x0,x0,x0', 'ecause00':'random', 'ecause01':'random', 'ecause02':'random', 'ecause03':'random', 'ecause04':'random', 'ecause05':'random', 'ecause06':'random', 'ecause07':'random', 'ecause08':'random', 'ecause09':'random', 'ecause10':'random', 'ecause11':'random', 'ecause12':'random', 'ecause13':'random', 'ecause14':'random', 'ecause15':'random'}
     else:
         new_config_yaml['program-macro'] = old_config_yaml['program-macro']
+    if 'program-macro' in old_config_yaml.keys():
+        if 'ecause00' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause00'] = "random"
+        if 'ecause01' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause01'] = "random"
+        if 'ecause02' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause02'] = "random"
+        if 'ecause03' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause03'] = "random"
+        if 'ecause04' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause04'] = "random"
+        if 'ecause05' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause05'] = "random"
+        if 'ecause06' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause06'] = "random"
+        if 'ecause07' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause07'] = "random"
+        if 'ecause08' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause08'] = "random"
+        if 'ecause09' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause09'] = "random"
+        if 'ecause10' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause10'] = "random"
+        if 'ecause11' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause11'] = "random"
+        if 'ecause12' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause12'] = "random"
+        if 'ecause13' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause13'] = "random"
+        if 'ecause14' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause14'] = "random"
+        if 'ecause15' not in old_config_yaml['program-macro'].keys():
+            new_config_yaml['program-macro']['ecause15'] = "random"
+
 
     f = open(file, 'w+')
     yaml.dump(new_config_yaml, f, default_flow_style=False,sort_keys=False)
