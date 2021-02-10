@@ -52,11 +52,15 @@ class BasicGenerator(object):
 		self.rec_use_reg2 = None
 		self.csr_sections  = args.get('csr-sections','sections')
 		self.branch_block_size = args.get('branch-control','block-size')
+		self.delegation_boolean = False
 		try:
-			self.del_input = args.get('general','delegation-value')
+			self.del_input = args.get('general','delegation')
+			if self.del_input != 0:
+				self.delegation_boolean = True
 		except:
-			logger.warn('Delegation Value not provided, taking 0xfff by default')
+			logger.warn('Delegation Value not provided, Delegation Not Enabled')
 			self.del_input = 0xfff
+			self.delegation_boolean = False
 
 		# Create the data_access sections
 		access_sections = args.items('access-sections')
@@ -298,7 +302,7 @@ class BasicGenerator(object):
 					if rem in self.local_regfile.keys():
 						del self.local_regfile[rem]
 
-				no_pre_insts = int(self.branch_block_size)
+				no_pre_insts = int(self.branch_block_size) * 2
 				comp_string_begin = ['beq','bne','blt','bge','jal','jalr','pre_branch_macro']
 				comp_string_end = ['beq','bne','blt','bge','jal','jalr','post_branch_macro']
 
@@ -549,7 +553,7 @@ class BasicGenerator(object):
 			self.q.put(('instruction_nolabel', ('la', 't0', 'switch_mode_handler')))
 			self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
 		elif args.getboolean('general', 'custom_trap_handler'):
-			if args.getboolean('general', 'delegation'):
+			if self.delegation_boolean:
 				mode = args.get('priv-mode','mode')
 				if mode=="m":
 					self.q.put(('instruction_nolabel', ('la', 't0', 'custom_trap_handler')))

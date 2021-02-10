@@ -9,7 +9,7 @@ general:
   custom_trap_handler: true
   code_start_address: 0x80000000
   default_program_exit: true
-  delegation: false 
+  delegation: 0x000 
 isa-instruction-distribution:
   rel_sys: 0
   rel_sys.csr: 0
