@@ -53,6 +53,12 @@ You can check the logfiles in the ``log`` directory and the disassembled code in
 
 Example config.yamls with all options can be found in the ```test/ci_cd_templates``` directory. 
 
+To convert configuration files from older versions of aapg (either ``.ini`` or ``.yaml``) to newer versions, use the ``--convert`` option,  
+
+.. code-block:: bash
+
+    aapg --convert=/path/to/oldconfig
+
 Developer Install
 -----------------
 The other way to install it is by using Git. This allows you to stay updated with the latest developments
