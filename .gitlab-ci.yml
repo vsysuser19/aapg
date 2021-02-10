@@ -3,8 +3,6 @@ stages:
 
 before_script:
     - source /tools/setup.sh
-    - git checkout 69-priv-modes
-    - git pull
     - export PYTHONPATH=$(pwd)
     - export PATH="/home/lavanya/.pyenv/bin:$PATH"
     - eval "$(pyenv init -)"
