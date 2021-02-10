@@ -1,33 +1,25 @@
 stages:
   - test
-  - release
 
 before_script:
     - source /tools/setup.sh
+    - git checkout 69-priv-modes
+    - git pull
     - export PYTHONPATH=$(pwd)
-    - python3 -m pip install six pyyaml
-    - python3 -m aapg.main setup;
+    - export PATH="/home/lavanya/.pyenv/bin:$PATH"
+    - eval "$(pyenv init -)"
+    - eval "$(pyenv virtualenv-init -)"
+    - pyenv activate py37
+    - pip install pytest
+    - pip install pytest-timeout
+    - pip uninstall -y aapg
+    - python setup.py install
+    
 
 test:
     script:
-        - python3 -m aapg.main gen --config $PWD/samples/shakti_yaml_configs/aapg_eclass_rv64imac_bringup.yaml
-        - timeout 30 make ISA=rv64imac
-        - python3 -m aapg.main gen --arch rv32 --config $PWD/samples/shakti_yaml_configs/aapg_eclass_rv32imac_bringup.yaml
-        - timeout 30 make ISA=rv32imac ABI=ilp32
-    only:
-        - master
+        - pytest tests/test_aapg.py -m "serial" -v
+        - pytest tests/test_aapg.py -n 10 -m "not serial" -v
     tags:
-        - shakti-runner
-
-release:
-    stage: release
-    script:
-        - python3 /scratch/version-extract.py
-    only:
-        refs:
-            - master
-    tags:
-        - shakti-runner
-    except:
-      - schedules
+        - mathsya-shakti
 

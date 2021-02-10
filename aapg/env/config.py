@@ -5,7 +5,15 @@ template_config = '''
 # Each section commands a behaviour of aapg
 # and inline comments in each section will explain the
 # usage
-
+# ---------------------------------------------------------------------------------
+# Privlege mode that instruction are executed in
+# Options:
+#       mode: m/s/u
+# Note: If the privlege mode is either s or u, then the test_entry_macro
+# will be defined accordingly
+# ---------------------------------------------------------------------------------
+priv-mode:
+  mode: m
 # ---------------------------------------------------------------------------------
 # General directives to aapg
 # Options:
@@ -13,13 +21,15 @@ template_config = '''
 #                           by aapg. Actual may vary.
 #       regs_not_use:       Comma separated list of RISC-V registers to not use for
 #                           reading/writing in the random generated instructions
+#                           
 # ---------------------------------------------------------------------------------
 general:
   total_instructions: 1000
   regs_not_use: x1,x2
-  user_trap_handler: false
+  custom_trap_handler: true
   code_start_address: 0x80000000
   default_program_exit: true
+  delegation: 0x000
 
 # ---------------------------------------------------------------------------------
 # Distribution of instructions according to ISA extensions
@@ -62,6 +72,7 @@ isa-instruction-distribution:
 
 branch-control:
   backward-probability: 0.5
+  block-size: 7
 
 # ---------------------------------------------------------------------------------
 # Recursion options
@@ -88,16 +99,41 @@ access-sections:
   section1: 0x90000000,0x90001000,rw
   section2: 0x90001000,0x90002000,r
 
+
+# ---------------------------------------------------------------------------------
+# CSR sections
+# Specify which CSRs will be accessed by the random program
+# Options:              
+#       sections:
+#                 start-value1:end-value1, value2, start-value3:end-value3 (HEX)
+#                 (Any Combination)
+# ---------------------------------------------------------------------------------
+csr-sections:
+  sections: 0x0100:0xdff, 0x325, 0x500:0xfff
+
+
 # ---------------------------------------------------------------------------------
 # User template sections
 # Allows users to specify call to a custom function with number of times to call
 # User should ensure that function does not modify 
 #                       
 # Section Template: Specify user template function calls with the number of times
-#       function_name: number_of_times
+#       function_name: '{number_of_times:"function_body"}'
 # ---------------------------------------------------------------------------------
 user-functions:
-  _test: 0
+  func1: '{0:"add x0,x0,x0"}'
+
+# ---------------------------------------------------------------------------------
+# Switching Privledge modes in AAPG
+#       switching_modes:  true/false (Do not provide any user defined functions when
+#                         shifting mdoes is true)
+#       num_switches:     # of times privlege modes has to shift (This is randomised 
+#                         and shifting may result in same mode)
+# ---------------------------------------------------------------------------------
+switch-priv-modes:
+  switch_modes: false
+  num_switches: 0
+
 
 # ---------------------------------------------------------------------------------
 # Instruction Cache and Data-Cache Thrashing
@@ -142,4 +178,25 @@ data-hazards:
   war_prob: 0.5
   waw_prob: 0.5
   num_regs_lookbehind: 3
+
+program-macro:
+  pre_program_macro: "add x0,x0,x0"
+  post_program_macro: "add x0,x0,x0"
+  pre_branch_macro: "add x0,x0,x0"
+  post_branch_macro: "add x0,x0,x0"
+  ecause00: "random"
+  ecause01: "random"
+  ecause02: "random"
+  ecause03: "random"
+  ecause04: "random"
+  ecause05: "random"
+  ecause06: "random"
+  ecause07: "random"
+  ecause08: "random"
+  ecause09: "random"
+  ecause10: "random"
+  ecause11: "random"
+  ecause12: "random"
+  ecause13: "random"
+  ecause14: "random"
 '''

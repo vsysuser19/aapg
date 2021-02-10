@@ -1,4 +1,4 @@
-Advanced Assembly Program Generator
+Automated Assembly Program Generator
 ===================================
 Automated Assembly Program Generator (``aapg``) is a tool 
 that is intended to generate random RISC-V programs
@@ -12,19 +12,13 @@ There are two ways to get started with aapg. The easiest one is via pip.
 
     pip install aapg
 
-Next, create a working directory for your project,
+Next, Setup a working directory and build environment,
 
 .. code-block:: bash
-    mkdir ~/aapg-samples 
-    cd ~/aapg-samples
+    
+    aapg setup  
 
-Now we setup the build environment by typing,
-
-.. code-block:: bash
-
-    aapg setup
-
-This creates the folders for the outputs of each step that is compiling the assembly to machine code, dumping a disassemly and then running the simulator on spike (riscv-isa-sim). It also creates a sample ``config.ini`` to configure each ``aapg`` run.
+This creates the folders for the outputs of each step that is compiling the assembly to machine code, dumping a disassemly and then running the simulator on spike (riscv-isa-sim). It also creates a sample ``config.yaml`` to configure each ``aapg`` run.
 
 Once the previous steps have been completed, we can run ``aapg``
 using the following command.
@@ -40,9 +34,9 @@ By default, ``aapg`` generates 64 bit programs. To generate 32 bit programs, you
     aapg gen --arch rv32
 
 You should find your random program generated in
-``build/out.asm`` in your current directory. By default,
-``aapg`` expects the configuration file to be ``config.ini``
-and the output file to be ``build/out.asm`` in the directory
+``work/asm/out_config_00000.S`` in your current directory. By default,
+``aapg`` expects the configuration file to be ``config.yaml``
+and the output file will be ``work/asm/out_config_00000.S`` in the directory
 that ``aapg`` was run in. To build the programs and run them on Spike,
 
 .. code-block:: bash
@@ -57,7 +51,13 @@ Alternatively for compiling using the 32-bit toolchain, you can type,
 
 You can check the logfiles in the ``log`` directory and the disassembled code in ``objdump`` directory.
 
-A sample config.ini with all options can be found in the ```samples``` directory. 
+Example config.yamls with all options can be found in the ```test/ci_cd_templates``` directory. 
+
+To convert configuration files from older versions of aapg (either ``.ini`` or ``.yaml``) to newer versions, use the ``convert`` option,  
+
+.. code-block:: bash
+
+    aapg convert --file=/path/to/oldconfig
 
 Developer Install
 -----------------
@@ -74,11 +74,12 @@ This will install aapg on your path.
 
 Wiki
 ------------
-Head to `Wiki <https://gitlab.com/shaktiproject/tools/aapg/wikis/Wiki>`_ for detailed information.
+Head to `Wiki 2.0.0 <https://gitlab.com/shaktiproject/tools/aapg/-/wikis/Wiki-AAPG-%5B2.0.0%5D>`_ for detailed information.  
+For documentation on the older versions of AAPG, please visit, `Wiki 0.8.0 <https://gitlab.com/shaktiproject/tools/aapg/-/wikis/Wiki>`_
 
 License
 -------
-Copyright (c) 2013-2018, IIT Madras
+Copyright (c) 2013-2020, IIT Madras
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
