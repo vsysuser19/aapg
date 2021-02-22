@@ -1,6 +1,21 @@
 # CHANGELOG
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [2.1.0] - 2021-02-19
+# Added
+- Support for delegation  
+- Support for Floating point rounding modes
+
+## [2.0.0] - 2021-02-13
+# Added
+- Support for test entry privledge mode  
+- Support for Switching Privledge modes
+- Support for CSR access Sections
+- Dynamic random ecause value generation    
+- Exception and Program macro definition support in config file  
+- Branch Block size in Branch Control Section  
+
+
 ## [1.0.2] - 2019-12-18
 # Fixed
 - version

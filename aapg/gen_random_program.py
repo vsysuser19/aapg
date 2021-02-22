@@ -13,6 +13,7 @@ import random
 import pytz
 
 import aapg.asm_writer
+import aapg.isa_funcs
 import aapg.program_generator
 import aapg.utils
 import aapg.env
@@ -1834,15 +1835,33 @@ class myClass:
         self.seed = seed
         self.linker_only = linker_only
 
+def float_rounding_dist(args):
+    """ Function to calculate the distribution for the type of rounding for float insetructions
+
+        Args:
+          args: Configuration parser args obtained from (default) config.yaml
+    """
+    total = 0
+    rounding_array = list()
+    prob_array = list()
+    for key in args['float-rounding'].keys():
+      rounding_array.append(key)
+      total = total + int(args['float-rounding'][key])
+      prob_array.append(int(args['float-rounding'][key]))
+
+    prob_array = [number / total for number in prob_array]
+    return (rounding_array,prob_array)
+
 def gen_random_program(ofile, args, arch, seed, no_headers):
     """ Function to generate one random assembly program
 
         Args:
             ofile: Output file handler
-            args: Configuration parser args obtained from (default) config.ini
+            args: Configuration parser args obtained from (default) config.yaml
     """
 
     # Instantiate AsmWriter
+    random.seed(seed)
     writer = aapg.asm_writer.AsmWriter(ofile)
 
     # Header Section
@@ -1873,6 +1892,13 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
     writer.write('.globl\t\tmain');
     writer.write('.type\t\tmain, @function');
 
+    try:
+      rounding_array,prob_array = float_rounding_dist(args)
+    except:
+      logger.warn('Float Rounding Section not provided. Setting all to dynamic')
+      rounding_array = ['dyn']
+      prob_array = [1]
+
     # Section instruction writer
     basic_generator = aapg.program_generator.BasicGenerator(args, arch, seed, no_use_regs) 
     root_index = 0
@@ -1883,7 +1909,8 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
             logger.debug("Writing: " + " ".join(line[1]))
         elif line[0] == 'instruction':
             label = 'i' + '{0:010x}'.format(root_index)
-            writer.write_inst(*line[1], label = label)
+            round_type = random.choices(rounding_array, weights=prob_array, k=1)[0]
+            writer.write_inst(*line[1], label = label, round_type=round_type)
             root_index += 1
             logger.debug("Writing: " + " ".join(line[1]))
         elif line[0] == 'pseudo':
@@ -1910,7 +1937,8 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
                 writer.write_pseudo(*inst, indent = 4)
             writer.write('')
         elif line[0] == 'instruction_nolabel':
-            writer.write_inst(*line[1], label = "", indent = 4)
+            round_type = random.choices(rounding_array, weights=prob_array, k=1)[0]
+            writer.write_inst(*line[1], label = "", indent = 4,round_type=round_type)
             logger.debug("Writing: " + " ".join(line[1]))
 
     if args.getboolean('general', 'default_program_exit'):
@@ -1933,18 +1961,23 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
                 continue
 
             if line[0] == 'instruction':
-                writer.write_inst(*line[1], indent = 4)
+                round_type = random.choices(rounding_array, weights=prob_array, k=1)[0]
+                writer.write_inst(*line[1], indent = 4,round_type=round_type)
             elif line[0] == 'instructions':
                 for inst in line[1]:
-                    writer.write_inst(*inst, indent = 4)
+                    round_type = random.choices(rounding_array, weights=prob_array, k=1)[0]
+                    writer.write_inst(*inst, indent = 4,round_type=round_type)
             elif line[0] == 'label_instructions':
-                writer.write_inst(*line[2][0], label = line[1])
+                round_type = random.choices(rounding_array, weights=prob_array, k=1)[0]
+                writer.write_inst(*line[2][0], label = line[1],round_type=round_type)
                 for inst in line[2][1:]:
                     writer.write_pseudo(*inst, indent = 4)
             elif line[0] == 'label':
-                writer.write_inst(*line[2], label = line[1])
+                round_type = random.choices(rounding_array, weights=prob_array, k=1)[0]
+                writer.write_inst(*line[2], label = line[1],round_type=round_type)
             elif line[0] == 'byte':
-                writer.write_inst(*line[1], indent = 4)
+                round_type = random.choices(rounding_array, weights=prob_array, k=1)[0]
+                writer.write_inst(*line[1], indent = 4,round_type=round_type)
 
         writer.newline()
 
@@ -1971,7 +2004,8 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
 
         data_generator = aapg.program_generator.DataGenerator(section_size)
         for line in data_generator:
-            writer.write_inst(*line)
+            round_type = "dyn"
+            writer.write_inst(*line,round_type=round_type)
 
         writer.newline()
 
