@@ -1,5 +1,6 @@
 stages:
   - test
+  - deploy
 
 before_script:
     - source /tools/setup.sh
@@ -8,6 +9,7 @@ before_script:
     - eval "$(pyenv init -)"
     - eval "$(pyenv virtualenv-init -)"
     - pyenv activate py37
+    - git pull
     - pip install pytest
     - pip install pytest-timeout
     - pip uninstall -y aapg
@@ -17,7 +19,29 @@ before_script:
 test:
     script:
         - pytest tests/test_aapg.py -m "serial" -v
-        - pytest tests/test_aapg.py -n 10 -m "not serial" -v
+        - pytest tests/test_aapg.py -n 10 -m "not serial" -v --seed=$((1 + $RANDOM))
+
     tags:
         - mathsya-shakti
+
+deploy:
+    stage: deploy
+    script:
+        - source /tools/setup.sh
+        - export PYTHONPATH=$(pwd)
+        - export PATH="/home/lavanya/.pyenv/bin:$PATH"
+        - eval "$(pyenv init -)"
+        - eval "$(pyenv virtualenv-init -)"
+        - pyenv activate py37
+        - git pull
+        - pip install twine
+        - python setup.py sdist
+        - python -m twine upload --username $shaktipypiusername --password $shaktipypipassword dist/*
+        - python /scratch/version-extract-rst.py
+    only:
+        refs:
+            - master
+    tags:
+        - mathsya-shakti
+
 

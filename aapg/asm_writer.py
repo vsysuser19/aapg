@@ -91,7 +91,12 @@ class AsmWriter(object):
             arg2 = '{0}({1})'.format(args[-1], args[-2])
             write_string = '{0:<20s}{1:<20s}{2}\n'.format(inst_name, ', '.join(args[:1] + (arg2,)), comment)
         else:
-            write_string = '{0:<20s}{1:<20s}{2}\n'.format(inst_name, ', '.join(args), comment)
+            write_string = '{0:<20s}{1:<20s}{2}\n'.format(inst_name, ', '.join(args)+'xxremovexx', comment)
+            if inst_name in aapg.isa_funcs.float_insts_r:
+                write_string = write_string.replace('xxremovexx',', ' + kwargs['round_type'])
+            else:
+                write_string = write_string.replace('xxremovexx','')
+
         write_string = indent_string(write_string, indent)
         write_string = label_string(write_string, label)
         ofile.write(write_string)

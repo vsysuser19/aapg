@@ -166,7 +166,30 @@ inst_store_by_set = {
         'fcvt.s.wu rdf rs1 24..20=1 31..27=0x1A rm       26..25=0 6..2=0x14 1..0=3',
         'fmv.w.x   rdf rs1 24..20=0 31..27=0x1E 14..12=0 26..25=0 6..2=0x14 1..0=3',
     ],
+    'rv32fr' : [
+        'flw       rdf rs1 imm12 14..12=2 6..2=0x01 1..0=3',
+        'fsw       rs1f rs2 imm12 14..12=2 6..2=0x09 1..0=3',
+        'fmadd.s   rdf rs1f rs2f rs3f rm 26..25=0 6..2=0x10 1..0=3',
+        'fmsub.s   rdf rs1f rs2f rs3f rm 26..25=0 6..2=0x11 1..0=3',
+        'fnmsub.s  rdf rs1f rs2f rs3f rm 26..25=0 6..2=0x12 1..0=3',
+        'fnmadd.s  rdf rs1f rs2f rs3f rm 26..25=0 6..2=0x13 1..0=3',
+        'fadd.s    rdf rs1f rs2f      31..27=0x00 rm       26..25=0 6..2=0x14 1..0=3',
+        'fsub.s    rdf rs1f rs2f      31..27=0x01 rm       26..25=0 6..2=0x14 1..0=3',
+        'fmul.s    rdf rs1f rs2f      31..27=0x02 rm       26..25=0 6..2=0x14 1..0=3',
+        'fdiv.s    rdf rs1f rs2f      31..27=0x03 rm       26..25=0 6..2=0x14 1..0=3',
+        'fsqrt.s   rdf rs1f 24..20=0 31..27=0x0B rm       26..25=0 6..2=0x14 1..0=3',
+        'fcvt.w.s  rd rs1f 24..20=0 31..27=0x18 rm       26..25=0 6..2=0x14 1..0=3',
+        'fcvt.wu.s rd rs1f 24..20=1 31..27=0x18 rm       26..25=0 6..2=0x14 1..0=3',
+        'fcvt.s.w  rdf rs1 24..20=0 31..27=0x1A rm       26..25=0 6..2=0x14 1..0=3',
+        'fcvt.s.wu rdf rs1 24..20=1 31..27=0x1A rm       26..25=0 6..2=0x14 1..0=3',
+    ],
     'rv64f' : [
+        'fcvt.l.s  rd rs1f 24..20=2 31..27=0x18 rm       26..25=0 6..2=0x14 1..0=3',
+        'fcvt.lu.s rd rs1f 24..20=3 31..27=0x18 rm       26..25=0 6..2=0x14 1..0=3',
+        'fcvt.s.l  rdf rs1 24..20=2 31..27=0x1A rm       26..25=0 6..2=0x14 1..0=3',
+        'fcvt.s.lu rdf rs1 24..20=3 31..27=0x1A rm       26..25=0 6..2=0x14 1..0=3',
+    ],
+    'rv64fr' : [
         'fcvt.l.s  rd rs1f 24..20=2 31..27=0x18 rm       26..25=0 6..2=0x14 1..0=3',
         'fcvt.lu.s rd rs1f 24..20=3 31..27=0x18 rm       26..25=0 6..2=0x14 1..0=3',
         'fcvt.s.l  rdf rs1 24..20=2 31..27=0x1A rm       26..25=0 6..2=0x14 1..0=3',
@@ -329,6 +352,21 @@ memory_insts = [x.split(' ')[0] for x in
         inst_store_by_set['rv32c.fdata'] +
         inst_store_by_set['rv64c.data']
         ] + ['flw', 'fsw', 'fld', 'fsd']
+
+float_insts = [x.split(' ')[0] for x in
+        inst_store_by_set['rv32f'] +
+        inst_store_by_set['rv64f'] +
+        inst_store_by_set['rv32d'] + 
+        inst_store_by_set['rv64d'] +
+        inst_store_by_set['rv32c.fdata'] +
+        inst_store_by_set['rv64c.data']
+        ] + ['flw', 'fsw', 'fld', 'fsd']
+
+float_insts_r = [x.split(' ')[0] for x in
+        inst_store_by_set['rv32fr'] +
+        inst_store_by_set['rv64fr']
+        ]
+
 
 comp_insts = [x.split(' ')[0] for x in
         inst_store_by_set['rvc.ctrl'] + 

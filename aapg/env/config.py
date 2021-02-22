@@ -29,7 +29,7 @@ general:
   custom_trap_handler: true
   code_start_address: 0x80000000
   default_program_exit: true
-  delegation: 0x000
+  delegation: 0xfff
 
 # ---------------------------------------------------------------------------------
 # Distribution of instructions according to ISA extensions
@@ -69,6 +69,13 @@ isa-instruction-distribution:
 
   rel_rv64c.compute: 0
   rel_rv64c.data: 0
+
+float-rounding:
+  rne: 10
+  rtz: 10
+  rdn: 10
+  rup: 10
+  rmm: 10
 
 branch-control:
   backward-probability: 0.5
