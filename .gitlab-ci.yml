@@ -33,7 +33,7 @@ deploy:
         - pip install twine
         - python setup.py sdist
         - python -m twine upload --username $shaktipypiusername --password $shaktipypipassword dist/*
-        - python /scratch/version-extract-rst.py
+#        - python /scratch/version-extract-rst.py
     only:
         refs:
             - master
