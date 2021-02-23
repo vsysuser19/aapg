@@ -2138,7 +2138,7 @@ replace_word
     if config_args.getboolean('general', 'default_program_exit'):
         repl_string = tohost_string
     else:
-        repl_string = ""
+        repl_string = tohost_string
 
     linker_template = re.sub(tohost_section_pattern, repl_string, linker_template)
 
