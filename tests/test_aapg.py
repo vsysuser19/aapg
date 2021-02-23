@@ -118,11 +118,11 @@ def test_basic(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[0])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[0]))
-    result = runner.invoke(cli, ['gen','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[0]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[0])])
+    result = runner.invoke(cli, ['gen','--num_programs=10','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[0]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[0])])
     try:
-        os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[0]))
+        out = os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[0]))
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -132,11 +132,11 @@ def test_branch(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[1])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[1]))
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[1]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[1])])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[1]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[1])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[1]))
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -146,11 +146,11 @@ def test_csr(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[2])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[2]))
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[2]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[2])])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[2]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[2])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[2]))
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -160,11 +160,11 @@ def test_switch_mode(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[3])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[3]))
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[3]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[3])])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[3]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[3])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[3]))
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -174,11 +174,11 @@ def test_exceptions(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[4])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[4]))
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[4]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[4])])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[4]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[4])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[4]))
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -188,11 +188,11 @@ def test_i_cache(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[5])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[5]))
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[5]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[5])])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[5]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[5])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[5]))
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -202,11 +202,11 @@ def test_recursion(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[6])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[6]))
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[6]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[6])])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[6]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[6])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[6]))
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -216,11 +216,11 @@ def test_all(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[7])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[7]))
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[7]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[7])])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[7]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[7])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[7]))
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 
@@ -231,11 +231,11 @@ def test_aapg_iclass_rv64imafdc_hazards_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_hazards_s.yaml tests/work/aapg_iclass_rv64imafdc_hazards_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_hazards_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -245,11 +245,11 @@ def test_aapg_iclass_rv64imafdc_recurse_med(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_recurse_med'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_recurse_med.yaml tests/work/aapg_iclass_rv64imafdc_recurse_med/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recurse_med','--output_dir=tests/work/aapg_iclass_rv64imafdc_recurse_med/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recurse_med','--output_dir=tests/work/aapg_iclass_rv64imafdc_recurse_med/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_recurse_med; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -259,11 +259,11 @@ def test_aapg_cclass_rv64imafdc_hazards_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_hazards_u.yaml tests/work/aapg_cclass_rv64imafdc_hazards_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_hazards_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -273,11 +273,11 @@ def test_aapg_cclass_rv64imafdc_test_all2(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_test_all2'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_test_all2.yaml tests/work/aapg_cclass_rv64imafdc_test_all2/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_test_all2','--output_dir=tests/work/aapg_cclass_rv64imafdc_test_all2/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_test_all2','--output_dir=tests/work/aapg_cclass_rv64imafdc_test_all2/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_test_all2; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -287,11 +287,11 @@ def test_aapg_cclass_rv64imafdc_branches1(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_branches1.yaml tests/work/aapg_cclass_rv64imafdc_branches1/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_branches1; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -301,11 +301,11 @@ def test_aapg_cclass_rv64imafdc_bringup_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_bringup_s.yaml tests/work/aapg_cclass_rv64imafdc_bringup_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_bringup_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_bringup_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_bringup_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -315,11 +315,11 @@ def test_aapg_cclass_rv64imafdc_s_recursion(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_s_recursion'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_s_recursion.yaml tests/work/aapg_cclass_rv64imafdc_s_recursion/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_s_recursion','--output_dir=tests/work/aapg_cclass_rv64imafdc_s_recursion/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_s_recursion','--output_dir=tests/work/aapg_cclass_rv64imafdc_s_recursion/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_s_recursion; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -329,11 +329,11 @@ def test_aapg_iclass_rv64imafdc_branches1_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_branches1_u.yaml tests/work/aapg_iclass_rv64imafdc_branches1_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_branches1_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -343,11 +343,11 @@ def test_aapg_iclass_rv64imafdc_test_all2(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_test_all2'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_test_all2.yaml tests/work/aapg_iclass_rv64imafdc_test_all2/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_test_all2','--output_dir=tests/work/aapg_iclass_rv64imafdc_test_all2/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_test_all2','--output_dir=tests/work/aapg_iclass_rv64imafdc_test_all2/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_test_all2; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -357,11 +357,11 @@ def test_aapg_iclass_rv64imafdc_user_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_user_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_user_s.yaml tests/work/aapg_iclass_rv64imafdc_user_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_user_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_user_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_user_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -371,11 +371,11 @@ def test_aapg_cclass_rv64imafdc_user(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_user'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_user.yaml tests/work/aapg_cclass_rv64imafdc_user/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user','--output_dir=tests/work/aapg_cclass_rv64imafdc_user/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user','--output_dir=tests/work/aapg_cclass_rv64imafdc_user/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_user; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -385,11 +385,11 @@ def test_aapg_iclass_rv64imafdc_bringup(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_bringup.yaml tests/work/aapg_iclass_rv64imafdc_bringup/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_bringup; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -399,11 +399,11 @@ def test_aapg_cclass_rv64imafdc_hazards(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_hazards.yaml tests/work/aapg_cclass_rv64imafdc_hazards/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_hazards; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -413,11 +413,11 @@ def test_aapg_iclass_rv64imafdc_user(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_user'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_user.yaml tests/work/aapg_iclass_rv64imafdc_user/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user','--output_dir=tests/work/aapg_iclass_rv64imafdc_user/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user','--output_dir=tests/work/aapg_iclass_rv64imafdc_user/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_user; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -427,11 +427,11 @@ def test_aapg_iclass_rv64imafdc_branches1(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_branches1.yaml tests/work/aapg_iclass_rv64imafdc_branches1/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_branches1; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -441,11 +441,11 @@ def test_aapg_cclass_rv64imafdc_exceptions_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_exceptions_u.yaml tests/work/aapg_cclass_rv64imafdc_exceptions_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_exceptions_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -455,11 +455,11 @@ def test_aapg_iclass_rv64imafdc_hazards(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_hazards.yaml tests/work/aapg_iclass_rv64imafdc_hazards/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_hazards; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -469,11 +469,11 @@ def test_aapg_iclass_rv64imafdc_recursion_branch(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_recursion_branch'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_recursion_branch.yaml tests/work/aapg_iclass_rv64imafdc_recursion_branch/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recursion_branch','--output_dir=tests/work/aapg_iclass_rv64imafdc_recursion_branch/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recursion_branch','--output_dir=tests/work/aapg_iclass_rv64imafdc_recursion_branch/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_recursion_branch; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -483,11 +483,11 @@ def test_aapg_iclass_rv64imafdc_hazards_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_hazards_u.yaml tests/work/aapg_iclass_rv64imafdc_hazards_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_hazards_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -497,11 +497,11 @@ def test_aapg_iclass_rv64imafdc_exceptions_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_exceptions_u.yaml tests/work/aapg_iclass_rv64imafdc_exceptions_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_exceptions_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -511,11 +511,11 @@ def test_aapg_cclass_rv64imafdc_branches1_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_branches1_s.yaml tests/work/aapg_cclass_rv64imafdc_branches1_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_branches1_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -525,11 +525,11 @@ def test_aapg_cclass_rv64imafdc_bringup_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_bringup_u.yaml tests/work/aapg_cclass_rv64imafdc_bringup_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_bringup_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_bringup_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_bringup_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -539,11 +539,11 @@ def test_aapg_iclass_rv64imafdc_illegal(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_illegal.yaml tests/work/aapg_iclass_rv64imafdc_illegal/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_illegal; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -553,11 +553,11 @@ def test_aapg_iclass_rv64imafdc_bringup_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_bringup_s.yaml tests/work/aapg_iclass_rv64imafdc_bringup_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_bringup_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -567,11 +567,11 @@ def test_aapg_cclass_rv64imafdc_user_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_user_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_user_s.yaml tests/work/aapg_cclass_rv64imafdc_user_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_user_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_user_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_user_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -581,11 +581,11 @@ def test_aapg_cclass_rv64imafdc_illegal_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_illegal_u.yaml tests/work/aapg_cclass_rv64imafdc_illegal_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_illegal_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -595,11 +595,11 @@ def test_aapg_cclass_rv64imafdc_recursion_branch(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_recursion_branch'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_recursion_branch.yaml tests/work/aapg_cclass_rv64imafdc_recursion_branch/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recursion_branch','--output_dir=tests/work/aapg_cclass_rv64imafdc_recursion_branch/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recursion_branch','--output_dir=tests/work/aapg_cclass_rv64imafdc_recursion_branch/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_recursion_branch; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -609,11 +609,11 @@ def test_aapg_cclass_rv64imafdc_bringup(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_bringup.yaml tests/work/aapg_cclass_rv64imafdc_bringup/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup','--output_dir=tests/work/aapg_cclass_rv64imafdc_bringup/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup','--output_dir=tests/work/aapg_cclass_rv64imafdc_bringup/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_bringup; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -623,11 +623,11 @@ def test_aapg_iclass_rv64imafdc_exceptions(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_exceptions.yaml tests/work/aapg_iclass_rv64imafdc_exceptions/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_exceptions; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -637,11 +637,11 @@ def test_aapg_iclass_rv64imafdc_branches1_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_branches1_s.yaml tests/work/aapg_iclass_rv64imafdc_branches1_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_branches1_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -651,11 +651,11 @@ def test_aapg_iclass_rv64imafdc_s_recursion(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_s_recursion'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_s_recursion.yaml tests/work/aapg_iclass_rv64imafdc_s_recursion/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_s_recursion','--output_dir=tests/work/aapg_iclass_rv64imafdc_s_recursion/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_s_recursion','--output_dir=tests/work/aapg_iclass_rv64imafdc_s_recursion/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_s_recursion; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -665,11 +665,11 @@ def test_aapg_iclass_rv64imafdc_illegal_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_illegal_u.yaml tests/work/aapg_iclass_rv64imafdc_illegal_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_illegal_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -679,11 +679,11 @@ def test_aapg_cclass_rv64imafdc_hazards_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_hazards_s.yaml tests/work/aapg_cclass_rv64imafdc_hazards_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_hazards_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -693,11 +693,11 @@ def test_aapg_cclass_rv64imafdc_user_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_user_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_user_u.yaml tests/work/aapg_cclass_rv64imafdc_user_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_user_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_user_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_user_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -707,11 +707,11 @@ def test_aapg_cclass_rv64imafdc_exceptions_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_exceptions_s.yaml tests/work/aapg_cclass_rv64imafdc_exceptions_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_exceptions_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -721,11 +721,11 @@ def test_aapg_cclass_rv64imafdc_test_all(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_test_all'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_test_all.yaml tests/work/aapg_cclass_rv64imafdc_test_all/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_test_all','--output_dir=tests/work/aapg_cclass_rv64imafdc_test_all/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_test_all','--output_dir=tests/work/aapg_cclass_rv64imafdc_test_all/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_test_all; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -735,11 +735,11 @@ def test_aapg_iclass_rv64imafdc_test_all(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_test_all'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_test_all.yaml tests/work/aapg_iclass_rv64imafdc_test_all/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_test_all','--output_dir=tests/work/aapg_iclass_rv64imafdc_test_all/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_test_all','--output_dir=tests/work/aapg_iclass_rv64imafdc_test_all/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_test_all; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -749,11 +749,11 @@ def test_aapg_iclass_rv64imafdc_recurse_low(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_recurse_low'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_recurse_low.yaml tests/work/aapg_iclass_rv64imafdc_recurse_low/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recurse_low','--output_dir=tests/work/aapg_iclass_rv64imafdc_recurse_low/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recurse_low','--output_dir=tests/work/aapg_iclass_rv64imafdc_recurse_low/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_recurse_low; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -763,11 +763,11 @@ def test_aapg_cclass_rv64imafdc_branches1_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_branches1_u.yaml tests/work/aapg_cclass_rv64imafdc_branches1_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_branches1_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -777,11 +777,11 @@ def test_aapg_cclass_rv64imafdc_exceptions(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_exceptions.yaml tests/work/aapg_cclass_rv64imafdc_exceptions/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_exceptions; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -791,11 +791,11 @@ def test_aapg_cclass_rv64imafdc_illegal_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_illegal_s.yaml tests/work/aapg_cclass_rv64imafdc_illegal_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_illegal_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -805,11 +805,11 @@ def test_aapg_cclass_rv64imafdc_recurse_med(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_recurse_med'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_recurse_med.yaml tests/work/aapg_cclass_rv64imafdc_recurse_med/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recurse_med','--output_dir=tests/work/aapg_cclass_rv64imafdc_recurse_med/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recurse_med','--output_dir=tests/work/aapg_cclass_rv64imafdc_recurse_med/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_recurse_med; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -819,11 +819,11 @@ def test_aapg_iclass_rv64imafdc_user_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_user_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_user_u.yaml tests/work/aapg_iclass_rv64imafdc_user_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_user_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_user_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_user_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -833,11 +833,11 @@ def test_aapg_iclass_rv64imafdc_bringup_u(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup_u'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_bringup_u.yaml tests/work/aapg_iclass_rv64imafdc_bringup_u/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup_u/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_bringup_u; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -847,11 +847,11 @@ def test_aapg_cclass_rv64imafdc_illegal(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_illegal.yaml tests/work/aapg_cclass_rv64imafdc_illegal/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_illegal; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -861,11 +861,11 @@ def test_aapg_cclass_rv64imafdc_recurse_low(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_cclass_rv64imafdc_recurse_low'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_cclass_rv64imafdc_recurse_low.yaml tests/work/aapg_cclass_rv64imafdc_recurse_low/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recurse_low','--output_dir=tests/work/aapg_cclass_rv64imafdc_recurse_low/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recurse_low','--output_dir=tests/work/aapg_cclass_rv64imafdc_recurse_low/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_recurse_low; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -875,11 +875,11 @@ def test_aapg_iclass_rv64imafdc_exceptions_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_exceptions_s.yaml tests/work/aapg_iclass_rv64imafdc_exceptions_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_exceptions_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -889,11 +889,11 @@ def test_aapg_iclass_rv64imafdc_illegal_s(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal_s'])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_illegal_s.yaml tests/work/aapg_iclass_rv64imafdc_illegal_s/config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal_s/asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_illegal_s; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
@@ -903,9 +903,9 @@ def test_aapg_iclass_rv64imafdc_data_trashing (runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing '])
     os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_data_trashing .yaml tests/work/aapg_iclass_rv64imafdc_data_trashing /config.yaml')
-    result = runner.invoke(cli, ['gen','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing ','--output_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing /asm'])
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing ','--output_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing /asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_data_trashing ; make')
     except:
-        make = 1
+        make = 0
     assert result.exit_code == 0 and make == 0
