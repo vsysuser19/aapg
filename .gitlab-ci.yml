@@ -1,28 +1,25 @@
 stages:
-  - pre-merge
+  - test
   - deploy
 
-pre-merge:
-  stage: pre-merge
+before_script:
+    - source /tools/setup.sh
+    - export PYTHONPATH=$(pwd)
+    - export PATH="/home/lavanya/.pyenv/bin:$PATH"
+    - eval "$(pyenv init -)"
+    - eval "$(pyenv virtualenv-init -)"
+    - pyenv activate py37
+    - pip install pytest
+    - pip install pytest-timeout
+    - pip uninstall -y aapg
+    - python setup.py install
+test:
     script:
-        - source /tools/setup.sh
-        - export PYTHONPATH=$(pwd)
-        - export PATH="/home/lavanya/.pyenv/bin:$PATH"
-        - eval "$(pyenv init -)"
-        - eval "$(pyenv virtualenv-init -)"
-        - pyenv activate py37
-        - pip install pytest
-        - pip install pytest-timeout
-        - pip uninstall -y aapg
-        - python setup.py install
         - pytest tests/test_aapg.py -m "serial" -v
-        - pytest tests/test_aapg.py -n 10 -m "not serial" -v --seed=$((1 + $RANDOM)) -s
+        - pytest tests/test_aapg.py -n 10 -m "not serial" -v --seed=$((1 + $RANDOM))
+
     tags:
         - mathsya-shakti
-    only:
-        refs:
-            - merge_requests
-
 
 deploy:
     stage: deploy
@@ -42,5 +39,3 @@ deploy:
             - master
     tags:
         - mathsya-shakti
-
-
