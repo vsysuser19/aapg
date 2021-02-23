@@ -1,5 +1,6 @@
 stages:
   - test
+  - test_master
   - deploy
 
 before_script:
@@ -20,6 +21,16 @@ test:
     only:
         refs:
             - merge_requests
+    tags:
+        - mathsya-shakti
+
+test_master:
+    script:
+        - pytest tests/test_aapg.py -m "serial" -v
+        - pytest tests/test_aapg.py -n 10 -m "not serial" -v --seed=$((1 + $RANDOM)) -s
+    only:
+        refs:
+            - master
     tags:
         - mathsya-shakti
 
