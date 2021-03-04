@@ -21,8 +21,9 @@ SRC_FILES := $(filter-out $(wildcard $(ASM_SRC_DIR)/*template.S),$(BASE_SRC_FILE
 BIN_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(BIN_DIR)/%.riscv, $(SRC_FILES))
 OBJ_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(OBJ_DIR)/%.objdump, $(SRC_FILES))
 LOG_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(LOG_DIR)/%.log, $(SRC_FILES))
+DUMP_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(LOG_DIR)/%.dump, $(SRC_FILES))
 
-all: build objdump run
+all: build objdump run dump
 \t$(info ==================== Complete Build Finished =============)
 
 build: $(BIN_FILES)
@@ -49,6 +50,15 @@ run: $(LOG_FILES)
 $(LOG_DIR)/%.log: $(BIN_DIR)/%.riscv
 \t$(info ==================== Simulating binary on Spike =========)
 \tspike -l --isa=$(ISA) $< 2> $@
+
+dump: $(DUMP_FILES)
+\t$(info ==================== Spike dump Completed ===============)
+\t$(info )
+
+$(LOG_DIR)/%.dump: $(BIN_DIR)/%.riscv
+\t$(info ==================== Generating spike dump ==============)
+\tspike --log-commits --log  $@ --isa=$(ISA) +signature=$@.sign $<
+
 
 
 .PHONY: clean
