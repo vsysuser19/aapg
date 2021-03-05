@@ -43,7 +43,7 @@ def format_sig(sig_file):
         Function to parse the generated signature files and return as list
     """
     f = open(sig_file,'r')
-    to_write = ['\t.data','\t.align 1','\t.globl addedsign','addedsign:']
+    to_write = ['\t.data','\t.align 1','\t.globl ref_signature','ref_signature:']
     while(True):
         line = f.readline()
         if not line:
@@ -126,13 +126,13 @@ def add_self_check(output_dir,config_file):
     func_to_add = """
 .globl check_sign_func        
 check_sign_func:
-li t0, {}*REGBYTES
+li t0, 8191*REGBYTES
 loop_label:
   la      sp, begin_signature
   add     sp, sp, t0
   LREG    t1, 0*REGBYTES(sp)
 
-  la      sp, addedsign
+  la      sp, ref_signature
   add     sp, sp, t0
   LREG    t2, 0*REGBYTES(sp)
 
@@ -140,8 +140,16 @@ loop_label:
   addi    t0, t0, -1*REGBYTES
   bgtz    t0, loop_label
 pass:
+  la      sp, begin_signature
+  addi    sp, sp, 0 
+  addi    t1, x0, 1
+  SREG    t1, 0*REGBYTES(sp)
   ret
 fail:
+  la      sp, begin_signature
+  addi    sp, sp, 0 
+  addi    t1, x0, 0
+  SREG    t1, 0*REGBYTES(sp)
   ret
     """.format(str(length))
 
