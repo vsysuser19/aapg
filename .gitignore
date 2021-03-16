@@ -102,3 +102,4 @@ celerybeat-schedule
 
 # mypy
 .mypy_cache/
+aapg/.DS_Store
