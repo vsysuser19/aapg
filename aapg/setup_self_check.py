@@ -43,7 +43,8 @@ def format_sig(sig_file):
         Function to parse the generated signature files and return as list
     """
     f = open(sig_file,'r')
-    to_write = ['\t.data','\t.align 1','\t.globl ref_signature','ref_signature:']
+    #to_write = ['\t.data','\t.align 1','\t.globl ref_signature','ref_signature:']
+    to_write = []
     while(True):
         line = f.readline()
         if not line:
@@ -78,20 +79,10 @@ def add_self_check(output_dir,config_file):
     logger = logging.getLogger()
 
     logger.info('Executing Makefile to generate signature dump \n')
-    
-    # Execute MakeFile
-    os.system("cd {};make".format(output_dir))
 
-    # Check if signature file exists
-    signature = [y for x in os.walk(output_dir) for y in glob(os.path.join(x[0], '*.dump.sign'))]
-    if not signature:
-        logger.error("Signature File was not created; Check if signature section is present in config/assembly")
-        sys.exit(0)
-    to_write = format_sig(signature[0])
-    
 
     assembly = [y for x in os.walk(os.path.join(output_dir,'asm')) for y in glob(os.path.join(x[0], '*.S'))]
-    
+
     test_file = None
     template_file = None
     for file in assembly:
@@ -99,12 +90,6 @@ def add_self_check(output_dir,config_file):
             test_file = file
         elif "template.S" in file:
             template_file = file
-
-    logger.info("Adding signature to the test file")
-
-    f = open(test_file,'a+')
-    f.writelines(["%s\n" % item  for item in to_write])
-    f.close()
 
     # Calculate the size of the signature section
     conf = yaml.safe_load(open(os.path.join(output_dir,config_file)))
@@ -126,7 +111,7 @@ def add_self_check(output_dir,config_file):
     func_to_add = """
 .globl check_sign_func        
 check_sign_func:
-li t0, 8191*REGBYTES
+li t0, {}*REGBYTES
 loop_label:
   la      sp, begin_signature
   add     sp, sp, t0
@@ -160,6 +145,29 @@ fail:
     f.writelines(["%s\n" % item  for item in check_function])
     f.close()
 
+    to_write1 = ['\t.data','\t.align 1','\t.globl ref_signature','ref_signature:']
+    f = open(test_file,'a+')
+    f.writelines(["%s\n" % item  for item in to_write1])
+    f.close()
+    
+    # Execute MakeFile
+    os.system("cd {};make".format(output_dir))
+
+    # Check if signature file exists
+    signature = [y for x in os.walk(output_dir) for y in glob(os.path.join(x[0], '*.dump.sign'))]
+    if not signature:
+        logger.error("Signature File was not created; Check if signature section is present in config/assembly")
+        sys.exit(0)
+    to_write = format_sig(signature[0])
+    
+
+    logger.info("Adding signature to the test file")
+
+    f = open(test_file,'a+')
+    f.writelines(["%s\n" % item  for item in to_write])
+    f.close()
+
     logger.info("Adding function call to test file")
 
     add_function_call(test_file)    
+    os.system("cd {};make clean".format(output_dir))
