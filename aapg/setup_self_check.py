@@ -37,6 +37,23 @@ def setup_logging(log_level):
 
     logging.basicConfig(level = numeric_level)
 
+# def append_checksum(sig_file,test_file):
+#     f = open(sig_file,'r')
+#     lines = f.readlines()
+#     lline = lines[-1]
+#     write_line2,write_line1 = lline[0:16],lline[16:32]
+#     write_line1 = '.dword 0x'+write_line1
+#     write_line2 = '.dword 0x'+write_line2
+#     f.close()
+
+#     tf = open(test_file,'r')
+#     lines = tf.readlines()
+#     index = 0
+#     while(index<len(lines)):
+#         if "end_signature" in lines[index]:
+
+
+
 def format_sig(sig_file):
     """Format Signature
 
@@ -57,12 +74,33 @@ def format_sig(sig_file):
     f.close()
     return to_write
 
-def add_function_call(test_file):
-    for line in fileinput.input(test_file, inplace=True):
-        if "post_program_macro" in line:
-            if "#" not in line:
-                print("call check_sign_func\n", end='')
+def add_function_call(test_file,x):
+    if x == 2:
+        for line in fileinput.input(test_file, inplace=True):
+            if "post_program_macro" in line:
+                if "#" not in line:
+                    print("call check_sign_func\n", end='')
+                    print(line, end='')
+            elif "write_chsum" in line:
+                line = line.replace("write_chsum","read_chsum")
                 print(line, end='')
+            else:
+                print(line, end='')
+
+    if x == 1:
+        for line in fileinput.input(test_file, inplace=True):
+            if "post_program_macro" in line:
+                if "#" not in line:
+                    print("call write_chsum\n", end='')
+                    print(line, end='')
+            else:
+                print(line, end='')
+
+def change_func_def(template_file):
+    for line in fileinput.input(template_file, inplace=True):
+        if "la                  sp, end_signature" in line:
+            if "#" not in line:
+                print("        la                  sp, end_ref_signature\n", end='')
         else:
             print(line, end='')
 
@@ -138,11 +176,77 @@ fail:
   ret
     """.format(str(length))
 
+    func_to_add2 = """
+.globl write_chsum        
+write_chsum:  
+        addi               t0, t0, -1*REGBYTES
+        la                 sp, end_signature
+        add                 sp, sp, t0
+        li                  t6, 1
+        add                 t6, t6, x28
+        bgt                 t6, x28, wsumx4
+        addi                t6, t6, 1
+wsumx4:   
+        add                 t6, t6, x29
+        bgt                 t6, x29, wfinchsum
+        addi                t6, t6, 1
+wfinchsum:
+        SREG                t6, 0*REGBYTES(sp)
+        la                  sp, begin_signature
+        li                  t1, 2048  
+        add                 sp, sp, t1
+#        add                 t0, t0, 1*REGBYTES
+  ret
+    """
+
+    func_to_add3 = """
+.globl read_chsum        
+read_chsum:  
+        addi                t0, t0, -1*REGBYTES
+        la                  sp, end_signature
+        add                 sp, sp, t0
+        li                  t6, 1
+        add                 t6, t6, x28
+        bgt                 t6, x28, sumx4
+        addi                t6, t6, 1
+sumx4:   
+        add                 t6, t6, x29
+        bgt                 t6, x29, finchsum
+        addi                t6, t6, 1
+finchsum:
+        LREG                t2, 0*REGBYTES(sp)
+        bne                 t6, t2, chfail
+chpass:
+        la      sp, begin_signature
+        addi    sp, sp, 2*REGBYTES
+        li      t1, 0xfff
+        SREG    t1, 0*REGBYTES(sp)
+        ret
+chfail:
+        la      sp, begin_signature
+        addi    sp, sp, 2*REGBYTES
+        sub     t0, x0, t0
+        li      t1, 1*REGBYTES
+        div     t0, t0, t1
+        SREG    t0, 0*REGBYTES(sp)
+        ret
+    """
+
     logger.info("Adding validation function to template file")
 
     check_function = func_to_add.split("\n")
     f = open(template_file,'a+')
     f.writelines(["%s\n" % item  for item in check_function])
+    f.close()
+
+    write_chsum_function = func_to_add2.split("\n")
+    f = open(template_file,'a+')
+    f.writelines(["%s\n" % item  for item in write_chsum_function])
+    f.close()
+
+    read_chsum_function = func_to_add3.split("\n")
+    f = open(template_file,'a+')
+    f.writelines(["%s\n" % item  for item in read_chsum_function])
     f.close()
 
     to_write1 = ['\t.data','\t.align 1','\t.globl ref_signature','ref_signature:']
@@ -151,6 +255,7 @@ fail:
     f.close()
     
     # Execute MakeFile
+    # add_function_call(test_file,1)
     os.system("cd {};make".format(output_dir))
 
     # Check if signature file exists
@@ -167,7 +272,13 @@ fail:
     f.writelines(["%s\n" % item  for item in to_write])
     f.close()
 
+    to_write1 = ['\t.data','\t.align 1','\t.globl end_ref_signature','end_ref_signature:']
+    f = open(test_file,'a+')
+    f.writelines(["%s\n" % item  for item in to_write1])
+    f.close()
+
     logger.info("Adding function call to test file")
 
-    add_function_call(test_file)    
+    add_function_call(test_file,2)    
+    change_func_def(template_file)
     os.system("cd {};make clean".format(output_dir))

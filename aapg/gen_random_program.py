@@ -1852,7 +1852,7 @@ def float_rounding_dist(args):
     prob_array = [number / total for number in prob_array]
     return (rounding_array,prob_array)
 
-def gen_random_program(ofile, args, arch, seed, no_headers):
+def gen_random_program(ofile, args, arch, seed, no_headers, self_checking):
     """ Function to generate one random assembly program
 
         Args:
@@ -1900,7 +1900,7 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
       prob_array = [1]
 
     # Section instruction writer
-    basic_generator = aapg.program_generator.BasicGenerator(args, arch, seed, no_use_regs) 
+    basic_generator = aapg.program_generator.BasicGenerator(args, arch, seed, no_use_regs, self_checking) 
     root_index = 0
     for index, line in enumerate(basic_generator):
         if line[0] == 'section':
@@ -1985,6 +1985,13 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
     # Create the required data sections
     writer.newline()
     access_sections = args.items('access-sections')
+    if self_checking:
+      previous = access_sections[-1][1].split(',')
+      new_begin = previous[1]
+      new_end = hex(int(previous[1], 16)+4096)
+      new_sect_desc = new_begin + ',' + new_end + ',' + 'r'
+      check_sum = ('check_sum', new_sect_desc)
+      access_sections.append(check_sum)
 
     for index, section in enumerate(access_sections):
         section_name = section[0]
@@ -3197,7 +3204,7 @@ def run(args, index):
     with open(output_file_path, 'w') as output_file:
         seed_def = int.from_bytes(os.urandom(8), byteorder = 'big')
         seed = seed_def if args.seed is None else int(args.seed)
-        gen_random_program(output_file, config_args, args.arch, seed, args.no_headers)
+        gen_random_program(output_file, config_args, args.arch, seed, args.no_headers, args.self_checking)
 
     line_add = os.path.basename(output_file_path.rstrip(os.sep))
     line_add = line_add[:-2]+'_template.S'

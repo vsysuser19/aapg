@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class BasicGenerator(object):
     """ Basic Generator to generate random instructions """
 
-    def __init__(self, args, arch, seed, no_use_regs):
+    def __init__(self, args, arch, seed, no_use_regs, self_checking):
         logger.debug("Created instance of BasicGenerator")
 
         # Instantiate local variables
@@ -53,6 +53,7 @@ class BasicGenerator(object):
         self.csr_sections  = args.get('csr-sections','sections')
         self.branch_block_size = args.get('branch-control','block-size')
         self.delegation_boolean = False
+        self.self_checking = self_checking
         try:
             self.del_input = int(args.get('general','delegation'))
             if self.del_input != 0:
@@ -118,12 +119,23 @@ class BasicGenerator(object):
         else:
             self.q.put(('instruction', ['li', 'x31', '10']))
 
+        if self.self_checking:
+            self.q.put(('instruction', ['li', 'x5', '0']))
+
         self.total_instructions += 1
 
         # Setup the user function call 
+        self_checking_calls = int(self.total_instructions/10)
+
         self.user_calls_dict = {'user-functions' : args.items('user-functions')}
         self.user_calls_dict['i_cache_thrash'] = ('f', args.getint('i-cache', 'num_calls'))
         self.user_calls_dict['switchmodes'] = ('m', args.getint('switch-priv-modes', 'num_switches'))
+
+        if self.self_checking:
+            if self_checking_calls<991:
+                self.user_calls_dict['write_chsum'] = ('f', self_checking_calls)
+            else:
+                self.user_calls_dict['write_chsum'] = ('f', 990)
         
         ecause_filtered = list(filter(lambda x: int(x[1]) > 0, args.items('exception-generation')))
 
