@@ -2222,6 +2222,14 @@ replace_word
 .macro post_branch_macro
 .endm'''
 
+    test_pass_macro = '''
+.macro test_pass_macro
+.endm'''
+
+    test_fail_macro = '''
+.macro test_fail_macro
+.endm'''
+
 
     if os.path.isfile(args.config_file):
       conf_path = args.config_file
@@ -2258,6 +2266,13 @@ replace_word
     mret
  .endm
         '''
+
+    if 'self-checking' in parsed_yaml_file.keys():
+      for key,value in parsed_yaml_file['self-checking'].items():
+        if key == 'test_pass_macro':
+          test_pass_macro = '''.macro test_pass_macro\n'''+ value +'''\n .endm'''
+        if key == 'test_fail_macro':
+          test_fail_macro = '''.macro test_fail_macro\n'''+ value +'''\n .endm'''
 
     if 'user-functions' in parsed_yaml_file.keys():
       for key,value in parsed_yaml_file['user-functions'].items():
@@ -3046,6 +3061,8 @@ replace_word
         write = write + post_program_macro + "\n"
         write = write + pre_branch_macro + "\n"
         write = write + post_branch_macro + "\n"
+        write = write + test_pass_macro + "\n"
+        write = write + test_fail_macro + "\n"
         write = write + user_functions + "\n"
         for i in range(num_ecause00):
           x = ecause00_r[random.randint(0,len(ecause00_r)-1)]
@@ -3207,6 +3224,7 @@ def run(args, index):
         gen_random_program(output_file, config_args, args.arch, seed, args.no_headers, args.self_checking)
 
     line_add = os.path.basename(output_file_path.rstrip(os.sep))
+    name_add = line_add[:-2]
     line_add = line_add[:-2]+'_template.S'
 
 
@@ -3214,7 +3232,7 @@ def run(args, index):
       lines = output_file.readlines()
 
     
-    lines[4] = '#include "{template}"\n'.format(template=line_add)
+    lines[4] = '#include "{template}"\n#define TEST_NAME {test_name}\n'.format(template=line_add,test_name=name_add)
 
     with open(output_file_path, "w") as outfile:
       outfile.write("".join(lines))

@@ -229,6 +229,8 @@ chfail:
         li      t1, 1*REGBYTES
         div     t0, t0, t1
         SREG    t0, 0*REGBYTES(sp)
+        test_fail_macro
+        post_program_macro
         ret
     """
 
