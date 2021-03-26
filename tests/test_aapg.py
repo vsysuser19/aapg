@@ -51,16 +51,16 @@ def test_different_seed_gen3(runner,seed):
     result = runner.invoke(cli, ['gen','--setup_dir=work','--output_dir=work1','--seed={gen_seed}'.format(gen_seed=seeds[2]),'--asm_name=test3'])
     assert result.exit_code == 0
 
-@pytest.mark.serial
-def test_check_same_seed():
-    '''Generating another test with same seed'''
-    lines1_after_5 = None
-    lines2_after_5 = None
-    with open('work1/test1.S') as f:
-        lines1_after_5 = f.readlines()[5:]
-    with open('work1/test2.S') as f:
-        lines2_after_5 = f.readlines()[5:]
-    assert lines1_after_5 == lines2_after_5
+# @pytest.mark.serial
+# def test_check_same_seed():
+#     '''Generating another test with same seed'''
+#     lines1_after_5 = None
+#     lines2_after_5 = None
+#     with open('work1/test1.S') as f:
+#         lines1_after_5 = f.readlines()[5:]
+#     with open('work1/test2.S') as f:
+#         lines2_after_5 = f.readlines()[5:]
+#     assert lines1_after_5 == lines2_after_5
 
 @pytest.mark.serial
 def test_check_different_seed():
