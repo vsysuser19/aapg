@@ -1,6 +1,11 @@
 # CHANGELOG
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.1.2] - 2021-03-23
+# Fixed
+- custom_trap_handler forced to begin at 4 boundary as required by the spec
+
 ## [2.1.1] - 2021-02-23
 # Fixed
 - tohost alignment issue  
