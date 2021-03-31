@@ -33,6 +33,9 @@ class BasicGenerator(object):
         self.total_instructions = int(args.get('general', 'total_instructions'))
         self.ref_total_instructions = self.total_instructions
         self.inst_dist = None
+        self.inst_dist_nobranch = None
+        self.inst_dist_backup = None
+        self.inst_dist_nobranch_backup = None
         self.regfile = {}
         self.local_regfile = None
         self.instructions_togen = 0
@@ -228,6 +231,8 @@ class BasicGenerator(object):
 
         # Select a random instruction
         if self.instructions_togen > 0:
+            # To keep track if stuck in while loop
+            reset_threshold = 0
             next_inst_found = False
             while not next_inst_found:
 
@@ -250,6 +255,13 @@ class BasicGenerator(object):
                             self.insts_since_last_branch += 1
 
                     next_inst_found = True
+
+                reset_threshold = reset_threshold + 1
+                # Reset instruction distribution if stuck in while loop
+                if reset_threshold > 1000:
+                    logger.warn("Error in selecting instruction, Resetting distribution")
+                    self.inst_dist = self.inst_dist_backup
+                    self.inst_dist_nobranch = self.inst_dist_nobranch_backup
 
             # With a small probablity, write to fcsr register    
             if next_inst[0] in aapg.isa_funcs.float_insts and self.total_instructions > 2 and self.instructions_togen > 2:
@@ -523,6 +535,8 @@ class BasicGenerator(object):
 
         self.total_instructions = sum(self.inst_dist.values())
         self.instructions_togen = self.total_instructions
+        self.inst_dist_backup = self.inst_dist
+        self.inst_dist_nobranch_backup = self.inst_dist_nobranch
 
     def init_regfile(self, not_used_reg_string):
         """ Initialize the register file | reg : (read, write) """
