@@ -322,10 +322,10 @@ finchsum:
         LREG                t2, 0*REGBYTES(sp)
         bne                 t6, t2, chfail
 chpass:
-        la      sp, begin_signature
-        addi    sp, sp, 2*REGBYTES
-        li      t1, 0xfff
-        SREG    t1, 0*REGBYTES(sp)
+        # la      sp, begin_signature
+        # addi    sp, sp, 2*REGBYTES
+        # li      t1, 0xfff
+        # SREG    t1, 0*REGBYTES(sp)
         la                  sp,  register_swap
         LREG x3, 1*REGBYTES(sp)
         LREG x4, 2*REGBYTES(sp)

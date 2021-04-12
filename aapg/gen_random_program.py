@@ -1989,7 +1989,7 @@ def gen_random_program(ofile, args, arch, seed, no_headers, self_checking):
     if self_checking:
       previous = access_sections[-1][1].split(',')
       new_begin = previous[1]
-      new_end = hex(int(previous[1], 16)+1024)
+      new_end = hex(int(previous[1], 16)+544)
       new_sect_desc = new_begin + ',' + new_end + ',' + 'r'
       check_sum = ('register_swap', new_sect_desc)
       access_sections.append(check_sum)
@@ -2239,6 +2239,10 @@ replace_word
 
     test_pass_macro = '''
 .macro test_pass_macro
+la      sp, begin_signature
+addi    sp, sp, 2*REGBYTES
+li      t1, 0xfffff
+SREG    t1, 0*REGBYTES(sp)
 .endm'''
 
     test_fail_macro = '''
