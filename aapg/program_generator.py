@@ -123,22 +123,21 @@ class BasicGenerator(object):
             self.q.put(('instruction', ['li', 'x31', '10']))
 
         if self.self_checking:
+            self.q.put(('instruction_nolabel', ('la', 't0', 'register_swap')))
+            self.q.put(('instruction_nolabel', ('csrw', 'mscratch', 't0')))
             self.q.put(('instruction', ['li', 'x5', '0']))
 
         self.total_instructions += 1
 
         # Setup the user function call 
-        self_checking_calls = int(self.total_instructions/10)
+        self_checking_calls = int(args.get('self-checking','num_calls'))
 
         self.user_calls_dict = {'user-functions' : args.items('user-functions')}
         self.user_calls_dict['i_cache_thrash'] = ('f', args.getint('i-cache', 'num_calls'))
         self.user_calls_dict['switchmodes'] = ('m', args.getint('switch-priv-modes', 'num_switches'))
 
         if self.self_checking:
-            if self_checking_calls<991:
                 self.user_calls_dict['write_chsum'] = ('f', self_checking_calls)
-            else:
-                self.user_calls_dict['write_chsum'] = ('f', 990)
         
         ecause_filtered = list(filter(lambda x: int(x[1]) > 0, args.items('exception-generation')))
 
@@ -538,13 +537,17 @@ class BasicGenerator(object):
         self.inst_dist_backup = self.inst_dist.copy()
         self.inst_dist_nobranch_backup = self.inst_dist_nobranch.copy()
 
+
     def init_regfile(self, not_used_reg_string):
         """ Initialize the register file | reg : (read, write) """
         # not_used_regs for all other instructions
         not_used_regs = [(x[0], int(x[1:])) for x in not_used_reg_string.strip("'").split(',')]
+        if self.self_checking:
+            not_used_regs.append(('x',5))
         
         # dont_use_regs used for selecting register for branch use
         dont_use_regs = [5,6,10,11,12,13,30] # 6 is for data section load, 10 is branch target
+
         self.rec_use_reg1 = random.randint(0,5)
         self.rec_use_reg2 = random.randint(0,5)
         while self.rec_use_reg2 == self.rec_use_reg1:

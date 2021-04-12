@@ -17,6 +17,7 @@ import aapg.isa_funcs
 import aapg.program_generator
 import aapg.utils
 import aapg.env
+import aapg.env.make
 from aapg.__init__ import __version__ as version
 
 import datetime
@@ -1988,7 +1989,14 @@ def gen_random_program(ofile, args, arch, seed, no_headers, self_checking):
     if self_checking:
       previous = access_sections[-1][1].split(',')
       new_begin = previous[1]
-      new_end = hex(int(previous[1], 16)+4096)
+      new_end = hex(int(previous[1], 16)+1024)
+      new_sect_desc = new_begin + ',' + new_end + ',' + 'r'
+      check_sum = ('register_swap', new_sect_desc)
+      access_sections.append(check_sum)
+
+      previous = access_sections[-1][1].split(',')
+      new_begin = previous[1]
+      new_end = hex(int(previous[1], 16)+4096*16)
       new_sect_desc = new_begin + ',' + new_end + ',' + 'r'
       check_sum = ('check_sum', new_sect_desc)
       access_sections.append(check_sum)
@@ -2120,6 +2128,13 @@ replace_word
     # Read the program config
     config_args = configparser.ConfigParser()
     config_args.read(config_file_path)
+
+    # Create Makefile in setup Dir
+    logger.info("Setting up the Makefile")
+    make_path = os.path.abspath(args.setup_dir)
+    make_file = 'Makefile'
+    with open(os.path.join(make_path, make_file), 'w') as f:
+        f.write(aapg.env.make.makefile.strip('\n'))
 
     # Configure linker template
     linker_template = aapg.env.linker.linker_script.strip()

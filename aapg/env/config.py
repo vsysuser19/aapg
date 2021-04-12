@@ -208,6 +208,7 @@ program-macro:
   ecause14: "random"
 
 self-checking:
+  num_calls: 100
   test_pass_macro: "add x0,x0,x0"
   test_fail_macro: "add x0,x0,x0"
 '''

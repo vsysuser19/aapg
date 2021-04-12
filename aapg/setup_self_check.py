@@ -79,7 +79,7 @@ def add_function_call(test_file,x):
         for line in fileinput.input(test_file, inplace=True):
             if "post_program_macro" in line:
                 if "#" not in line:
-                    print("call check_sign_func\n", end='')
+                    print("test_pass_macro\n", end='')
                     print(line, end='')
             elif "write_chsum" in line:
                 line = line.replace("write_chsum","read_chsum")
@@ -179,41 +179,146 @@ fail:
     func_to_add2 = """
 .globl write_chsum        
 write_chsum:  
-        addi               t0, t0, -1*REGBYTES
-        la                 sp, end_signature
-        add                 sp, sp, t0
-        li                  t6, 1
-        add                 t6, t6, x28
-        bgt                 t6, x28, wsumx4
+        csrw mscratch,   sp                 # store the sp in mscratch
+        la   sp,  register_swap
+        SREG x3, 1*REGBYTES(sp)
+        SREG x4, 2*REGBYTES(sp)
+        SREG x5, 3*REGBYTES(sp)
+        SREG x6, 4*REGBYTES(sp)
+        SREG x7, 5*REGBYTES(sp)
+        SREG x8, 6*REGBYTES(sp)
+        SREG x9, 7*REGBYTES(sp)
+        SREG x10, 8*REGBYTES(sp)
+        SREG x11, 9*REGBYTES(sp)
+        SREG x12, 10*REGBYTES(sp)
+        SREG x13, 11*REGBYTES(sp)
+        SREG x14, 12*REGBYTES(sp)
+        SREG x15, 13*REGBYTES(sp)
+        SREG x16, 14*REGBYTES(sp)
+        SREG x17, 15*REGBYTES(sp)
+        SREG x18, 16*REGBYTES(sp)
+        SREG x19, 17*REGBYTES(sp)
+        SREG x20, 18*REGBYTES(sp)
+        SREG x21, 19*REGBYTES(sp)
+        SREG x22, 20*REGBYTES(sp)
+        SREG x23, 21*REGBYTES(sp)
+        SREG x24, 22*REGBYTES(sp)
+        SREG x25, 23*REGBYTES(sp)
+        SREG x26, 24*REGBYTES(sp)
+        SREG x27, 25*REGBYTES(sp)
+        SREG x28, 26*REGBYTES(sp)
+        SREG x29, 27*REGBYTES(sp)
+        SREG x30, 28*REGBYTES(sp)
+        SREG x31, 29*REGBYTES(sp)
+        SREG x1, 30*REGBYTES(sp)
+        SREG x0, 31*REGBYTES(sp)
+        csrr x30, mscratch                  # copy orig-sp in x30
+        SREG x30, 32*REGBYTES(sp)           # store orig-sp
+        li                  t6,  0
+        li                  t4,  0
+        li                  t3,  33
+wnext_sum:
+        addi                t4, t4, 1
+        beq                 t4, t3, wfinchsum
+        LREG                t5,  1*REGBYTES(sp)
+        addi                sp, sp, 1*REGBYTES
+        add                 t6, t6, t5
+        bgt                 t6, t5, wnext_sum
         addi                t6, t6, 1
-wsumx4:   
-        add                 t6, t6, x29
-        bgt                 t6, x29, wfinchsum
-        addi                t6, t6, 1
+        beq                 x0, x0, wnext_sum 
 wfinchsum:
+        addi                t0, t0, -1*REGBYTES
+        la                  sp, end_signature
+        add                 sp, sp, t0
         SREG                t6, 0*REGBYTES(sp)
-        la                  sp, begin_signature
-        li                  t1, 2048  
-        add                 sp, sp, t1
-#        add                 t0, t0, 1*REGBYTES
-  ret
+        la                  sp,  register_swap
+        LREG x3, 1*REGBYTES(sp)
+        LREG x4, 2*REGBYTES(sp)
+        LREG x6, 4*REGBYTES(sp)
+        LREG x7, 5*REGBYTES(sp)
+        LREG x8, 6*REGBYTES(sp)
+        LREG x9, 7*REGBYTES(sp)
+        LREG x10, 8*REGBYTES(sp)
+        LREG x11, 9*REGBYTES(sp)
+        LREG x12, 10*REGBYTES(sp)
+        LREG x13, 11*REGBYTES(sp)
+        LREG x14, 12*REGBYTES(sp)
+        LREG x15, 13*REGBYTES(sp)
+        LREG x16, 14*REGBYTES(sp)
+        LREG x17, 15*REGBYTES(sp)
+        LREG x18, 16*REGBYTES(sp)
+        LREG x19, 17*REGBYTES(sp)
+        LREG x20, 18*REGBYTES(sp)
+        LREG x21, 19*REGBYTES(sp)
+        LREG x22, 20*REGBYTES(sp)
+        LREG x23, 21*REGBYTES(sp)
+        LREG x24, 22*REGBYTES(sp)
+        LREG x25, 23*REGBYTES(sp)
+        LREG x26, 24*REGBYTES(sp)
+        LREG x27, 25*REGBYTES(sp)
+        LREG x28, 26*REGBYTES(sp)
+        LREG x29, 27*REGBYTES(sp)
+        LREG x30, 28*REGBYTES(sp)
+        LREG x31, 29*REGBYTES(sp)
+        LREG x1, 30*REGBYTES(sp)
+        csrr    sp, mscratch
+        ret
     """
 
     func_to_add3 = """
 .globl read_chsum        
-read_chsum:  
+read_chsum:       
+        csrw                mscratch,   sp
+        la                  sp,  register_swap
+        SREG x3, 1*REGBYTES(sp)
+        SREG x4, 2*REGBYTES(sp)
+        SREG x5, 3*REGBYTES(sp)
+        SREG x6, 4*REGBYTES(sp)
+        SREG x7, 5*REGBYTES(sp)
+        SREG x8, 6*REGBYTES(sp)
+        SREG x9, 7*REGBYTES(sp)
+        SREG x10, 8*REGBYTES(sp)
+        SREG x11, 9*REGBYTES(sp)
+        SREG x12, 10*REGBYTES(sp)
+        SREG x13, 11*REGBYTES(sp)
+        SREG x14, 12*REGBYTES(sp)
+        SREG x15, 13*REGBYTES(sp)
+        SREG x16, 14*REGBYTES(sp)
+        SREG x17, 15*REGBYTES(sp)
+        SREG x18, 16*REGBYTES(sp)
+        SREG x19, 17*REGBYTES(sp)
+        SREG x20, 18*REGBYTES(sp)
+        SREG x21, 19*REGBYTES(sp)
+        SREG x22, 20*REGBYTES(sp)
+        SREG x23, 21*REGBYTES(sp)
+        SREG x24, 22*REGBYTES(sp)
+        SREG x25, 23*REGBYTES(sp)
+        SREG x26, 24*REGBYTES(sp)
+        SREG x27, 25*REGBYTES(sp)
+        SREG x28, 26*REGBYTES(sp)
+        SREG x29, 27*REGBYTES(sp)
+        SREG x30, 28*REGBYTES(sp)
+        SREG x31, 29*REGBYTES(sp)
+        SREG x1, 30*REGBYTES(sp)
+        SREG x0, 31*REGBYTES(sp)
+        csrr x30, mscratch
+        SREG x30, 32*REGBYTES(sp)
+        li                  t6,  0
+        li                  t4,  0
+        li                  t3,  33
+next_sum:
+        addi                t4, t4, 1
+        beq                 t4, t3, finchsum
+        LREG                t5,  1*REGBYTES(sp)
+        addi                sp, sp, 1*REGBYTES
+        add                 t6, t6, t5
+        bgt                 t6, t5, next_sum
+        addi                t6, t6, 1
+        beq                 x0, x0, next_sum
+finchsum:
         addi                t0, t0, -1*REGBYTES
         la                  sp, end_signature
         add                 sp, sp, t0
-        li                  t6, 1
-        add                 t6, t6, x28
-        bgt                 t6, x28, sumx4
-        addi                t6, t6, 1
-sumx4:   
-        add                 t6, t6, x29
-        bgt                 t6, x29, finchsum
-        addi                t6, t6, 1
-finchsum:
         LREG                t2, 0*REGBYTES(sp)
         bne                 t6, t2, chfail
 chpass:
@@ -221,6 +326,37 @@ chpass:
         addi    sp, sp, 2*REGBYTES
         li      t1, 0xfff
         SREG    t1, 0*REGBYTES(sp)
+        la                  sp,  register_swap
+        LREG x3, 1*REGBYTES(sp)
+        LREG x4, 2*REGBYTES(sp)
+        LREG x6, 4*REGBYTES(sp)
+        LREG x7, 5*REGBYTES(sp)
+        LREG x8, 6*REGBYTES(sp)
+        LREG x9, 7*REGBYTES(sp)
+        LREG x10, 8*REGBYTES(sp)
+        LREG x11, 9*REGBYTES(sp)
+        LREG x12, 10*REGBYTES(sp)
+        LREG x13, 11*REGBYTES(sp)
+        LREG x14, 12*REGBYTES(sp)
+        LREG x15, 13*REGBYTES(sp)
+        LREG x16, 14*REGBYTES(sp)
+        LREG x17, 15*REGBYTES(sp)
+        LREG x18, 16*REGBYTES(sp)
+        LREG x19, 17*REGBYTES(sp)
+        LREG x20, 18*REGBYTES(sp)
+        LREG x21, 19*REGBYTES(sp)
+        LREG x22, 20*REGBYTES(sp)
+        LREG x23, 21*REGBYTES(sp)
+        LREG x24, 22*REGBYTES(sp)
+        LREG x25, 23*REGBYTES(sp)
+        LREG x26, 24*REGBYTES(sp)
+        LREG x27, 25*REGBYTES(sp)
+        LREG x28, 26*REGBYTES(sp)
+        LREG x29, 27*REGBYTES(sp)
+        LREG x30, 28*REGBYTES(sp)
+        LREG x31, 29*REGBYTES(sp)
+        LREG x1, 30*REGBYTES(sp)
+        csrr sp, mscratch
         ret
 chfail:
         la      sp, begin_signature
@@ -283,4 +419,5 @@ chfail:
 
     add_function_call(test_file,2)    
     change_func_def(template_file)
-    os.system("cd {};make clean".format(output_dir))
+    # os.system("cd {}; mv log/* /Users/abishek/Desktop/IIT_M/old_log/; mkdir log; make clean".format(output_dir))
+    os.system("cd {}; make clean".format(output_dir))
