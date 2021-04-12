@@ -130,7 +130,11 @@ class BasicGenerator(object):
         self.total_instructions += 1
 
         # Setup the user function call 
-        self_checking_calls = int(args.get('self-checking','num_calls'))
+        try:
+            self_checking_calls = int(args.get('self-checking','num_calls'))
+        except:
+            self_checking_calls = 100
+
 
         self.user_calls_dict = {'user-functions' : args.items('user-functions')}
         self.user_calls_dict['i_cache_thrash'] = ('f', args.getint('i-cache', 'num_calls'))
