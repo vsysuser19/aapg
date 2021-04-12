@@ -897,15 +897,44 @@ def test_aapg_iclass_rv64imafdc_illegal_s(runner,seed):
     assert result.exit_code == 0 and make == 0
 
 @pytest.mark.timeout(60)
-def test_aapg_iclass_rv64imafdc_data_trashing (runner,seed):
-    '''Testing aapg_iclass_rv64imafdc_data_trashing .yaml config file in parallel mode'''
+def test_aapg_iclass_rv64imafdc_data_trashing(runner,seed):
+    '''Testing aapg_iclass_rv64imafdc_data_trashing.yaml config file in parallel mode'''
     make = 0
     input_seed=int(seed)
-    runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing '])
-    os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_data_trashing .yaml tests/work/aapg_iclass_rv64imafdc_data_trashing /config.yaml')
-    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing ','--output_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing /asm'])
+    runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing'])
+    os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_data_trashing.yaml tests/work/aapg_iclass_rv64imafdc_data_trashing/config.yaml')
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing','--output_dir=tests/work/aapg_iclass_rv64imafdc_data_trashing/asm'])
     try:
-        os.system('cd tests/work/aapg_iclass_rv64imafdc_data_trashing ; make')
+        os.system('cd tests/work/aapg_iclass_rv64imafdc_data_trashing; make')
+    except:
+        make = 0
+    assert result.exit_code == 0 and make == 0
+
+
+@pytest.mark.timeout(60)
+def test_aapg_iclass_rv64imafdc_fpu_hazards(runner,seed):
+    '''Testing aapg_iclass_rv64imafdc_fpu_hazards.yaml config file in parallel mode'''
+    make = 0
+    input_seed=int(seed)
+    runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_fpu_hazards'])
+    os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_fpu_hazards.yaml tests/work/aapg_iclass_rv64imafdc_fpu_hazards/config.yaml')
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_fpu_hazards','--output_dir=tests/work/aapg_iclass_rv64imafdc_fpu_hazards/asm'])
+    try:
+        os.system('cd tests/work/aapg_iclass_rv64imafdc_fpu_hazards; make')
+    except:
+        make = 0
+    assert result.exit_code == 0 and make == 0
+
+@pytest.mark.timeout(60)
+def test_aapg_iclass_rv64imafdc_while_test(runner,seed):
+    '''Testing aapg_iclass_rv64imafdc_while_test.yaml config file in parallel mode'''
+    make = 0
+    input_seed=int(seed)
+    runner.invoke(cli, ['setup','--setup_dir=tests/work/aapg_iclass_rv64imafdc_while_test'])
+    os.system('cp tests/ci_cd_templates/core_configs/aapg_iclass_rv64imafdc_while_test.yaml tests/work/aapg_iclass_rv64imafdc_while_test/config.yaml')
+    result = runner.invoke(cli, ['gen','--num_programs=2','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_while_test','--output_dir=tests/work/aapg_iclass_rv64imafdc_while_test/asm'])
+    try:
+        os.system('cd tests/work/aapg_iclass_rv64imafdc_fpu_hazards; make')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
