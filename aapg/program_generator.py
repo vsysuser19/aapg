@@ -131,17 +131,19 @@ class BasicGenerator(object):
 
         # Setup the user function call 
         try:
-            self_checking_calls = int(args.get('self-checking','num_calls'))
+            sci = int(args.get('self-checking','rate'))
         except:
-            self_checking_calls = 100
+            sci = 100
 
 
         self.user_calls_dict = {'user-functions' : args.items('user-functions')}
         self.user_calls_dict['i_cache_thrash'] = ('f', args.getint('i-cache', 'num_calls'))
         self.user_calls_dict['switchmodes'] = ('m', args.getint('switch-priv-modes', 'num_switches'))
 
-        if self.self_checking:
-                self.user_calls_dict['write_chsum'] = ('f', self_checking_calls)
+        self.track_chsum = 0
+        self.count_chsum = 0
+        self.self_checking_interval = sci
+        self.total_chsum = args.getint('general','total_instructions')/sci
         
         ecause_filtered = list(filter(lambda x: int(x[1]) > 0, args.items('exception-generation')))
 
@@ -211,6 +213,16 @@ class BasicGenerator(object):
             logger.info("Total number of instructions required generated")
             return
 
+        if self.self_checking:
+                self.track_chsum = self.track_chsum + 1
+
+        if self.self_checking:
+            if self.track_chsum >= self.self_checking_interval:
+                if self.count_chsum < self.total_chsum + 1:
+                    self.track_chsum = 0
+                    self.count_chsum = self.count_chsum + 1
+                    self.q.put(('instruction', ('call', 'write_chsum')))
+
         # Randomly add a user-defined call
         temp_dict = self.user_calls_dict
         self.user_calls_dict = {x:temp_dict[x] for x in temp_dict if temp_dict[x][1] > 0}
@@ -229,6 +241,7 @@ class BasicGenerator(object):
             else:
                 self.q.put(('instruction', (user_call, )))
             self.user_calls_dict[user_call] = (self.user_calls_dict[user_call][0], self.user_calls_dict[user_call][1] - 1)
+
             return
             
 
@@ -457,6 +470,7 @@ class BasicGenerator(object):
                 self.total_instructions -= 1
                 self.reg_ignore = None
                 self.local_regfile = None
+                
                 return
 
             # if atomic instruction
@@ -471,6 +485,7 @@ class BasicGenerator(object):
                     data_hazards = self.data_hazards
                     )
                 self.q.put(('instruction', next_inst_with_args))
+
                 return
 
             # Create args for next instruction
