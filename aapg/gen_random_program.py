@@ -1986,17 +1986,25 @@ def gen_random_program(ofile, args, arch, seed, no_headers, self_checking):
     # Create the required data sections
     writer.newline()
     access_sections = args.items('access-sections')
+
     if self_checking:
+      total_instructions = int(args.get('general', 'total_instructions'))
+      rate = int(args.get('self-checking', 'rate'))
+      # Each checksum is 8 bytes and each dword is 8 bytes
+      num_chsum = int(((total_instructions/rate) + 3) * 8)
+      
       previous = access_sections[-1][1].split(',')
       new_begin = previous[1]
-      new_end = hex(int(previous[1], 16)+544)
+      # 32 Normal registers each holding 8 bytes and 32 fp registers each holding 8 bytes; Total (32+32)*8 + 64(for buffer)
+      new_end = hex(int(previous[1], 16)+ 576)
       new_sect_desc = new_begin + ',' + new_end + ',' + 'r'
       check_sum = ('register_swap', new_sect_desc)
       access_sections.append(check_sum)
 
+      # 32 Normal registers each holding 8 bytes and 32 fp registers each holding 8 bytes; Total (32+32)*8 + 64(for buffer)
       previous = access_sections[-1][1].split(',')
       new_begin = previous[1]
-      new_end = hex(int(previous[1], 16)+4096*16)
+      new_end = hex(int(previous[1], 16)+num_chsum)
       new_sect_desc = new_begin + ',' + new_end + ',' + 'r'
       check_sum = ('check_sum', new_sect_desc)
       access_sections.append(check_sum)
