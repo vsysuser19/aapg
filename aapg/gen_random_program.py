@@ -2074,6 +2074,13 @@ replace_word
         ecause02_r.append(ins)
     except:
       logger.info('perl script not run')
+      ecause02_r = [
+  '''
+  .macro ecause02
+  .word 0x4B04183B
+  .endm
+  '''
+  ]
     import yaml
     ppm_avail = True
 
