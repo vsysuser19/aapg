@@ -4,12 +4,12 @@ stages:
   - deploy
 
 before_script:
-    - source /tools/setup.sh
-    - export PYTHONPATH=$(pwd)
-    - export PATH="/home/lavanya/.pyenv/bin:$PATH"
-    - eval "$(pyenv init -)"
-    - eval "$(pyenv virtualenv-init -)"
-    - pyenv activate py37
+    - source /Users/abishek/Desktop/IIT_M/venv/bin/activate
+    - export PATH="/Users/abishek/riscv-isa-sim/build:$PATH"
+    - export PATH=/Users/abishek/riscv-gnu-toolchain/build:$PATH
+    - export LD_LIBRARY_PATH=/Users/abishek/riscv-gnu-toolchain/build/lib/:$LD_LIBRARY_PATH
+    - export PATH=/Users/abishek/riscv-gnu-toolchain/build/bin:$PATH
+    - export RISCV=/Users/abishek/riscv-gnu-toolchain/build/
     - pip install pytest
     - pip install pytest-timeout
     - pip uninstall -y aapg
@@ -17,12 +17,12 @@ before_script:
 test:
     script:
         - pytest tests/test_aapg.py -m "serial" -v
-        - pytest tests/test_aapg.py -n 10 -m "not serial" -v --seed=$((1 + $RANDOM)) -s
+        - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
         refs:
             - merge_requests
     tags:
-        - mathsya-shakti
+        - abimacaapg
 
 test_master:
     script:
