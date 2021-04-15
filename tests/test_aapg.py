@@ -111,7 +111,7 @@ def test_clean(runner,seed):
     assert result.exit_code == 0
 
 
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(120)
 def test_basic(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
