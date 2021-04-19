@@ -1,4 +1,5 @@
-makefile = '''
+def make_format_func(isa_string,abi_string):
+	makefile = '''
 XLEN ?= 64
 TARGET ?= unknown-elf
 RISCVPREFIX=riscv${XLEN}-${TARGET}
@@ -7,8 +8,8 @@ COMMON_DIR := common
 BIN_DIR := bin
 OBJ_DIR := objdump
 LOG_DIR := log
-ISA ?= rv64imafd
-ABI ?= lp64
+ISA ?= {isa_string}
+ABI ?= {abi_string}
 
 INCLUDE_DIRS := common
 CRT_FILE := common/crt.S
@@ -64,5 +65,6 @@ $(LOG_DIR)/%.dump: $(BIN_DIR)/%.riscv
 .PHONY: clean
 clean:
 \trm -rf bin/* log/* objdump/*
-'''
+'''.format(XLEN="{XLEN}",TARGET="{TARGET}",RISCVPREFIX="{RISCVPREFIX}",isa_string=isa_string,abi_string=abi_string)
+	return makefile
 

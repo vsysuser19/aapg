@@ -2145,11 +2145,62 @@ replace_word
     config_args.read(config_file_path)
 
     # Create Makefile in setup Dir
+
+    # Identify Makefile Options 
+    bool_i, bool_m, bool_a, bool_f, bool_d, bool_c = True, False, False, False, False, False
+    bool_64 = False
+    for key,value in config_args.items('isa-instruction-distribution'):
+      if "64" in key:
+        if float(value)>0:
+          bool_64 = True
+      if "64m" in key or "32m" in key:
+        if float(value)>0:
+          bool_m = True
+      if "64a" in key or "32a" in key:
+        if float(value)>0:
+          bool_a = True
+      if "64f" in key or "32f" in key:
+        if float(value)>0:
+          bool_f = True
+      if "64d" in key or "32d" in key:
+        if float(value)>0:
+          bool_d = True
+      if "rvc" in key or "rv32c" in key or "rv64c" in key:
+        if float(value)>0:
+          bool_c = True
+
+      march_string = "rv"
+      if bool_64:
+        march_string = march_string + "64i"
+      else:
+        march_string = march_string + "32i"
+
+      if bool_m:
+        march_string = march_string + "m"
+      if bool_a:
+        march_string = march_string + "a"
+      if bool_f:
+        march_string = march_string + "f"
+      if bool_d:
+        march_string = march_string + "d"
+      if bool_c:
+        march_string = march_string + "c"
+
+      mabi_string = ""
+      if bool_64:
+        mabi_string = mabi_string + "lp64"
+      else:
+        if bool_d:
+          mabi_string = mabi_string + "ilp32d"
+        else:
+          mabi_string = mabi_string + "ilp32"
+
+
     logger.info("Setting up the Makefile")
     make_path = os.path.abspath(args.setup_dir)
     make_file = 'Makefile'
     with open(os.path.join(make_path, make_file), 'w') as f:
-        f.write(aapg.env.make.makefile.strip('\n'))
+        f.write(aapg.env.make.make_format_func(march_string,mabi_string).strip('\n'))
 
     # Configure linker template
     linker_template = aapg.env.linker.linker_script.strip()
