@@ -59,7 +59,7 @@ def setup_logging(log_level):
 
 
 class myClass:
-    def __init__(self,num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers,self_checking):
+    def __init__(self,num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers,self_checking,static_make):
         self.num_programs = num_programs
         self.config_file = config_file
         self.asm_name = asm_name
@@ -70,6 +70,7 @@ class myClass:
         self.linker_only = linker_only
         self.no_headers = no_headers
         self.self_checking = self_checking
+        self.static_make = static_make
 
 @cli.command()
 @click.option('--num_programs', default=1, help='Number of programs to be generated')
@@ -82,13 +83,14 @@ class myClass:
 @click.option('--linker_only', is_flag='True',help='Generate link.ld only',default='False')
 @click.option('--no_headers', is_flag='True',help='Add configuration info in Generated test',default='True')
 @click.option('--self_checking', is_flag='True',help='Generate a self Checking Test using spike')
-def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers,self_checking):
+@click.option('--static_make', is_flag='True',help='Fix MakeFile options march=rv64imafdc and ABI = lp64')
+def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers,self_checking,static_make):
     '''
     Function:   To generate the actuall assembly files
     Usage:      To be run after the `aapg setup` command
                 aapg gen --help to understand the arguments
     '''
-    args = myClass(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers,self_checking)
+    args = myClass(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_only,no_headers,self_checking,static_make)
     setup_logging('info')
     logger = logging.getLogger()
     logger.handlers = []
@@ -119,7 +121,7 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
     list_of_args = []
 
     for i in range(args.num_programs):
-        list_of_args.append(myClass(num_programs,config_file,asm_name,setup_dir,output_dir,arch,int(args.seed)+i,linker_only,no_headers,self_checking))
+        list_of_args.append(myClass(num_programs,config_file,asm_name,setup_dir,output_dir,arch,int(args.seed)+i,linker_only,no_headers,self_checking,static_make))
 
     logger.info("Linker script generation completed")
     if args.linker_only:

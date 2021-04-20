@@ -2169,32 +2169,53 @@ replace_word
         if float(value)>0:
           bool_c = True
 
-      march_string = "rv"
-      if bool_64:
-        march_string = march_string + "64i"
-      else:
-        march_string = march_string + "32i"
+    march_string = "rv"
+    if bool_64:
+      march_string = march_string + "64i"
+    else:
+      march_string = march_string + "32i"
 
-      if bool_m:
-        march_string = march_string + "m"
-      if bool_a:
-        march_string = march_string + "a"
-      if bool_f:
-        march_string = march_string + "f"
+    if bool_m:
+      march_string = march_string + "m"
+    if bool_a:
+      march_string = march_string + "a"
+    if bool_f:
+      march_string = march_string + "f"
+    if bool_d:
+      march_string = march_string + "d"
+    if bool_c:
+      march_string = march_string + "c"
+
+    mabi_string = ""
+    if bool_64:
+      mabi_string = mabi_string + "lp64"
+    else:
       if bool_d:
-        march_string = march_string + "d"
-      if bool_c:
-        march_string = march_string + "c"
-
-      mabi_string = ""
-      if bool_64:
-        mabi_string = mabi_string + "lp64"
+        mabi_string = mabi_string + "ilp32d"
       else:
-        if bool_d:
-          mabi_string = mabi_string + "ilp32d"
-        else:
-          mabi_string = mabi_string + "ilp32"
+        mabi_string = mabi_string + "ilp32"
 
+    if args.static_make:
+      mabi_string = "lp64"
+      march_string = "rv64imafdc"
+
+    if args.self_checking:
+      logger.info("Self Checking Enabled, Setting mabi=lp64, Setting march=rv64imafdc")
+      mabi_string = "lp64"
+      march_string = "rv64imafdc"
+
+    # march=rv64id works, using rv64imafdc just in case
+    if config_args.getboolean('switch-priv-modes', 'switch_modes'):
+      logger.info("Switching Privlege Modes Enabled, Setting mabi=lp64, Setting march=rv64imafdc")
+      mabi_string = "lp64"
+      march_string = "rv64imafdc"
+
+    for key,value in config_args.items('exception-generation'):
+      if int(value)>0:
+        logger.info("Exceptions Enabled, Setting mabi=lp64, Setting march=rv64imafdc")
+        mabi_string = "lp64"
+        march_string = "rv64imafdc"
+        break
 
     logger.info("Setting up the Makefile")
     make_path = os.path.abspath(args.setup_dir)
