@@ -111,7 +111,7 @@ def test_clean(runner,seed):
     assert result.exit_code == 0
 
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_basic(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -125,7 +125,7 @@ def test_basic(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_branch(runner,seed):
     '''Testing check_branch.yaml config file in parallel mode'''
     make = 0
@@ -139,7 +139,7 @@ def test_branch(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_csr(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -153,7 +153,7 @@ def test_csr(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_switch_mode(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -167,7 +167,7 @@ def test_switch_mode(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_exceptions(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -181,7 +181,7 @@ def test_exceptions(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_i_cache(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -195,7 +195,7 @@ def test_i_cache(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_recursion(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -209,7 +209,7 @@ def test_recursion(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_all(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -224,7 +224,7 @@ def test_all(runner,seed):
     assert result.exit_code == 0 and make == 0
 
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_hazards_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_hazards_s.yaml config file in parallel mode'''
     make = 0
@@ -238,7 +238,7 @@ def test_aapg_iclass_rv64imafdc_hazards_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_recurse_med(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_recurse_med.yaml config file in parallel mode'''
     make = 0
@@ -252,7 +252,7 @@ def test_aapg_iclass_rv64imafdc_recurse_med(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_hazards_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_hazards_u.yaml config file in parallel mode'''
     make = 0
@@ -266,7 +266,7 @@ def test_aapg_cclass_rv64imafdc_hazards_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_test_all2(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_test_all2.yaml config file in parallel mode'''
     make = 0
@@ -280,7 +280,7 @@ def test_aapg_cclass_rv64imafdc_test_all2(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_branches1(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_branches1.yaml config file in parallel mode'''
     make = 0
@@ -294,7 +294,7 @@ def test_aapg_cclass_rv64imafdc_branches1(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_bringup_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_bringup_s.yaml config file in parallel mode'''
     make = 0
@@ -308,7 +308,7 @@ def test_aapg_cclass_rv64imafdc_bringup_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_s_recursion(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_s_recursion.yaml config file in parallel mode'''
     make = 0
@@ -322,7 +322,7 @@ def test_aapg_cclass_rv64imafdc_s_recursion(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_branches1_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_branches1_u.yaml config file in parallel mode'''
     make = 0
@@ -336,7 +336,7 @@ def test_aapg_iclass_rv64imafdc_branches1_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_test_all2(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_test_all2.yaml config file in parallel mode'''
     make = 0
@@ -350,7 +350,7 @@ def test_aapg_iclass_rv64imafdc_test_all2(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_user_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_user_s.yaml config file in parallel mode'''
     make = 0
@@ -364,7 +364,7 @@ def test_aapg_iclass_rv64imafdc_user_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_user(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_user.yaml config file in parallel mode'''
     make = 0
@@ -378,7 +378,7 @@ def test_aapg_cclass_rv64imafdc_user(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_bringup(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_bringup.yaml config file in parallel mode'''
     make = 0
@@ -392,7 +392,7 @@ def test_aapg_iclass_rv64imafdc_bringup(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_hazards(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_hazards.yaml config file in parallel mode'''
     make = 0
@@ -406,7 +406,7 @@ def test_aapg_cclass_rv64imafdc_hazards(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_user(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_user.yaml config file in parallel mode'''
     make = 0
@@ -420,7 +420,7 @@ def test_aapg_iclass_rv64imafdc_user(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_branches1(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_branches1.yaml config file in parallel mode'''
     make = 0
@@ -434,7 +434,7 @@ def test_aapg_iclass_rv64imafdc_branches1(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_exceptions_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_exceptions_u.yaml config file in parallel mode'''
     make = 0
@@ -448,7 +448,7 @@ def test_aapg_cclass_rv64imafdc_exceptions_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_hazards(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_hazards.yaml config file in parallel mode'''
     make = 0
@@ -462,7 +462,7 @@ def test_aapg_iclass_rv64imafdc_hazards(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_recursion_branch(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_recursion_branch.yaml config file in parallel mode'''
     make = 0
@@ -476,7 +476,7 @@ def test_aapg_iclass_rv64imafdc_recursion_branch(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_hazards_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_hazards_u.yaml config file in parallel mode'''
     make = 0
@@ -490,7 +490,7 @@ def test_aapg_iclass_rv64imafdc_hazards_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_exceptions_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_exceptions_u.yaml config file in parallel mode'''
     make = 0
@@ -504,7 +504,7 @@ def test_aapg_iclass_rv64imafdc_exceptions_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_branches1_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_branches1_s.yaml config file in parallel mode'''
     make = 0
@@ -518,7 +518,7 @@ def test_aapg_cclass_rv64imafdc_branches1_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_bringup_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_bringup_u.yaml config file in parallel mode'''
     make = 0
@@ -532,7 +532,7 @@ def test_aapg_cclass_rv64imafdc_bringup_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_illegal(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_illegal.yaml config file in parallel mode'''
     make = 0
@@ -546,7 +546,7 @@ def test_aapg_iclass_rv64imafdc_illegal(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_bringup_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_bringup_s.yaml config file in parallel mode'''
     make = 0
@@ -560,7 +560,7 @@ def test_aapg_iclass_rv64imafdc_bringup_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_user_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_user_s.yaml config file in parallel mode'''
     make = 0
@@ -574,7 +574,7 @@ def test_aapg_cclass_rv64imafdc_user_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_illegal_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_illegal_u.yaml config file in parallel mode'''
     make = 0
@@ -588,7 +588,7 @@ def test_aapg_cclass_rv64imafdc_illegal_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_recursion_branch(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_recursion_branch.yaml config file in parallel mode'''
     make = 0
@@ -602,7 +602,7 @@ def test_aapg_cclass_rv64imafdc_recursion_branch(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_bringup(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_bringup.yaml config file in parallel mode'''
     make = 0
@@ -616,7 +616,7 @@ def test_aapg_cclass_rv64imafdc_bringup(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_exceptions(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_exceptions.yaml config file in parallel mode'''
     make = 0
@@ -630,7 +630,7 @@ def test_aapg_iclass_rv64imafdc_exceptions(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_branches1_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_branches1_s.yaml config file in parallel mode'''
     make = 0
@@ -644,7 +644,7 @@ def test_aapg_iclass_rv64imafdc_branches1_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_s_recursion(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_s_recursion.yaml config file in parallel mode'''
     make = 0
@@ -658,7 +658,7 @@ def test_aapg_iclass_rv64imafdc_s_recursion(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_illegal_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_illegal_u.yaml config file in parallel mode'''
     make = 0
@@ -672,7 +672,7 @@ def test_aapg_iclass_rv64imafdc_illegal_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_hazards_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_hazards_s.yaml config file in parallel mode'''
     make = 0
@@ -686,7 +686,7 @@ def test_aapg_cclass_rv64imafdc_hazards_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_user_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_user_u.yaml config file in parallel mode'''
     make = 0
@@ -700,7 +700,7 @@ def test_aapg_cclass_rv64imafdc_user_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_exceptions_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_exceptions_s.yaml config file in parallel mode'''
     make = 0
@@ -714,7 +714,7 @@ def test_aapg_cclass_rv64imafdc_exceptions_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_test_all(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_test_all.yaml config file in parallel mode'''
     make = 0
@@ -728,7 +728,7 @@ def test_aapg_cclass_rv64imafdc_test_all(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_test_all(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_test_all.yaml config file in parallel mode'''
     make = 0
@@ -742,7 +742,7 @@ def test_aapg_iclass_rv64imafdc_test_all(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_recurse_low(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_recurse_low.yaml config file in parallel mode'''
     make = 0
@@ -756,7 +756,7 @@ def test_aapg_iclass_rv64imafdc_recurse_low(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_branches1_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_branches1_u.yaml config file in parallel mode'''
     make = 0
@@ -770,7 +770,7 @@ def test_aapg_cclass_rv64imafdc_branches1_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_exceptions(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_exceptions.yaml config file in parallel mode'''
     make = 0
@@ -784,7 +784,7 @@ def test_aapg_cclass_rv64imafdc_exceptions(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_illegal_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_illegal_s.yaml config file in parallel mode'''
     make = 0
@@ -798,7 +798,7 @@ def test_aapg_cclass_rv64imafdc_illegal_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_recurse_med(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_recurse_med.yaml config file in parallel mode'''
     make = 0
@@ -812,7 +812,7 @@ def test_aapg_cclass_rv64imafdc_recurse_med(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_user_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_user_u.yaml config file in parallel mode'''
     make = 0
@@ -826,7 +826,7 @@ def test_aapg_iclass_rv64imafdc_user_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_bringup_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_bringup_u.yaml config file in parallel mode'''
     make = 0
@@ -840,7 +840,7 @@ def test_aapg_iclass_rv64imafdc_bringup_u(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_illegal(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_illegal.yaml config file in parallel mode'''
     make = 0
@@ -854,7 +854,7 @@ def test_aapg_cclass_rv64imafdc_illegal(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_cclass_rv64imafdc_recurse_low(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_recurse_low.yaml config file in parallel mode'''
     make = 0
@@ -868,7 +868,7 @@ def test_aapg_cclass_rv64imafdc_recurse_low(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_exceptions_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_exceptions_s.yaml config file in parallel mode'''
     make = 0
@@ -882,7 +882,7 @@ def test_aapg_iclass_rv64imafdc_exceptions_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_illegal_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_illegal_s.yaml config file in parallel mode'''
     make = 0
@@ -896,7 +896,7 @@ def test_aapg_iclass_rv64imafdc_illegal_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_data_trashing(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_data_trashing.yaml config file in parallel mode'''
     make = 0
@@ -911,7 +911,7 @@ def test_aapg_iclass_rv64imafdc_data_trashing(runner,seed):
     assert result.exit_code == 0 and make == 0
 
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_fpu_hazards(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_fpu_hazards.yaml config file in parallel mode'''
     make = 0
@@ -925,7 +925,7 @@ def test_aapg_iclass_rv64imafdc_fpu_hazards(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(360)
+@pytest.mark.timeout(420)
 def test_aapg_iclass_rv64imafdc_while_test(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_while_test.yaml config file in parallel mode'''
     make = 0
