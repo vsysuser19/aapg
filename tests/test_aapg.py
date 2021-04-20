@@ -132,11 +132,7 @@ def test_branch(runner,seed):
     input_seed=int(seed)
     runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[1])])
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[1]))
-<<<<<<< HEAD
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[1]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[1])])
-=======
-    result = runner.invoke(cli, ['gen','--num_programs=2','--arch=rv32','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[1]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[1])])
->>>>>>> 84e8711f165252ec86455cb8130506fef302205c
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[1]))
     except:
