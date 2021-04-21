@@ -177,6 +177,8 @@ fail:
     """.format(str(length))
 
     func_to_add2 = """
+.option push;
+.option norvc;
 .globl write_chsum        
 write_chsum:  
         csrw mscratch,   sp                 # store the sp in mscratch
@@ -263,9 +265,12 @@ wfinchsum:
         LREG x1, 30*REGBYTES(sp)
         csrr    sp, mscratch
         ret
+.option pop;
     """
 
     func_to_add3 = """
+.option push;
+.option norvc;
 .globl read_chsum        
 read_chsum:       
         csrw                mscratch,   sp
@@ -368,6 +373,7 @@ chfail:
         test_fail_macro
         post_program_macro
         ret
+.option pop;
     """
 
     logger.info("Adding validation function to template file")
