@@ -1992,6 +1992,8 @@ def gen_random_program(ofile, args, arch, seed, no_headers, self_checking):
       rate = int(args.get('self-checking', 'rate'))
       # Each checksum is 8 bytes and each dword is 8 bytes
       num_chsum = int(((total_instructions/rate) + 3) * 8)
+      # Find number closest to num_chsum that is divisible by 64 so that Data section is interms of .dwords
+      num_chsum = ( ( num_chsum - 1 ) | ( 64 - 1 ) ) + 1
       
       previous = access_sections[-1][1].split(',')
       new_begin = previous[1]
