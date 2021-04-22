@@ -207,8 +207,16 @@ program-macro:
   ecause13: "random"
   ecause14: "random"
 
+# ---------------------------------------------------------------------------------
+# Self Checking 
+# If self_checking flag is enabled during the gen command, the below section is used
+# Options:              
+#       rate: The interval at which checksums are added to the test. 
+#             If rate = 10, checksums will be added every 10 instructions
+# ---------------------------------------------------------------------------------
+
 self-checking:
   rate: 100
-  test_pass_macro: "add x0,x0,x0"
+  test_pass_macro: "la      sp, begin_signature;\n addi    sp, sp, 2*REGBYTES;\n li      t1, 0xfffff;\n SREG    t1, 0*REGBYTES(sp)"
   test_fail_macro: "add x0,x0,x0"
 '''
