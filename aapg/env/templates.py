@@ -114,6 +114,7 @@ inst16_s:
   addi sp, sp, 40*REGBYTES
   sret
 
+.align 2
 .globl custom_trap_handler
 custom_trap_handler:
   addi sp, sp, -40*REGBYTES
