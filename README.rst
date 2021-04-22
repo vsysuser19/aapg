@@ -75,7 +75,7 @@ This will install aapg on your path.
 Wiki
 ------------
 Head to `Wiki 2.2.0 <https://gitlab.com/shaktiproject/tools/aapg/-/wikis/Wiki-AAPG-%5B2.2.0%5D>`_ for detailed information.  
-For documentation on the older versions of AAPG, please visit, `Wiki 0.8.0 <https://gitlab.com/shaktiproject/tools/aapg/-/wikis/Wiki>`_
+For documentation on the older versions of AAPG, please visit, `Wiki 0.8.0 <https://gitlab.com/shaktiproject/tools/aapg/-/wikis/Wiki>`_ ,`Wiki 2.1.1 <https://gitlab.com/shaktiproject/tools/aapg/-/wikis/Wiki-AAPG-%5B2.1.1%5D>`_ 
 
 License
 -------
