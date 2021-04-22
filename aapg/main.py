@@ -108,7 +108,7 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
         if args.num_programs >1:
             logger.error('Limit number of programs to 1 if self checking test')
             eflag = True
-        if args.setup_dir != args.output_dir:
+        if args.setup_dir != args.output_dir and args.setup_dir != os.path.join(args.output_dir,"asm"):
             logger.error('Give the same setup directory and output directory if self checking test')
             eflag = True
         if eflag == True:
@@ -219,6 +219,11 @@ def yaml_2_yaml(file,logger):
         new_config_yaml['csr-sections'] = old_config_yaml['switch-priv-modes']
     else:
         new_config_yaml['csr-sections'] = {'sections':'0x000:0xfff'}
+
+    if 'self-checking' in old_config_yaml.keys():
+        new_config_yaml['self-checking'] = old_config_yaml['self-checking']
+    else:
+        new_config_yaml['self-checking'] = {'rate':10, 'test_pass_macro':""" la      sp, begin_signature;\n addi    sp, sp, 2*REGBYTES;\n li      t1, 0xfffff;\n SREG    t1, 0*REGBYTES(sp)""", "test_fail_macro":"add x0,x0,x0"}
 
     new_config_yaml['i-cache'] = old_config_yaml['i-cache']
     new_config_yaml['d-cache'] = old_config_yaml['d-cache']

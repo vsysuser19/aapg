@@ -37,22 +37,6 @@ def setup_logging(log_level):
 
     logging.basicConfig(level = numeric_level)
 
-# def append_checksum(sig_file,test_file):
-#     f = open(sig_file,'r')
-#     lines = f.readlines()
-#     lline = lines[-1]
-#     write_line2,write_line1 = lline[0:16],lline[16:32]
-#     write_line1 = '.dword 0x'+write_line1
-#     write_line2 = '.dword 0x'+write_line2
-#     f.close()
-
-#     tf = open(test_file,'r')
-#     lines = tf.readlines()
-#     index = 0
-#     while(index<len(lines)):
-#         if "end_signature" in lines[index]:
-
-
 
 def format_sig(sig_file):
     """Format Signature
@@ -60,7 +44,6 @@ def format_sig(sig_file):
         Function to parse the generated signature files and return as list
     """
     f = open(sig_file,'r')
-    #to_write = ['\t.data','\t.align 1','\t.globl ref_signature','ref_signature:']
     to_write = []
     while(True):
         line = f.readline()
@@ -130,6 +113,7 @@ def add_self_check(output_dir,config_file):
             template_file = file
 
     # Calculate the size of the signature section
+    # Still in development. Code to check if Data section is same
     conf = yaml.safe_load(open(os.path.join(output_dir,config_file)))
     signature_start = None
     signature_end = None
@@ -399,7 +383,6 @@ chfail:
     f.close()
     
     # Execute MakeFile
-    # add_function_call(test_file,1)
     os.system("cd {};make".format(output_dir))
 
     # Check if signature file exists
@@ -425,5 +408,4 @@ chfail:
 
     add_function_call(test_file,2)    
     change_func_def(template_file)
-    # os.system("cd {}; mv log/* /Users/abishek/Desktop/IIT_M/old_log/; mkdir log; make clean".format(output_dir))
     os.system("cd {}; make clean".format(output_dir))
