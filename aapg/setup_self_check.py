@@ -88,7 +88,7 @@ def change_func_def(template_file):
             print(line, end='')
 
 
-def add_self_check(output_dir,config_file):
+def add_self_check(setup_dir,output_dir,config_file):
     """Add Self Check
 
         Function to execute the makefile, extract signature and append to test
@@ -102,7 +102,7 @@ def add_self_check(output_dir,config_file):
     logger.info('Executing Makefile to generate signature dump \n')
 
 
-    assembly = [y for x in os.walk(os.path.join(output_dir,'asm')) for y in glob(os.path.join(x[0], '*.S'))]
+    assembly = [y for x in os.walk(os.path.join(setup_dir,'asm')) for y in glob(os.path.join(x[0], '*.S'))]
 
     test_file = None
     template_file = None
@@ -114,7 +114,7 @@ def add_self_check(output_dir,config_file):
 
     # Calculate the size of the signature section
     # Still in development. Code to check if Data section is same
-    conf = yaml.safe_load(open(os.path.join(output_dir,config_file)))
+    conf = yaml.safe_load(open(os.path.join(setup_dir,config_file)))
     signature_start = None
     signature_end = None
     try:
@@ -383,10 +383,10 @@ chfail:
     f.close()
     
     # Execute MakeFile
-    os.system("cd {};make".format(output_dir))
+    os.system("cd {};make".format(setup_dir))
 
     # Check if signature file exists
-    signature = [y for x in os.walk(output_dir) for y in glob(os.path.join(x[0], '*.dump.sign'))]
+    signature = [y for x in os.walk(setup_dir) for y in glob(os.path.join(x[0], '*.dump.sign'))]
     if not signature:
         logger.error("Signature File was not created; Check if signature section is present in config/assembly")
         sys.exit(0)
@@ -408,4 +408,4 @@ chfail:
 
     add_function_call(test_file,2)    
     change_func_def(template_file)
-    os.system("cd {}; make clean".format(output_dir))
+    os.system("cd {}; make clean".format(setup_dir))

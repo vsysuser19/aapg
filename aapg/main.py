@@ -108,7 +108,7 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
         if args.num_programs >1:
             logger.error('Limit number of programs to 1 if self checking test')
             eflag = True
-        if args.setup_dir != args.output_dir and args.setup_dir != os.path.join(args.output_dir,"asm"):
+        if args.setup_dir != args.output_dir and args.output_dir != os.path.join(args.setup_dir,"asm"):
             logger.error('Give the same setup directory and output directory if self checking test')
             eflag = True
         if eflag == True:
@@ -144,7 +144,7 @@ def gen(num_programs,config_file,asm_name,setup_dir,output_dir,arch,seed,linker_
             sys.exit(1)
 
     if args.self_checking:
-        aapg.setup_self_check.add_self_check(args.output_dir,args.config_file)
+        aapg.setup_self_check.add_self_check(args.setup_dir,args.output_dir,args.config_file)
     sys.exit(0)
 
 @cli.command()
