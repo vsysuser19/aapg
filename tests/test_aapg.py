@@ -125,6 +125,21 @@ def test_basic(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
+
+@pytest.mark.timeout(420)
+def test_selfcheck(runner,seed):
+    '''Testing self_checking.yaml config file in parallel mode'''
+    make = 0
+    input_seed=int(seed)
+    runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file="self_checking")])
+    os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file="self_checking"))
+    result = runner.invoke(cli, ['gen','--self_checking','--setup_dir=tests/work/{config_file}'.format(config_file="self_checking"),'--output_dir=tests/work/{config_file}/asm'.format(config_file="self_checking")])
+    try:
+        out = os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[0]))
+    except:
+        make = 0
+    assert result.exit_code == 0 and make == 0
+
 @pytest.mark.timeout(420)
 def test_branch(runner,seed):
     '''Testing check_branch.yaml config file in parallel mode'''
