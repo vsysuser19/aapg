@@ -111,7 +111,7 @@ def test_clean(runner,seed):
     assert result.exit_code == 0
 
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_basic(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -121,12 +121,13 @@ def test_basic(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=10','--static_make','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[0]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[0])])
     try:
         out = os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[0]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[0]))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_selfcheck(runner,seed):
     '''Testing self_checking.yaml config file in parallel mode'''
     make = 0
@@ -135,12 +136,13 @@ def test_selfcheck(runner,seed):
     os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file="self_checking"))
     result = runner.invoke(cli, ['gen','--self_checking','--setup_dir=tests/work/{config_file}'.format(config_file="self_checking"),'--output_dir=tests/work/{config_file}/asm'.format(config_file="self_checking")])
     try:
-        out = os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[0]))
+        out = os.system('cd tests/work/{config_file}; make'.format(config_file="self_checking"))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file="self_checking"))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_branch(runner,seed):
     '''Testing check_branch.yaml config file in parallel mode'''
     make = 0
@@ -150,11 +152,12 @@ def test_branch(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[1]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[1])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[1]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[1]))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_csr(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -164,11 +167,12 @@ def test_csr(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[2]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[2])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[2]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[2]))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_switch_mode(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -178,11 +182,12 @@ def test_switch_mode(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[3]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[3])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[3]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[3]))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_exceptions(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -192,11 +197,12 @@ def test_exceptions(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[4]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[4])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[4]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[4]))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_i_cache(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -206,11 +212,12 @@ def test_i_cache(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[5]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[5])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[5]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[5]))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_recursion(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -220,11 +227,12 @@ def test_recursion(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[6]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[6])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[6]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[6]))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_all(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -234,12 +242,13 @@ def test_all(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[7]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[7])])
     try:
         os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[7]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[7]))
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_hazards_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_hazards_s.yaml config file in parallel mode'''
     make = 0
@@ -249,11 +258,12 @@ def test_aapg_iclass_rv64imafdc_hazards_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_hazards_s; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_hazards_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_recurse_med(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_recurse_med.yaml config file in parallel mode'''
     make = 0
@@ -263,11 +273,12 @@ def test_aapg_iclass_rv64imafdc_recurse_med(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recurse_med','--output_dir=tests/work/aapg_iclass_rv64imafdc_recurse_med/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_recurse_med; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_recurse_med')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_hazards_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_hazards_u.yaml config file in parallel mode'''
     make = 0
@@ -277,11 +288,12 @@ def test_aapg_cclass_rv64imafdc_hazards_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_hazards_u; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_hazards_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_test_all2(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_test_all2.yaml config file in parallel mode'''
     make = 0
@@ -291,11 +303,12 @@ def test_aapg_cclass_rv64imafdc_test_all2(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_test_all2','--output_dir=tests/work/aapg_cclass_rv64imafdc_test_all2/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_test_all2; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_test_all2')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_branches1(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_branches1.yaml config file in parallel mode'''
     make = 0
@@ -305,11 +318,12 @@ def test_aapg_cclass_rv64imafdc_branches1(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_branches1; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_branches1')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_bringup_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_bringup_s.yaml config file in parallel mode'''
     make = 0
@@ -323,7 +337,7 @@ def test_aapg_cclass_rv64imafdc_bringup_s(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_s_recursion(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_s_recursion.yaml config file in parallel mode'''
     make = 0
@@ -333,11 +347,12 @@ def test_aapg_cclass_rv64imafdc_s_recursion(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_s_recursion','--output_dir=tests/work/aapg_cclass_rv64imafdc_s_recursion/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_s_recursion; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_s_recursion')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_branches1_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_branches1_u.yaml config file in parallel mode'''
     make = 0
@@ -347,11 +362,12 @@ def test_aapg_iclass_rv64imafdc_branches1_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_branches1_u; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_branches1_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_test_all2(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_test_all2.yaml config file in parallel mode'''
     make = 0
@@ -361,11 +377,12 @@ def test_aapg_iclass_rv64imafdc_test_all2(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_test_all2','--output_dir=tests/work/aapg_iclass_rv64imafdc_test_all2/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_test_all2; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_test_all2')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_user_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_user_s.yaml config file in parallel mode'''
     make = 0
@@ -375,11 +392,12 @@ def test_aapg_iclass_rv64imafdc_user_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_user_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_user_s; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_user_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_user(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_user.yaml config file in parallel mode'''
     make = 0
@@ -389,11 +407,12 @@ def test_aapg_cclass_rv64imafdc_user(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user','--output_dir=tests/work/aapg_cclass_rv64imafdc_user/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_user; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_user')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_bringup(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_bringup.yaml config file in parallel mode'''
     make = 0
@@ -403,11 +422,12 @@ def test_aapg_iclass_rv64imafdc_bringup(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_bringup; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_bringup')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_hazards(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_hazards.yaml config file in parallel mode'''
     make = 0
@@ -417,11 +437,12 @@ def test_aapg_cclass_rv64imafdc_hazards(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_hazards; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_hazards')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_user(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_user.yaml config file in parallel mode'''
     make = 0
@@ -431,11 +452,12 @@ def test_aapg_iclass_rv64imafdc_user(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user','--output_dir=tests/work/aapg_iclass_rv64imafdc_user/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_user; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_user')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_branches1(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_branches1.yaml config file in parallel mode'''
     make = 0
@@ -445,11 +467,12 @@ def test_aapg_iclass_rv64imafdc_branches1(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_branches1; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_branches1')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_exceptions_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_exceptions_u.yaml config file in parallel mode'''
     make = 0
@@ -459,11 +482,12 @@ def test_aapg_cclass_rv64imafdc_exceptions_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_exceptions_u; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_exceptions_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_hazards(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_hazards.yaml config file in parallel mode'''
     make = 0
@@ -473,11 +497,12 @@ def test_aapg_iclass_rv64imafdc_hazards(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_hazards; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_hazards')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_recursion_branch(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_recursion_branch.yaml config file in parallel mode'''
     make = 0
@@ -487,11 +512,12 @@ def test_aapg_iclass_rv64imafdc_recursion_branch(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recursion_branch','--output_dir=tests/work/aapg_iclass_rv64imafdc_recursion_branch/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_recursion_branch; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_recursion_branch')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_hazards_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_hazards_u.yaml config file in parallel mode'''
     make = 0
@@ -501,11 +527,12 @@ def test_aapg_iclass_rv64imafdc_hazards_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_hazards_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_hazards_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_hazards_u; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_hazards_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_exceptions_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_exceptions_u.yaml config file in parallel mode'''
     make = 0
@@ -515,11 +542,12 @@ def test_aapg_iclass_rv64imafdc_exceptions_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_exceptions_u; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_exceptions_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_branches1_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_branches1_s.yaml config file in parallel mode'''
     make = 0
@@ -529,11 +557,12 @@ def test_aapg_cclass_rv64imafdc_branches1_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_branches1_s; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_branches1_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_bringup_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_bringup_u.yaml config file in parallel mode'''
     make = 0
@@ -543,11 +572,12 @@ def test_aapg_cclass_rv64imafdc_bringup_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_bringup_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_bringup_u; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_bringup_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_illegal(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_illegal.yaml config file in parallel mode'''
     make = 0
@@ -557,11 +587,12 @@ def test_aapg_iclass_rv64imafdc_illegal(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_illegal; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_illegal')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_bringup_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_bringup_s.yaml config file in parallel mode'''
     make = 0
@@ -571,11 +602,12 @@ def test_aapg_iclass_rv64imafdc_bringup_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_bringup_s; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_bringup_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_user_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_user_s.yaml config file in parallel mode'''
     make = 0
@@ -585,11 +617,12 @@ def test_aapg_cclass_rv64imafdc_user_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_user_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_user_s; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_user_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_illegal_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_illegal_u.yaml config file in parallel mode'''
     make = 0
@@ -599,11 +632,12 @@ def test_aapg_cclass_rv64imafdc_illegal_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_illegal_u; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_illegal_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_recursion_branch(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_recursion_branch.yaml config file in parallel mode'''
     make = 0
@@ -613,11 +647,12 @@ def test_aapg_cclass_rv64imafdc_recursion_branch(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recursion_branch','--output_dir=tests/work/aapg_cclass_rv64imafdc_recursion_branch/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_recursion_branch; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_recursion_branch')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_bringup(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_bringup.yaml config file in parallel mode'''
     make = 0
@@ -627,11 +662,12 @@ def test_aapg_cclass_rv64imafdc_bringup(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_bringup','--output_dir=tests/work/aapg_cclass_rv64imafdc_bringup/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_bringup; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_bringup')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_exceptions(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_exceptions.yaml config file in parallel mode'''
     make = 0
@@ -641,11 +677,12 @@ def test_aapg_iclass_rv64imafdc_exceptions(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_exceptions; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_exceptions')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_branches1_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_branches1_s.yaml config file in parallel mode'''
     make = 0
@@ -655,11 +692,12 @@ def test_aapg_iclass_rv64imafdc_branches1_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_branches1_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_branches1_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_branches1_s; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_branches1_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_s_recursion(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_s_recursion.yaml config file in parallel mode'''
     make = 0
@@ -669,11 +707,12 @@ def test_aapg_iclass_rv64imafdc_s_recursion(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_s_recursion','--output_dir=tests/work/aapg_iclass_rv64imafdc_s_recursion/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_s_recursion; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_s_recursion')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_illegal_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_illegal_u.yaml config file in parallel mode'''
     make = 0
@@ -683,11 +722,12 @@ def test_aapg_iclass_rv64imafdc_illegal_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_illegal_u; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_illegal_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_hazards_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_hazards_s.yaml config file in parallel mode'''
     make = 0
@@ -697,11 +737,12 @@ def test_aapg_cclass_rv64imafdc_hazards_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_hazards_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_hazards_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_hazards_s; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_hazards_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_user_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_user_u.yaml config file in parallel mode'''
     make = 0
@@ -711,11 +752,12 @@ def test_aapg_cclass_rv64imafdc_user_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_user_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_user_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_user_u; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_user_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_exceptions_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_exceptions_s.yaml config file in parallel mode'''
     make = 0
@@ -725,11 +767,12 @@ def test_aapg_cclass_rv64imafdc_exceptions_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_exceptions_s; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_exceptions_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_test_all(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_test_all.yaml config file in parallel mode'''
     make = 0
@@ -739,11 +782,12 @@ def test_aapg_cclass_rv64imafdc_test_all(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_test_all','--output_dir=tests/work/aapg_cclass_rv64imafdc_test_all/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_test_all; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_test_all')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_test_all(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_test_all.yaml config file in parallel mode'''
     make = 0
@@ -753,11 +797,12 @@ def test_aapg_iclass_rv64imafdc_test_all(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_test_all','--output_dir=tests/work/aapg_iclass_rv64imafdc_test_all/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_test_all; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_test_all')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_recurse_low(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_recurse_low.yaml config file in parallel mode'''
     make = 0
@@ -767,11 +812,12 @@ def test_aapg_iclass_rv64imafdc_recurse_low(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_recurse_low','--output_dir=tests/work/aapg_iclass_rv64imafdc_recurse_low/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_recurse_low; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_recurse_low')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_branches1_u(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_branches1_u.yaml config file in parallel mode'''
     make = 0
@@ -781,11 +827,12 @@ def test_aapg_cclass_rv64imafdc_branches1_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_branches1_u','--output_dir=tests/work/aapg_cclass_rv64imafdc_branches1_u/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_branches1_u; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_branches1_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_exceptions(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_exceptions.yaml config file in parallel mode'''
     make = 0
@@ -795,11 +842,12 @@ def test_aapg_cclass_rv64imafdc_exceptions(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_exceptions','--output_dir=tests/work/aapg_cclass_rv64imafdc_exceptions/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_exceptions; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_exceptions')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_illegal_s(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_illegal_s.yaml config file in parallel mode'''
     make = 0
@@ -809,11 +857,12 @@ def test_aapg_cclass_rv64imafdc_illegal_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal_s','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal_s/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_illegal_s; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_illegal_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_recurse_med(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_recurse_med.yaml config file in parallel mode'''
     make = 0
@@ -823,11 +872,12 @@ def test_aapg_cclass_rv64imafdc_recurse_med(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recurse_med','--output_dir=tests/work/aapg_cclass_rv64imafdc_recurse_med/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_recurse_med; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_recurse_med')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_user_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_user_u.yaml config file in parallel mode'''
     make = 0
@@ -837,11 +887,12 @@ def test_aapg_iclass_rv64imafdc_user_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_user_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_user_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_user_u; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_user_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_bringup_u(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_bringup_u.yaml config file in parallel mode'''
     make = 0
@@ -851,11 +902,12 @@ def test_aapg_iclass_rv64imafdc_bringup_u(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_bringup_u','--output_dir=tests/work/aapg_iclass_rv64imafdc_bringup_u/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_bringup_u; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_bringup_u')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_illegal(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_illegal.yaml config file in parallel mode'''
     make = 0
@@ -865,11 +917,12 @@ def test_aapg_cclass_rv64imafdc_illegal(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_illegal','--output_dir=tests/work/aapg_cclass_rv64imafdc_illegal/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_illegal; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_illegal')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_cclass_rv64imafdc_recurse_low(runner,seed):
     '''Testing aapg_cclass_rv64imafdc_recurse_low.yaml config file in parallel mode'''
     make = 0
@@ -879,11 +932,12 @@ def test_aapg_cclass_rv64imafdc_recurse_low(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_cclass_rv64imafdc_recurse_low','--output_dir=tests/work/aapg_cclass_rv64imafdc_recurse_low/asm'])
     try:
         os.system('cd tests/work/aapg_cclass_rv64imafdc_recurse_low; make')
+        os.system('rm -rf tests/work/aapg_cclass_rv64imafdc_recurse_low')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_exceptions_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_exceptions_s.yaml config file in parallel mode'''
     make = 0
@@ -893,11 +947,12 @@ def test_aapg_iclass_rv64imafdc_exceptions_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_exceptions_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_exceptions_s; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_exceptions_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_illegal_s(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_illegal_s.yaml config file in parallel mode'''
     make = 0
@@ -907,12 +962,13 @@ def test_aapg_iclass_rv64imafdc_illegal_s(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_illegal_s','--output_dir=tests/work/aapg_iclass_rv64imafdc_illegal_s/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_illegal_s; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_illegal_s')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 def test_aapg_iclass_rv64imafdc_fpu_hazards(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_fpu_hazards.yaml config file in parallel mode'''
     make = 0
@@ -922,11 +978,12 @@ def test_aapg_iclass_rv64imafdc_fpu_hazards(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_fpu_hazards','--output_dir=tests/work/aapg_iclass_rv64imafdc_fpu_hazards/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_fpu_hazards; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_fpu_hazards')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(420)
+@pytest.mark.timeout(200)
 
 def test_aapg_iclass_rv64imafdc_while_test(runner,seed):
     '''Testing aapg_iclass_rv64imafdc_while_test.yaml config file in parallel mode'''
@@ -937,6 +994,7 @@ def test_aapg_iclass_rv64imafdc_while_test(runner,seed):
     result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/aapg_iclass_rv64imafdc_while_test','--output_dir=tests/work/aapg_iclass_rv64imafdc_while_test/asm'])
     try:
         os.system('cd tests/work/aapg_iclass_rv64imafdc_while_test; make')
+        os.system('rm -rf tests/work/aapg_iclass_rv64imafdc_while_test')
     except:
         make = 0
     assert result.exit_code == 0 and make == 0
