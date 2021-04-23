@@ -22,7 +22,7 @@ test:
         refs:
             - merge_requests
     tags:
-        - mathsya-shakti
+        - mathsya-runner
 
 test_master:
     script:
@@ -51,5 +51,5 @@ deploy:
         refs:
             - master
     tags:
-        - mathsya-shakti
+        - mathsya-runner
 
