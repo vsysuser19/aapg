@@ -49,5 +49,5 @@ def setup_build(output_dir):
     # with open(os.path.join(out_dir, templates_file), 'w') as f:
     #     f.write(aapg.env.templates.templates_asm.strip('\n'))
 
-    with open(os.path.join(output_path, make_file), 'w') as f:
-        f.write(aapg.env.make.makefile.strip('\n'))
+    # with open(os.path.join(output_path, make_file), 'w') as f:
+    #     f.write(aapg.env.make.makefile.strip('\n'))

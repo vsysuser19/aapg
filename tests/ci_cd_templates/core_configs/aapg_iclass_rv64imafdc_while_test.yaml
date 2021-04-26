@@ -1,4 +1,3 @@
-template_config = '''
 # Sample config.yaml file to generate a random program
 # using aapg (Automated Assembly Program Generator)
 
@@ -24,11 +23,11 @@ priv-mode:
 #                           
 # ---------------------------------------------------------------------------------
 general:
-  total_instructions: 1000
+  total_instructions: 10000
   regs_not_use: x1,x2
   custom_trap_handler: true
   code_start_address: 0x80000000
-  default_program_exit: true
+  default_program_exit: false
   delegation: 0xfff
 
 # ---------------------------------------------------------------------------------
@@ -40,8 +39,8 @@ general:
 isa-instruction-distribution:
   rel_sys: 0
   rel_sys.csr: 0
-  rel_rv32i.ctrl: 0
-  rel_rv32i.compute: 1
+  rel_rv32i.ctrl: 2
+  rel_rv32i.compute: 0
   rel_rv32i.data: 0
   rel_rv32i.fence: 0
   rel_rv64i.compute: 0
@@ -50,8 +49,8 @@ isa-instruction-distribution:
   rel_rv64m: 0
   rel_rv32a: 0
   rel_rv64a: 0
-  rel_rv32f: 0
-  rel_rv64f: 0
+  rel_rv32f: 11
+  rel_rv64f: 11
   rel_rv32d: 0
   rel_rv64d: 0
 
@@ -187,7 +186,7 @@ data-hazards:
 
 program-macro:
   pre_program_macro: "add x0,x0,x0"
-  post_program_macro: "add x0,x0,x0"
+  post_program_macro: "li gp,1; \n sw gp, tohost, t5;\n fence.i;\n li t6,  0x20000; \n la t5, begin_signature; \n sw t5, 0(t6); \n la t5, end_signature \n sw t5, 8(t6); \n sw t5,  12(t6);" 
   pre_branch_macro: "add x0,x0,x0"
   post_branch_macro: "add x0,x0,x0"
   ecause00: "random"
@@ -206,16 +205,7 @@ program-macro:
   ecause13: "random"
   ecause14: "random"
 
-# ---------------------------------------------------------------------------------
-# Self Checking 
-# If self_checking flag is enabled during the gen command, the below section is used
-# Options:              
-#       rate: The interval at which checksums are added to the test. 
-#             If rate = 10, checksums will be added every 10 instructions
-# ---------------------------------------------------------------------------------
-
 self-checking:
-  rate: 100
-  test_pass_macro: "la      sp, begin_signature;\n addi    sp, sp, 2*REGBYTES;\n li      t1, 0xfffff;\n SREG    t1, 0*REGBYTES(sp)"
+  num_calls: 100
+  test_pass_macro: "add x0,x0,x0"
   test_fail_macro: "add x0,x0,x0"
-'''

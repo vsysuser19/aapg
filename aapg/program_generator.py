@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class BasicGenerator(object):
     """ Basic Generator to generate random instructions """
 
-    def __init__(self, args, arch, seed, no_use_regs):
+    def __init__(self, args, arch, seed, no_use_regs, self_checking):
         logger.debug("Created instance of BasicGenerator")
 
         # Instantiate local variables
@@ -33,6 +33,9 @@ class BasicGenerator(object):
         self.total_instructions = int(args.get('general', 'total_instructions'))
         self.ref_total_instructions = self.total_instructions
         self.inst_dist = None
+        self.inst_dist_nobranch = None
+        self.inst_dist_backup = None
+        self.inst_dist_nobranch_backup = None
         self.regfile = {}
         self.local_regfile = None
         self.instructions_togen = 0
@@ -53,6 +56,7 @@ class BasicGenerator(object):
         self.csr_sections  = args.get('csr-sections','sections')
         self.branch_block_size = args.get('branch-control','block-size')
         self.delegation_boolean = False
+        self.self_checking = self_checking
         try:
             self.del_input = int(args.get('general','delegation'))
             if self.del_input != 0:
@@ -118,12 +122,28 @@ class BasicGenerator(object):
         else:
             self.q.put(('instruction', ['li', 'x31', '10']))
 
+        if self.self_checking:
+            self.q.put(('instruction_nolabel', ('la', 't0', 'register_swap')))
+            self.q.put(('instruction_nolabel', ('csrw', 'mscratch', 't0')))
+            self.q.put(('instruction', ['li', 'x5', '0']))
+
         self.total_instructions += 1
 
         # Setup the user function call 
+        try:
+            sci = int(args.get('self-checking','rate'))
+        except:
+            sci = 100
+
+
         self.user_calls_dict = {'user-functions' : args.items('user-functions')}
         self.user_calls_dict['i_cache_thrash'] = ('f', args.getint('i-cache', 'num_calls'))
         self.user_calls_dict['switchmodes'] = ('m', args.getint('switch-priv-modes', 'num_switches'))
+
+        self.track_chsum = 0
+        self.count_chsum = 0
+        self.self_checking_interval = sci
+        self.total_chsum = args.getint('general','total_instructions')/sci
         
         ecause_filtered = list(filter(lambda x: int(x[1]) > 0, args.items('exception-generation')))
 
@@ -193,6 +213,16 @@ class BasicGenerator(object):
             logger.info("Total number of instructions required generated")
             return
 
+        if self.self_checking:
+                self.track_chsum = self.track_chsum + 1
+
+        if self.self_checking:
+            if self.track_chsum >= self.self_checking_interval:
+                if self.count_chsum < self.total_chsum + 1:
+                    self.track_chsum = 0
+                    self.count_chsum = self.count_chsum + 1
+                    self.q.put(('instruction', ('call', 'write_chsum')))
+
         # Randomly add a user-defined call
         temp_dict = self.user_calls_dict
         self.user_calls_dict = {x:temp_dict[x] for x in temp_dict if temp_dict[x][1] > 0}
@@ -211,11 +241,14 @@ class BasicGenerator(object):
             else:
                 self.q.put(('instruction', (user_call, )))
             self.user_calls_dict[user_call] = (self.user_calls_dict[user_call][0], self.user_calls_dict[user_call][1] - 1)
+
             return
             
 
         # Select a random instruction
         if self.instructions_togen > 0:
+            # To keep track if stuck in while loop
+            reset_threshold = 0
             next_inst_found = False
             while not next_inst_found:
 
@@ -238,6 +271,13 @@ class BasicGenerator(object):
                             self.insts_since_last_branch += 1
 
                     next_inst_found = True
+
+                reset_threshold = reset_threshold + 1
+                # Reset instruction distribution if stuck in while loop
+                if reset_threshold > 1000:
+                    logger.warn("Error in selecting instruction, Resetting distribution")
+                    self.inst_dist = self.inst_dist_backup.copy()
+                    self.inst_dist_nobranch = self.inst_dist_nobranch_backup.copy()
 
             # With a small probablity, write to fcsr register    
             if next_inst[0] in aapg.isa_funcs.float_insts and self.total_instructions > 2 and self.instructions_togen > 2:
@@ -430,6 +470,7 @@ class BasicGenerator(object):
                 self.total_instructions -= 1
                 self.reg_ignore = None
                 self.local_regfile = None
+                
                 return
 
             # if atomic instruction
@@ -444,6 +485,7 @@ class BasicGenerator(object):
                     data_hazards = self.data_hazards
                     )
                 self.q.put(('instruction', next_inst_with_args))
+
                 return
 
             # Create args for next instruction
@@ -511,14 +553,20 @@ class BasicGenerator(object):
 
         self.total_instructions = sum(self.inst_dist.values())
         self.instructions_togen = self.total_instructions
+        self.inst_dist_backup = self.inst_dist.copy()
+        self.inst_dist_nobranch_backup = self.inst_dist_nobranch.copy()
+
 
     def init_regfile(self, not_used_reg_string):
         """ Initialize the register file | reg : (read, write) """
         # not_used_regs for all other instructions
         not_used_regs = [(x[0], int(x[1:])) for x in not_used_reg_string.strip("'").split(',')]
+        if self.self_checking:
+            not_used_regs.append(('x',5))
         
         # dont_use_regs used for selecting register for branch use
         dont_use_regs = [5,6,10,11,12,13,30] # 6 is for data section load, 10 is branch target
+
         self.rec_use_reg1 = random.randint(0,5)
         self.rec_use_reg2 = random.randint(0,5)
         while self.rec_use_reg2 == self.rec_use_reg1:

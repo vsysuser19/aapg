@@ -17,6 +17,7 @@ import aapg.isa_funcs
 import aapg.program_generator
 import aapg.utils
 import aapg.env
+import aapg.env.make
 from aapg.__init__ import __version__ as version
 
 import datetime
@@ -1852,7 +1853,7 @@ def float_rounding_dist(args):
     prob_array = [number / total for number in prob_array]
     return (rounding_array,prob_array)
 
-def gen_random_program(ofile, args, arch, seed, no_headers):
+def gen_random_program(ofile, args, arch, seed, no_headers, self_checking):
     """ Function to generate one random assembly program
 
         Args:
@@ -1900,7 +1901,7 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
       prob_array = [1]
 
     # Section instruction writer
-    basic_generator = aapg.program_generator.BasicGenerator(args, arch, seed, no_use_regs) 
+    basic_generator = aapg.program_generator.BasicGenerator(args, arch, seed, no_use_regs, self_checking) 
     root_index = 0
     for index, line in enumerate(basic_generator):
         if line[0] == 'section':
@@ -1986,6 +1987,30 @@ def gen_random_program(ofile, args, arch, seed, no_headers):
     writer.newline()
     access_sections = args.items('access-sections')
 
+    if self_checking:
+      total_instructions = int(args.get('general', 'total_instructions'))
+      rate = int(args.get('self-checking', 'rate'))
+      # Each checksum is 8 bytes and each dword is 8 bytes
+      num_chsum = int(((total_instructions/rate) + 3) * 8)
+      # Find number closest to num_chsum that is divisible by 64 so that Data section is interms of .dwords
+      num_chsum = ( ( num_chsum - 1 ) | ( 64 - 1 ) ) + 1
+      
+      previous = access_sections[-1][1].split(',')
+      new_begin = previous[1]
+      # 32 Normal registers each holding 8 bytes and 32 fp registers each holding 8 bytes; Total (32+32)*8 + 64(for buffer)
+      new_end = hex(int(previous[1], 16)+ 576)
+      new_sect_desc = new_begin + ',' + new_end + ',' + 'r'
+      check_sum = ('register_swap', new_sect_desc)
+      access_sections.append(check_sum)
+
+      # 32 Normal registers each holding 8 bytes and 32 fp registers each holding 8 bytes; Total (32+32)*8 + 64(for buffer)
+      previous = access_sections[-1][1].split(',')
+      new_begin = previous[1]
+      new_end = hex(int(previous[1], 16)+num_chsum)
+      new_sect_desc = new_begin + ',' + new_end + ',' + 'r'
+      check_sum = ('check_sum', new_sect_desc)
+      access_sections.append(check_sum)
+
     for index, section in enumerate(access_sections):
         section_name = section[0]
         section_start, section_end = section[1].split(',')[:2]
@@ -2051,6 +2076,13 @@ replace_word
         ecause02_r.append(ins)
     except:
       logger.info('perl script not run')
+      ecause02_r = [
+  '''
+  .macro ecause02
+  .word 0x4B04183B
+  .endm
+  '''
+  ]
     import yaml
     ppm_avail = True
 
@@ -2113,6 +2145,85 @@ replace_word
     # Read the program config
     config_args = configparser.ConfigParser()
     config_args.read(config_file_path)
+
+    # Create Makefile in setup Dir
+
+    # Identify Makefile Options 
+    bool_i, bool_m, bool_a, bool_f, bool_d, bool_c = True, False, False, False, False, False
+    bool_64 = False
+    for key,value in config_args.items('isa-instruction-distribution'):
+      if "64" in key:
+        if float(value)>0:
+          bool_64 = True
+      if "64m" in key or "32m" in key:
+        if float(value)>0:
+          bool_m = True
+      if "64a" in key or "32a" in key:
+        if float(value)>0:
+          bool_a = True
+      if "64f" in key or "32f" in key:
+        if float(value)>0:
+          bool_f = True
+      if "64d" in key or "32d" in key:
+        if float(value)>0:
+          bool_d = True
+      if "rvc" in key or "rv32c" in key or "rv64c" in key:
+        if float(value)>0:
+          bool_c = True
+
+    march_string = "rv"
+    if bool_64:
+      march_string = march_string + "64i"
+    else:
+      march_string = march_string + "32i"
+
+    if bool_m:
+      march_string = march_string + "m"
+    if bool_a:
+      march_string = march_string + "a"
+    if bool_f:
+      march_string = march_string + "f"
+    if bool_d:
+      march_string = march_string + "d"
+    if bool_c:
+      march_string = march_string + "c"
+
+    mabi_string = ""
+    if bool_64:
+      mabi_string = mabi_string + "lp64"
+    else:
+      if bool_d:
+        mabi_string = mabi_string + "ilp32d"
+      else:
+        mabi_string = mabi_string + "ilp32"
+
+    if args.static_make:
+      mabi_string = "lp64"
+      march_string = "rv64imafdc"
+
+    if args.self_checking:
+      logger.info("Self Checking Enabled, Setting mabi=lp64, Setting march=rv64imafdc")
+      mabi_string = "lp64"
+      march_string = "rv64imafdc"
+
+    # march=rv64id works, using rv64imafdc just in case
+    if config_args.getboolean('switch-priv-modes', 'switch_modes'):
+      logger.info("Switching Privlege Modes Enabled, Setting mabi=lp64, Setting march=rv64imafdc")
+      mabi_string = "lp64"
+      march_string = "rv64imafdc"
+
+    for key,value in config_args.items('exception-generation'):
+      if int(value)>0:
+        logger.info("Exceptions Enabled, Setting mabi=lp64, Setting march=rv64imafdc")
+        mabi_string = "lp64"
+        march_string = "rv64imafdc"
+        break
+
+    logger.info("Setting up the Makefile")
+    make_path = os.path.abspath(args.setup_dir)
+    make_file = 'Makefile'
+    with open(os.path.join(make_path, make_file), 'w') as f:
+        f.write(aapg.env.make.make_format_func(march_string,mabi_string).strip('\n'))
 
     # Configure linker template
     linker_template = aapg.env.linker.linker_script.strip()
@@ -2215,6 +2326,18 @@ replace_word
 .macro post_branch_macro
 .endm'''
 
+    test_pass_macro = '''
+.macro test_pass_macro
+la      sp, begin_signature
+addi    sp, sp, 2*REGBYTES
+li      t1, 0xfffff
+SREG    t1, 0*REGBYTES(sp)
+.endm'''
+
+    test_fail_macro = '''
+.macro test_fail_macro
+.endm'''
+
 
     if os.path.isfile(args.config_file):
       conf_path = args.config_file
@@ -2251,6 +2374,13 @@ replace_word
     mret
  .endm
         '''
+
+    if 'self-checking' in parsed_yaml_file.keys():
+      for key,value in parsed_yaml_file['self-checking'].items():
+        if key == 'test_pass_macro':
+          test_pass_macro = '''.macro test_pass_macro\n'''+ value +'''\n .endm'''
+        if key == 'test_fail_macro':
+          test_fail_macro = '''.macro test_fail_macro\n'''+ value +'''\n .endm'''
 
     if 'user-functions' in parsed_yaml_file.keys():
       for key,value in parsed_yaml_file['user-functions'].items():
@@ -3039,6 +3169,8 @@ replace_word
         write = write + post_program_macro + "\n"
         write = write + pre_branch_macro + "\n"
         write = write + post_branch_macro + "\n"
+        write = write + test_pass_macro + "\n"
+        write = write + test_fail_macro + "\n"
         write = write + user_functions + "\n"
         for i in range(num_ecause00):
           x = ecause00_r[random.randint(0,len(ecause00_r)-1)]
@@ -3197,9 +3329,10 @@ def run(args, index):
     with open(output_file_path, 'w') as output_file:
         seed_def = int.from_bytes(os.urandom(8), byteorder = 'big')
         seed = seed_def if args.seed is None else int(args.seed)
-        gen_random_program(output_file, config_args, args.arch, seed, args.no_headers)
+        gen_random_program(output_file, config_args, args.arch, seed, args.no_headers, args.self_checking)
 
     line_add = os.path.basename(output_file_path.rstrip(os.sep))
+    name_add = line_add[:-2]
     line_add = line_add[:-2]+'_template.S'
 
 
@@ -3207,7 +3340,7 @@ def run(args, index):
       lines = output_file.readlines()
 
     
-    lines[4] = '#include "{template}"\n'.format(template=line_add)
+    lines[4] = '#include "{template}"\n#define TEST_NAME {test_name}\n'.format(template=line_add,test_name=name_add)
 
     with open(output_file_path, "w") as outfile:
       outfile.write("".join(lines))

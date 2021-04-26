@@ -4,7 +4,7 @@ stages:
   - deploy
 
 before_script:
-    - source /tools/setup.sh
+    - source /tools/setup_new.sh
     - export PYTHONPATH=$(pwd)
     - export PATH="/home/lavanya/.pyenv/bin:$PATH"
     - eval "$(pyenv init -)"
@@ -22,7 +22,7 @@ test:
         refs:
             - merge_requests
     tags:
-        - mathsya-shakti
+        - mathsya-runner
 
 test_master:
     script:
@@ -51,4 +51,5 @@ deploy:
         refs:
             - master
     tags:
-        - mathsya-shakti
+        - mathsya-runner
+

@@ -1,4 +1,5 @@
-makefile = '''
+def make_format_func(isa_string,abi_string):
+	makefile = '''
 XLEN ?= 64
 TARGET ?= unknown-elf
 RISCVPREFIX=riscv${XLEN}-${TARGET}
@@ -7,8 +8,8 @@ COMMON_DIR := common
 BIN_DIR := bin
 OBJ_DIR := objdump
 LOG_DIR := log
-ISA ?= rv64imafd
-ABI ?= lp64
+ISA ?= {isa_string}
+ABI ?= {abi_string}
 
 INCLUDE_DIRS := common
 CRT_FILE := common/crt.S
@@ -21,8 +22,9 @@ SRC_FILES := $(filter-out $(wildcard $(ASM_SRC_DIR)/*template.S),$(BASE_SRC_FILE
 BIN_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(BIN_DIR)/%.riscv, $(SRC_FILES))
 OBJ_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(OBJ_DIR)/%.objdump, $(SRC_FILES))
 LOG_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(LOG_DIR)/%.log, $(SRC_FILES))
+DUMP_FILES := $(patsubst $(ASM_SRC_DIR)/%.S, $(LOG_DIR)/%.dump, $(SRC_FILES))
 
-all: build objdump run
+all: build objdump run dump
 \t$(info ==================== Complete Build Finished =============)
 
 build: $(BIN_FILES)
@@ -50,9 +52,19 @@ $(LOG_DIR)/%.log: $(BIN_DIR)/%.riscv
 \t$(info ==================== Simulating binary on Spike =========)
 \tspike -l --isa=$(ISA) $< 2> $@
 
+dump: $(DUMP_FILES)
+\t$(info ==================== Spike dump Completed ===============)
+\t$(info )
+
+$(LOG_DIR)/%.dump: $(BIN_DIR)/%.riscv
+\t$(info ==================== Generating spike dump ==============)
+\tspike --log-commits --log  $@ --isa=$(ISA) +signature=$@.sign $<
+
+
 
 .PHONY: clean
 clean:
 \trm -rf bin/* log/* objdump/*
-'''
+'''.format(XLEN="{XLEN}",TARGET="{TARGET}",RISCVPREFIX="{RISCVPREFIX}",isa_string=isa_string,abi_string=abi_string)
+	return makefile
 
