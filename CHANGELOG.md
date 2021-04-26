@@ -2,6 +2,10 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2021-04-26
+# Fixed
+- Test master runner tag  
+
 ## [2.2.0] - 2021-04-22
 # Added
 - Support for self checking test  
