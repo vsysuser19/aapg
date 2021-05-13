@@ -53,6 +53,7 @@ class BasicGenerator(object):
         self.reg_ignore = None
         self.rec_use_reg1 = None
         self.rec_use_reg2 = None
+        self.skip_user_flag = False
         self.csr_sections  = args.get('csr-sections','sections')
         self.branch_block_size = args.get('branch-control','block-size')
         self.delegation_boolean = False
@@ -138,7 +139,8 @@ class BasicGenerator(object):
 
         self.user_calls_dict = {'user-functions' : args.items('user-functions')}
         self.user_calls_dict['i_cache_thrash'] = ('f', args.getint('i-cache', 'num_calls'))
-        self.user_calls_dict['switchmodes'] = ('m', args.getint('switch-priv-modes', 'num_switches'))
+        if args.getboolean('switch-priv-modes', 'switch_modes') and self.self_checking != True:
+            self.user_calls_dict['switchmodes'] = ('m', args.getint('switch-priv-modes', 'num_switches'))
 
         self.track_chsum = 0
         self.count_chsum = 0
@@ -229,7 +231,10 @@ class BasicGenerator(object):
         user_defined_total_calls = sum(map(lambda x: x[1], self.user_calls_dict.values()))
         logger.debug('User calls left {}'.format(user_defined_total_calls))
 
-        if user_defined_total_calls > 0 and random.uniform(0,1) < (user_defined_total_calls/self.total_instructions):  #0.84 for 80%
+
+
+        if user_defined_total_calls > 0 and random.uniform(0,1) < (user_defined_total_calls/self.instructions_togen) and self.skip_user_flag==False:  #0.84 for 80%
+            
             logger.debug('Adding a user call')
 
             # Select the user call
@@ -241,6 +246,17 @@ class BasicGenerator(object):
             else:
                 self.q.put(('instruction', (user_call, )))
             self.user_calls_dict[user_call] = (self.user_calls_dict[user_call][0], self.user_calls_dict[user_call][1] - 1)
+
+            self.total_instructions -= 1
+
+            # Check if only user defined calls are left (To avoid grouping at the bottom)
+            if self.total_instructions <= user_defined_total_calls or self.instructions_togen == 0:
+                logger.warn("Skipping adding user function to test, to maintain even distribution")
+                usrfprt = str(self.user_calls_dict)
+                logger.warn("Functions Skipped: "+usrfprt)
+                self.skip_user_flag = True
+                self.total_instructions = 0
+                return
 
             return
             
@@ -603,7 +619,7 @@ class BasicGenerator(object):
         # Pre-program macro
         self.q.put(('section', 'main'))
         self.q.put(('instruction_nolabel', ('pre_program_macro', )))
-        if args.getboolean('switch-priv-modes', 'switch_modes'):
+        if args.getboolean('switch-priv-modes', 'switch_modes') and self.self_checking != True:
           self.q.put(('instruction_nolabel', ('la', 't0', 'switch_mode_handler')))
           self.q.put(('instruction_nolabel', ('csrw', 'mtvec', 't0')))
         elif args.getboolean('general', 'custom_trap_handler'):
