@@ -2,6 +2,11 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2] - 2021-05-06
+# Fixed
+- User function grouping at end of test
+- Switching Modes and Self Checking set to be mutually exclusive
+
 ## [2.2.1] - 2021-04-26
 # Fixed
 - Test master runner tag  

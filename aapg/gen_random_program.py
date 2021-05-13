@@ -3159,7 +3159,7 @@ SREG    t1, 0*REGBYTES(sp)
           out_dir = args.output_dir
         
         for key,value in parsed_yaml_file['switch-priv-modes'].items():
-          if key=='switch_modes' and value ==True:
+          if (key=='switch_modes' and value ==True) and args.self_checking == False:
             write = aapg.env.templates.templates_asm[1]
             break
           else:
