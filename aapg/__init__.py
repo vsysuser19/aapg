@@ -3,4 +3,4 @@
 
 __author__ = """IITM"""
 __email__ = ''
-__version__ = '2.2.2'
+__version__ = '2.2.3'

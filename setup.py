@@ -25,7 +25,7 @@ test_requirements = [ ]
 
 setup(
     name='aapg',
-    version='2.2.2',
+    version='2.2.3',
     description="RISC-V AAPG",
     long_description=' AAPG \n\n',
     classifiers=[

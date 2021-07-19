@@ -6,10 +6,10 @@ srand($ARGV[1]);
 my @illegal_instr_list = ();
 foreach my $count (0 .. 100) {
     my $d = int(rand(4294967295));
-    my $hex = sprintf("0x%X", $d);
+    my $hex = sprintf("%X", $d);
     my $illegal = `echo "DASM(0x$hex)" | spike-dasm`;
-    if ($illegal =~ /un/ && $illegal !~ /counter/) {
-      push @illegal_instr_list, ".word $hex";
+    if ($illegal =~ /unknown/ && $illegal !~ /counter/  && $illegal !~ /csr/ && $illegal !~ /custom/ && $illegal !~/ / && $illegal !~ /	/) {
+      push @illegal_instr_list, ".word 0x$hex";
       push @illegal_instr_list, "\n";
     }
   }
