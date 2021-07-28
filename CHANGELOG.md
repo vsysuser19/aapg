@@ -1,6 +1,11 @@
 # CHANGELOG
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [2.2.4] - 2021-07-28
+# Fixed
+- Ecause02 perl script generated .word and .half based on opcode
+- Replace 0x0 with 0xff as the default illegal opcode
+
 ## [2.2.3] - 2021-07-19
 # Fixed
 - Ecause02 perl script not generating illegal instructions
