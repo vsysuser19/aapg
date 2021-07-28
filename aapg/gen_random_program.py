@@ -218,7 +218,7 @@ def init_global_wth_seed(seed):
   ecause02_r=[
   '''
   .macro ecause02
-  .word 0x0
+  .word 0xff
   .endm
   '''
   ]
@@ -2077,7 +2077,7 @@ replace_word
       if not ecause02_r:
         ecause02_r.append('''
   .macro ecause02
-  .word 0x0
+  .word 0xff
   .endm
   ''')
     except:
@@ -2085,7 +2085,7 @@ replace_word
       ecause02_r = [
   '''
   .macro ecause02
-  .word 0x0
+  .word 0xff
   .endm
   '''
   ]
