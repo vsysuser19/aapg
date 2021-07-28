@@ -64,8 +64,8 @@ custom_trap_handler_s:
   li a2, 1
   beq a0, a2, 1f
   csrr a1, sepc   
-  li a2, 2
-  beq a0, a2, inst32_s
+  # li a2, 2
+  # beq a0, a2, inst32_s
 1:
   lh a2, (a1)
   # check the lower 2 bits to see if the instruction is 32-bit or 16-bit.
@@ -158,8 +158,8 @@ custom_trap_handler:
   li a2, 1
   beq a0, a2, 1f
   csrr a1, mepc   
-  li a2, 2
-  beq a0, a2, inst32
+  # li a2, 2
+  # beq a0, a2, inst32
 1:
   lh a2, (a1)
   # check the lower 2 bits to see if the instruction is 32-bit or 16-bit.

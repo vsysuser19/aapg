@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 # Fixed
 - Ecause02 perl script generated .word and .half based on opcode
 - Replace 0x0 with 0xff as the default illegal opcode
+- Update Custom Trap handler to check inst size even for illegal
 
 ## [2.2.3] - 2021-07-19
 # Fixed
