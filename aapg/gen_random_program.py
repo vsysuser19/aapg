@@ -218,7 +218,7 @@ def init_global_wth_seed(seed):
   ecause02_r=[
   '''
   .macro ecause02
-  .word 0x4B04183B
+  .word 0x0
   .endm
   '''
   ]
@@ -2074,12 +2074,18 @@ replace_word
         line = line.replace("\n","")
         ins = ecause02_append_str.replace('replace_word',line)
         ecause02_r.append(ins)
+      if not ecause02_r:
+        ecause02_r.append('''
+  .macro ecause02
+  .word 0x0
+  .endm
+  ''')
     except:
       logger.info('perl script not run')
       ecause02_r = [
   '''
   .macro ecause02
-  .word 0x4B04183B
+  .word 0x0
   .endm
   '''
   ]

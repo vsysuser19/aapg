@@ -1,6 +1,9 @@
 # CHANGELOG
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [2.2.3] - 2021-07-19
+# Fixed
+- Ecause02 perl script not generating illegal instructions
 
 ## [2.2.2] - 2021-05-06
 # Fixed
