@@ -106,6 +106,7 @@ _start:
   FMV  f29, x29
   FMV  f30, x30
   FMV  f31, x31
+  .align 4
 1:
 #endif
 
