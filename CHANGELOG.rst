@@ -3,6 +3,9 @@ CHANGELOG
 
 This project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[2.2.6] - 2021-08-23
+  - Encapsulating RVTEST_FPENABLE macro in templates under `#ifdef __riscv_flen`
+
 [2.2.5] - 2021-08-15
   - Fixed alignment of `1f` label after floating point init code to 4 bytes.
   - Moved changelog to rst format
