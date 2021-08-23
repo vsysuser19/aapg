@@ -43,7 +43,7 @@ deploy:
         - eval "$(pyenv init -)"
         - eval "$(pyenv virtualenv-init -)"
         - pyenv activate py37
-        - pip install twine
+        - pip install twine semver
         - python setup.py sdist
         - python -m twine upload --username $shaktipypiusername --password $shaktipypipassword dist/*
         - python /scratch/version-extract-rst.py
