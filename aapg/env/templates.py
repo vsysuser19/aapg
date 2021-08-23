@@ -300,9 +300,12 @@ ecall
 #define MSTATUS_MPP 0x00001800
 #define MSTATUS_FS          0x00006000
 #define RVTEST_FP_ENABLE                                                \
-  li a0, MSTATUS_FS & (MSTATUS_FS >> 1);                                \
-  csrs mstatus, a0;                                                     \
-  csrwi fcsr, 0
+    #ifdef __riscv_flen \
+      li a0, MSTATUS_FS & (MSTATUS_FS >> 1);                                \
+      csrs mstatus, a0;                                                     \
+      csrwi fcsr, 0 \
+    #endif \
+
 #if __riscv_xlen == 64
   #define LREG ld
   #define SREG sd
