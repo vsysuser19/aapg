@@ -2155,7 +2155,7 @@ replace_word
     # Create Makefile in setup Dir
 
     # Identify Makefile Options 
-    bool_i, bool_m, bool_a, bool_f, bool_d, bool_c = True, False, False, False, False, False
+    bool_i, bool_m, bool_a, bool_f, bool_d, bool_c,bool_zba,bool_zbb,bool_zbc,bool_zbs,bool_zbe,bool_zbf,bool_zbm,bool_zbp,bool_zbr,bool_zbt = True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False
     bool_64 = False
     for key,value in config_args.items('isa-instruction-distribution'):
       if "64" in key:
@@ -2176,8 +2176,39 @@ replace_word
       if "rvc" in key or "rv32c" in key or "rv64c" in key:
         if float(value)>0:
           bool_c = True
+      if "zba" in key:
+        if float(value)>0:
+          bool_zba = True
+      if "zbb" in key:
+        if float(value)>0:
+          bool_zbb = True
+      if "zbc" in key:
+        if float(value)>0:
+          bool_zbc = True
+      if "zbs" in key:
+        if float(value)>0:
+          bool_zbs = True
+      if "zbe" in key:
+        if float(value)>0:
+          bool_zbe = True
+      if "zbf" in key:
+        if float(value)>0:
+          bool_zbf = True
+      if "zbm" in key:
+        if float(value)>0:
+          bool_zbm = True
+      if "zbp" in key:
+        if float(value)>0:
+          bool_zbp = True
+      if "zbr" in key:
+        if float(value)>0:
+          bool_zbr = True
+      if "zbt" in key:
+        if float(value)>0:
+          bool_zbt = True
 
     march_string = "rv"
+    spike_isa_string=march_string
     if bool_64:
       march_string = march_string + "64i"
     else:
@@ -2194,6 +2225,38 @@ replace_word
     if bool_c:
       march_string = march_string + "c"
 
+    if bool_zba:
+      march_string = march_string + "_zba"
+      #spike_isa_string = spike_isa_string + "_Xzba"
+
+    if bool_zbb:
+      march_string = march_string + "_zbb"
+      #spike_isa_string = spike_isa_string + "_Xzbb"
+    if bool_zbc:
+      march_string = march_string + "_zbc"
+      #spike_isa_string = spike_isa_string + "_Xzbc"
+    if bool_zbs:
+      march_string = march_string + "_zbs"
+      #spike_isa_string = spike_isa_string + "_Xzbs"
+    spike_isa_string=march_string
+    if bool_zbe:
+      march_string = march_string + "_zbe"
+      spike_isa_string = spike_isa_string + "_Xzbe"
+    if bool_zbf:
+      march_string = march_string + "_zbf"
+      spike_isa_string = spike_isa_string + "_Xzbf"
+    if bool_zbm:
+      march_string = march_string + "_zbm"
+      spike_isa_string = spike_isa_string + "_Xzbm"
+    if bool_zbp:
+      march_string = march_string + "_zbp"
+      spike_isa_string = spike_isa_string + "_Xzbp"
+    if bool_zbr:
+      march_string = march_string + "_zbr"
+      spike_isa_string = spike_isa_string + "_Xzbr"
+    if bool_zbt:
+      march_string = march_string + "_zbt"
+      spike_isa_string = spike_isa_string + "_Xzbt"
     mabi_string = ""
     if bool_64:
       mabi_string = mabi_string + "lp64"
@@ -2229,7 +2292,7 @@ replace_word
     make_path = os.path.abspath(args.setup_dir)
     make_file = 'Makefile'
     with open(os.path.join(make_path, make_file), 'w') as f:
-        f.write(aapg.env.make.make_format_func(march_string,mabi_string).strip('\n'))
+        f.write(aapg.env.make.make_format_func(march_string,mabi_string,spike_isa_string).strip('\n'))
 
     # Configure linker template
     linker_template = aapg.env.linker.linker_script.strip()

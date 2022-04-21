@@ -1,4 +1,4 @@
-def make_format_func(isa_string,abi_string):
+def make_format_func(isa_string,abi_string,spike_isa_string):
 	makefile = '''
 XLEN ?= 64
 TARGET ?= unknown-elf
@@ -10,7 +10,7 @@ OBJ_DIR := objdump
 LOG_DIR := log
 ISA ?= {isa_string}
 ABI ?= {abi_string}
-
+SPIKE_ISA ?= {spike_isa_string}
 INCLUDE_DIRS := common
 CRT_FILE := common/crt.S
 TEMPLATE_FILE := common/templates.S
@@ -50,7 +50,7 @@ run: $(LOG_FILES)
 
 $(LOG_DIR)/%.log: $(BIN_DIR)/%.riscv
 \t$(info ==================== Simulating binary on Spike =========)
-\tspike -l --isa=$(ISA) $< 2> $@
+\tspike -l --isa=$(SPIKE_ISA) $< 2> $@
 
 dump: $(DUMP_FILES)
 \t$(info ==================== Spike dump Completed ===============)
@@ -58,13 +58,13 @@ dump: $(DUMP_FILES)
 
 $(LOG_DIR)/%.dump: $(BIN_DIR)/%.riscv
 \t$(info ==================== Generating spike dump ==============)
-\tspike --log-commits --log  $@ --isa=$(ISA) +signature=$@.sign $<
+\tspike --log-commits --log  $@ --isa=$(SPIKE_ISA) +signature=$@.sign $<
 
 
 
 .PHONY: clean
 clean:
 \trm -rf bin/* log/* objdump/*
-'''.format(XLEN="{XLEN}",TARGET="{TARGET}",RISCVPREFIX="{RISCVPREFIX}",isa_string=isa_string,abi_string=abi_string)
+'''.format(XLEN="{XLEN}",TARGET="{TARGET}",RISCVPREFIX="{RISCVPREFIX}",isa_string=isa_string,abi_string=abi_string,spike_isa_string=spike_isa_string)
 	return makefile
 
