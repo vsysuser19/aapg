@@ -3,6 +3,9 @@ CHANGELOG
 
 This project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[2.3.0] - 2022-04-26
+  - fix shift amount generation for rv32 immediate shift operations
+
 [2.2.6] - 2021-08-23
   - Encapsulating RVTEST_FPENABLE macro in templates under `#ifdef __riscv_flen`
 
