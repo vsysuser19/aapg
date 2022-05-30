@@ -20,7 +20,7 @@ before_script:
     - eval "$(pyenv virtualenv-init -)"
     - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
-    - pyenv activate 
+    - pyenv activate py37
     #- exec $SHELL
     - bash
 
@@ -45,7 +45,7 @@ test:
         - eval "$(pyenv virtualenv-init -)"
         - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
-        - pyenv activate py38
+        - pyenv activate py37
         #- exec $SHELL
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
@@ -70,7 +70,7 @@ test_master:
         - eval "$(pyenv virtualenv-init -)"
        # - source /home/divya/.bashrc
         - export PATH=$PATH:/home/gitlab-runner/.local/bin
-        - pyenv activate py38
+        - pyenv activate py37
        # - exec $SHELL
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
@@ -96,7 +96,7 @@ deploy:
         - eval "$(pyenv virtualenv-init -)"
       #  - source /home/divya/.bashrc
         #- export PATH=$PATH:/home/gitlab-runner/.local/bin
-        - pyenv activate py38
+        - pyenv activate py37
        # - exec $SHELL
         - pip install twine semver
         - python setup.py sdist
