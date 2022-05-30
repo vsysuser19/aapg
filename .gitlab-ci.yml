@@ -17,6 +17,7 @@ before_script:
     - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
     - pyenv activate py38
+    - bash
 
     - pip install pytest
     - pip install pytest-timeout
