@@ -10,11 +10,11 @@ before_script:
    # - eval "$(pyenv init -)"
    # - eval "$(pyenv virtualenv-init -)"
    # - pyenv activate py37
-    - export PYENV_ROOT=/home/divya/.pyenv
-    - export PATH=/home/divya/.pyenv/bin:$PATH
-    - eval "$(pyenv init - --no-rehash)"
-    - eval "$(pyenv virtualenv-init -)"
-   # - source /home/divya/.bashrc
+   # - export PYENV_ROOT=/home/divya/.pyenv
+  #  - export PATH=/home/divya/.pyenv/bin:$PATH
+   # - eval "$(pyenv init - --no-rehash)"
+  #  - eval "$(pyenv virtualenv-init -)"
+    - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
     - pyenv activate py38
     - bash
@@ -31,11 +31,11 @@ test:
    # - eval "$(pyenv init -)"
    # - eval "$(pyenv virtualenv-init -)"
    # - pyenv activate py37
-        - export PYENV_ROOT=/home/divya/.pyenv
-        - export PATH=/home/divya/.pyenv/bin:$PATH
-        - eval "$(pyenv init - --no-rehash)"
-        - eval "$(pyenv virtualenv-init -)"
-      #  - source /home/divya/.bashrc
+    #    - export PYENV_ROOT=/home/divya/.pyenv
+     #   - export PATH=/home/divya/.pyenv/bin:$PATH
+     #   - eval "$(pyenv init - --no-rehash)"
+     #   - eval "$(pyenv virtualenv-init -)"
+        - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
