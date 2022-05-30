@@ -22,7 +22,7 @@ test:
         refs:
             - merge_requests
     tags:
-        - mathsya-runner
+        - aapg_regression
 
 test_master:
     script:
@@ -32,7 +32,7 @@ test_master:
         refs:
             - master
     tags:
-        - mathsya-runner
+        - aapg_regression
 
 deploy:
     stage: deploy
@@ -51,5 +51,5 @@ deploy:
         refs:
             - master
     tags:
-        - mathsya-runner
+        - aapg_regression
 
