@@ -20,7 +20,8 @@ before_script:
     - eval "$(pyenv virtualenv-init -)"
     - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
-    - pyenv activate py38
+    - pyenv activate 
+    - exec $SHELL
     - bash
 
     - pip install pytest
@@ -45,6 +46,7 @@ test:
         - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
+        - exec $SHELL
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
