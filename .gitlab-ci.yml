@@ -21,7 +21,7 @@ before_script:
     - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
     - pyenv activate 
-    - exec $SHELL
+    #- exec $SHELL
     - bash
 
     - pip install pytest
@@ -46,7 +46,7 @@ test:
         - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
-        - exec $SHELL
+        #- exec $SHELL
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
@@ -71,7 +71,7 @@ test_master:
        # - source /home/divya/.bashrc
         - export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
-        - exec $SHELL
+       # - exec $SHELL
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
@@ -97,7 +97,7 @@ deploy:
       #  - source /home/divya/.bashrc
         #- export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
-        - exec $SHELL
+       # - exec $SHELL
         - pip install twine semver
         - python setup.py sdist
         - python -m twine upload --username $shaktipypiusername --password $shaktipypipassword dist/*
