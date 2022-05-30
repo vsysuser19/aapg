@@ -15,7 +15,7 @@ before_script:
     - eval "$(pyenv init - --no-rehash)"
     - eval "$(pyenv virtualenv-init -)"
     - source /home/divya/.bashrc
-    - export PATH=$PATH:/home/gitlab-runner/.local/bin
+   # - export PATH=$PATH:/home/gitlab-runner/.local/bin
     - pyenv activate py37
 
     - pip install pytest
@@ -56,7 +56,7 @@ deploy:
         - eval "$(pyenv init - --no-rehash)"
         - eval "$(pyenv virtualenv-init -)"
         - source /home/divya/.bashrc
-        - export PATH=$PATH:/home/gitlab-runner/.local/bin
+        #- export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py37
         - pip install twine semver
         - python setup.py sdist
