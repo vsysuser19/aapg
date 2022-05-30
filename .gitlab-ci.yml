@@ -27,7 +27,7 @@ before_script:
     - pip install pytest
     - pip install pytest-timeout
     - pip uninstall -y aapg
-    - python setup.py install
+    - python3 setup.py install
 test:
     script:
         - source /home/divya/setup.sh
