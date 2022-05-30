@@ -4,7 +4,7 @@ stages:
   - deploy
 
 before_script:
-    - source /home/divya/setup_new.sh
+    - source /tools/setup_new.sh
     - export PYTHONPATH=$(pwd)
     - export PATH="/home/lavanya/.pyenv/bin:$PATH"
     - eval "$(pyenv init -)"
@@ -37,7 +37,7 @@ test_master:
 deploy:
     stage: deploy
     script:
-        - source /home/divya/setup_new.sh
+        - source /tools/setup_new.sh
         - export PYTHONPATH=$(pwd)
         - export PATH="/home/lavanya/.pyenv/bin:$PATH"
         - eval "$(pyenv init -)"
