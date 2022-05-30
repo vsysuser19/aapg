@@ -24,16 +24,42 @@ before_script:
     - python setup.py install
 test:
     script:
+        - source /home/divya/setup.sh
+    #- export PYTHONPATH=$(pwd)
+    #- export PATH="/home/divya/.pyenv/bin:$PATH"
+   # - eval "$(pyenv init -)"
+   # - eval "$(pyenv virtualenv-init -)"
+   # - pyenv activate py37
+        - export PYENV_ROOT=/home/divya/.pyenv
+        - export PATH=/home/divya/.pyenv/bin:$PATH
+        - eval "$(pyenv init - --no-rehash)"
+        - eval "$(pyenv virtualenv-init -)"
+        - source /home/divya/.bashrc
+   # - export PATH=$PATH:/home/gitlab-runner/.local/bin
+        - pyenv activate py37
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
         refs:
-            - merge_requests
+            - 89-aapg-regression
     tags:
         - aapg_regression
 
 test_master:
     script:
+        - source /home/divya/setup.sh
+    #- export PYTHONPATH=$(pwd)
+    #- export PATH="/home/divya/.pyenv/bin:$PATH"
+   # - eval "$(pyenv init -)"
+   # - eval "$(pyenv virtualenv-init -)"
+   # - pyenv activate py37
+        - export PYENV_ROOT=/home/divya/.pyenv
+        - export PATH=/home/divya/.pyenv/bin:$PATH
+        - eval "$(pyenv init - --no-rehash)"
+        - eval "$(pyenv virtualenv-init -)"
+        - source /home/divya/.bashrc
+   # - export PATH=$PATH:/home/gitlab-runner/.local/bin
+        - pyenv activate py37
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
