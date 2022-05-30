@@ -16,7 +16,7 @@ before_script:
     - eval "$(pyenv virtualenv-init -)"
     - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
-    - pyenv activate py37
+    - pyenv activate py38
 
     - pip install pytest
     - pip install pytest-timeout
@@ -36,7 +36,7 @@ test:
         - eval "$(pyenv virtualenv-init -)"
         - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
-        - pyenv activate py37
+        - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
@@ -58,8 +58,8 @@ test_master:
         - eval "$(pyenv init - --no-rehash)"
         - eval "$(pyenv virtualenv-init -)"
         - source /home/divya/.bashrc
-   # - export PATH=$PATH:/home/gitlab-runner/.local/bin
-        - pyenv activate py37
+        - export PATH=$PATH:/home/gitlab-runner/.local/bin
+        - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
@@ -83,7 +83,7 @@ deploy:
         - eval "$(pyenv virtualenv-init -)"
         - source /home/divya/.bashrc
         #- export PATH=$PATH:/home/gitlab-runner/.local/bin
-        - pyenv activate py37
+        - pyenv activate py38
         - pip install twine semver
         - python setup.py sdist
         - python -m twine upload --username $shaktipypiusername --password $shaktipypipassword dist/*
