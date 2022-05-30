@@ -33,10 +33,12 @@ test:
    # - eval "$(pyenv init -)"
    # - eval "$(pyenv virtualenv-init -)"
    # - pyenv activate py37
-    #    - export PYENV_ROOT=/home/divya/.pyenv
-     #   - export PATH=/home/divya/.pyenv/bin:$PATH
-     #   - eval "$(pyenv init - --no-rehash)"
-     #   - eval "$(pyenv virtualenv-init -)"
+        - export PYENV_ROOT=/home/divya/.pyenv
+        - export PATH=/home/divya/.pyenv/bin:$PATH
+        - export PYENV_ROOT=/home/divya/.local
+        - export PATH=/home/divya/.local/bin:$PATH
+        - eval "$(pyenv init - --no-rehash)"
+        - eval "$(pyenv virtualenv-init -)"
         - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
