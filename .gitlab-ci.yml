@@ -6,7 +6,7 @@ stages:
 before_script:
     - source /tools/setup_new.sh
     - export PYTHONPATH=$(pwd)
-    - export PATH="/home/lavanya/.pyenv/bin:$PATH"
+    - export PATH="/home/divya/.pyenv/bin:$PATH"
     - eval "$(pyenv init -)"
     - eval "$(pyenv virtualenv-init -)"
     - pyenv activate py37
@@ -39,7 +39,7 @@ deploy:
     script:
         - source /tools/setup_new.sh
         - export PYTHONPATH=$(pwd)
-        - export PATH="/home/lavanya/.pyenv/bin:$PATH"
+        - export PATH="/home/divya/.pyenv/bin:$PATH"
         - eval "$(pyenv init -)"
         - eval "$(pyenv virtualenv-init -)"
         - pyenv activate py37
