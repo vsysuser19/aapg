@@ -9,7 +9,7 @@ before_script:
     - export PATH="/home/lavanya/.pyenv/bin:$PATH"
     - eval "$(pyenv init -)"
     - eval "$(pyenv virtualenv-init -)"
-    - pyenv activate py38
+    - pyenv activate py37
     - pip install pytest
     - pip install pytest-timeout
     - pip uninstall -y aapg
@@ -42,7 +42,7 @@ deploy:
         - export PATH="/home/lavanya/.pyenv/bin:$PATH"
         - eval "$(pyenv init -)"
         - eval "$(pyenv virtualenv-init -)"
-        - pyenv activate py38
+        - pyenv activate py37
         - pip install twine semver
         - python setup.py sdist
         - python -m twine upload --username $shaktipypiusername --password $shaktipypipassword dist/*
