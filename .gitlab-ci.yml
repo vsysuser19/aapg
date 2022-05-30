@@ -22,7 +22,7 @@ test:
         refs:
             - merge_requests
     tags:
-        - mathsya-runner
+        - regression
 
 test_master:
     script:
@@ -30,9 +30,9 @@ test_master:
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
         refs:
-            - master
+            - 89-aapg-regression
     tags:
-        - mathsya-runner
+        - regression
 
 deploy:
     stage: deploy
@@ -49,7 +49,7 @@ deploy:
         - python /scratch/version-extract-rst.py
     only:
         refs:
-            - master
+            - 89-aapg-regression
     tags:
-        - mathsya-runner
+        - regression
 
