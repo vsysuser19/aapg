@@ -5,11 +5,19 @@ stages:
 
 before_script:
     - source /tools/setup_new.sh
-    - export PYTHONPATH=$(pwd)
-    - export PATH="/home/divya/.pyenv/bin:$PATH"
-    - eval "$(pyenv init -)"
+    #- export PYTHONPATH=$(pwd)
+    #- export PATH="/home/divya/.pyenv/bin:$PATH"
+   # - eval "$(pyenv init -)"
+   # - eval "$(pyenv virtualenv-init -)"
+   # - pyenv activate py37
+    - export PYENV_ROOT=/home/divya/.pyenv
+    - export PATH=/home/divya/.pyenv/bin:$PATH
+    - eval "$(pyenv init - --no-rehash)"
     - eval "$(pyenv virtualenv-init -)"
-    - pyenv activate py37
+    - source /home/divya/.bashrc
+    - export PATH=$PATH:/home/gitlab-runner/.local/bin
+    - pyenv activate py38
+
     - pip install pytest
     - pip install pytest-timeout
     - pip uninstall -y aapg
@@ -22,7 +30,7 @@ test:
         refs:
             - merge_requests
     tags:
-        - regression
+        - aapg_regression
 
 test_master:
     script:
@@ -32,17 +40,24 @@ test_master:
         refs:
             - 89-aapg-regression
     tags:
-        - regression
+        - aapg_regression
 
 deploy:
     stage: deploy
     script:
         - source /tools/setup_new.sh
-        - export PYTHONPATH=$(pwd)
-        - export PATH="/home/divya/.pyenv/bin:$PATH"
-        - eval "$(pyenv init -)"
+        #- export PYTHONPATH=$(pwd)
+        #- export PATH="/home/divya/.pyenv/bin:$PATH"
+        #- eval "$(pyenv init -)"
+       # - eval "$(pyenv virtualenv-init -)"
+       # - pyenv activate py37
+        - export PYENV_ROOT=/home/divya/.pyenv
+        - export PATH=/home/divya/.pyenv/bin:$PATH
+        - eval "$(pyenv init - --no-rehash)"
         - eval "$(pyenv virtualenv-init -)"
-        - pyenv activate py37
+        - source /home/divya/.bashrc
+        - export PATH=$PATH:/home/gitlab-runner/.local/bin
+        - pyenv activate py38
         - pip install twine semver
         - python setup.py sdist
         - python -m twine upload --username $shaktipypiusername --password $shaktipypipassword dist/*
@@ -51,5 +66,5 @@ deploy:
         refs:
             - 89-aapg-regression
     tags:
-        - regression
+        - aapg_regression
 
