@@ -14,7 +14,7 @@ before_script:
     - export PATH=/home/divya/.pyenv/bin:$PATH
     - eval "$(pyenv init - --no-rehash)"
     - eval "$(pyenv virtualenv-init -)"
-    - source /home/divya/.bashrc
+   # - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
     - pyenv activate py38
     - bash
@@ -35,7 +35,7 @@ test:
         - export PATH=/home/divya/.pyenv/bin:$PATH
         - eval "$(pyenv init - --no-rehash)"
         - eval "$(pyenv virtualenv-init -)"
-        - source /home/divya/.bashrc
+      #  - source /home/divya/.bashrc
    # - export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
@@ -58,7 +58,7 @@ test_master:
         - export PATH=/home/divya/.pyenv/bin:$PATH
         - eval "$(pyenv init - --no-rehash)"
         - eval "$(pyenv virtualenv-init -)"
-        - source /home/divya/.bashrc
+       # - source /home/divya/.bashrc
         - export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
@@ -82,7 +82,7 @@ deploy:
         - export PATH=/home/divya/.pyenv/bin:$PATH
         - eval "$(pyenv init - --no-rehash)"
         - eval "$(pyenv virtualenv-init -)"
-        - source /home/divya/.bashrc
+      #  - source /home/divya/.bashrc
         #- export PATH=$PATH:/home/gitlab-runner/.local/bin
         - pyenv activate py38
         - pip install twine semver
