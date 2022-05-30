@@ -15,6 +15,7 @@ before_script:
     - export PATH=/home/divya/.pyenv/bin:$PATH
     - export PYENV_ROOT=/home/divya/.local
     - export PATH=/home/divya/.local/bin:$PATH
+    - eval "$(pyenv init -)"
     - eval "$(pyenv init - --path)"
     - eval "$(pyenv virtualenv-init -)"
     - source /home/divya/.bashrc
@@ -32,7 +33,7 @@ test:
         - export PYTHONPATH=$(pwd)
         - export PATH="/usr/local/bin:$PATH"
     #- export PATH="/home/divya/.pyenv/bin:$PATH"
-   # - eval "$(pyenv init -)"
+        - eval "$(pyenv init -)"
    # - eval "$(pyenv virtualenv-init -)"
    # - pyenv activate py37
         - export PYENV_ROOT=/home/divya/.pyenv
@@ -58,7 +59,7 @@ test_master:
         - export PYTHONPATH=$(pwd)
         - export PATH="/usr/local/bin:$PATH"
     #- export PATH="/home/divya/.pyenv/bin:$PATH"
-   # - eval "$(pyenv init -)"
+        - eval "$(pyenv init -)"
    # - eval "$(pyenv virtualenv-init -)"
    # - pyenv activate py37
         - export PYENV_ROOT=/home/divya/.pyenv
@@ -83,7 +84,7 @@ deploy:
         - export PYTHONPATH=$(pwd)
         - export PATH="/usr/local/bin:$PATH"
         #- export PATH="/home/divya/.pyenv/bin:$PATH"
-        #- eval "$(pyenv init -)"
+        - eval "$(pyenv init -)"
        # - eval "$(pyenv virtualenv-init -)"
        # - pyenv activate py37
         - export PYENV_ROOT=/home/divya/.pyenv
