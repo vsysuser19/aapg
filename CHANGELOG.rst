@@ -3,6 +3,9 @@ CHANGELOG
 
 This project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[2.2.7] - 2022-05-31
+  - CI Fixed
+
 [2.2.6] - 2021-08-23
   - Encapsulating RVTEST_FPENABLE macro in templates under `#ifdef __riscv_flen`
 
