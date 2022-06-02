@@ -28,9 +28,9 @@ test:
         - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
-    only:
-        refs:
-            - 89-aapg-regression
+    #only:
+     #   refs:
+      #      - 89-aapg-regression
     tags:
         - aapg_regression
 
@@ -46,9 +46,9 @@ test_master:
         - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
         - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
-    only:
-        refs:
-            - 89-aapg-regression
+   # only:
+    #    refs:
+     #       - 89-aapg-regression
     tags:
         - aapg_regression
 
@@ -67,9 +67,9 @@ deploy:
         - python setup.py sdist
         - python -m twine upload --username $shaktipypiusername --password $shaktipypipassword dist/*
         - python /scratch/version-extract-rst.py
-    only:
-        refs:
-            - 89-aapg-regression
+   # only:
+    #    refs:
+     #       - 89-aapg-regression
     tags:
         - aapg_regression
 
