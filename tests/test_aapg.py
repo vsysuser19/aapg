@@ -232,19 +232,19 @@ def test_recursion(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-#@pytest.mark.timeout(200)
-#def test_all(runner,seed):
- #  make = 0
- #   input_seed=int(seed)
- #   runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[7])])
- #   os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[7]))
- #   result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[7]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[7])])
- #   try:
- #       os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[7]))
- #       os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[7]))
- #   except:
- #       make = 0
- #   assert result.exit_code == 0 and make == 0
+@pytest.mark.timeout(200)
+def test_all(runner,seed):
+   make = 0
+    input_seed=int(seed)
+    runner.invoke(cli, ['setup','--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[7])])
+    os.system('cp tests/ci_cd_templates/{config_file}.yaml tests/work/{config_file}/config.yaml'.format(config_file=list_of_files[7]))
+    result = runner.invoke(cli, ['gen','--num_programs=2','--static_make','--seed={}'.format(input_seed),'--setup_dir=tests/work/{config_file}'.format(config_file=list_of_files[7]),'--output_dir=tests/work/{config_file}/asm'.format(config_file=list_of_files[7])])
+    try:
+        os.system('cd tests/work/{config_file}; make'.format(config_file=list_of_files[7]))
+        os.system('rm -rf tests/work/{config_file}'.format(config_file=list_of_files[7]))
+    except:
+        make = 0
+    assert result.exit_code == 0 and make == 0
 
 
 @pytest.mark.timeout(200)
