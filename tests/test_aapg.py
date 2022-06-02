@@ -10,8 +10,8 @@ import sys
 
 seed(1)
 
-list_of_files = ['check_basic', 'check_branch', 'check_csr', 'check_switch_mode', 'check_exceptions', 'check_i_cache', 'check_recursion', 'check_all']
-
+#list_of_files = ['check_basic', 'check_branch', 'check_csr', 'check_switch_mode', 'check_exceptions', 'check_i_cache', 'check_recursion', 'check_all']
+list_of_files = ['check_basic', 'check_branch', 'check_csr', 'check_switch_mode', 'check_exceptions', 'check_i_cache', 'check_recursion']
 
 seeds = []
 
