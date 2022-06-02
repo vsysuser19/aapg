@@ -157,7 +157,7 @@ def test_branch(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(200)
+@pytest.mark.timeout(15)
 def test_csr(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
@@ -232,7 +232,7 @@ def test_recursion(runner,seed):
         make = 0
     assert result.exit_code == 0 and make == 0
 
-@pytest.mark.timeout(200)
+@pytest.mark.timeout(15)
 def test_all(runner,seed):
     '''Testing check_basic.yaml config file in parallel mode'''
     make = 0
