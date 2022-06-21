@@ -113,7 +113,7 @@ inst_store_by_set = {
 
 'rol        rd rs1 rs2 31..25=48 14..12=1 6..2=0x0C 1..0=3',
 'ror        rd rs1 rs2 31..25=48 14..12=5 6..2=0x0C 1..0=3',
-'rori       rd rs1 31..27=12 shamt 14..12=5 6..2=0x04 1..0=3'
+'rori       rd rs1 31..27=12 shamtw 14..12=5 6..2=0x04 1..0=3'
     ],
     'rv64i.zbb' : [
       
@@ -129,8 +129,8 @@ inst_store_by_set = {
       
 'gorc       rd rs1 rs2 31..25=20 14..12=5 6..2=0x0C 1..0=3',
 'grev       rd rs1 rs2 31..25=52 14..12=5 6..2=0x0C 1..0=3',
-'gorci      rd rs1 31..27=5 shamt 14..12=5 6..2=0x04 1..0=3',
-'grevi      rd rs1 31..27=13 shamt 14..12=5 6..2=0x04 1..0=3',
+'gorci      rd rs1 31..27=5 shamtw 14..12=5 6..2=0x04 1..0=3',
+'grevi      rd rs1 31..27=13 shamtw 14..12=5 6..2=0x04 1..0=3',
 'shfl       rd rs1 rs2 31..25=4  14..12=1 6..2=0x0C 1..0=3',
 'unshfl     rd rs1 rs2 31..25=4  14..12=5 6..2=0x0C 1..0=3',
 'shfli      rd rs1 31..26=2 shamtw 14..12=1 6..2=0x04 1..0=3',
@@ -182,10 +182,10 @@ inst_store_by_set = {
 'bset       rd rs1 rs2 31..25=20 14..12=1 6..2=0x0C 1..0=3',
 'binv       rd rs1 rs2 31..25=52 14..12=1 6..2=0x0C 1..0=3',
 'bext       rd rs1 rs2 31..25=36 14..12=5 6..2=0x0C 1..0=3',
-'bclri      rd rs1 31..27=9 shamt 14..12=1 6..2=0x04 1..0=3',
-'bseti      rd rs1 31..27=5 shamt 14..12=1 6..2=0x04 1..0=3',
-'binvi      rd rs1 31..27=13 shamt 14..12=1 6..2=0x04 1..0=3',
-'bexti      rd rs1 31..27=9 shamt 14..12=5 6..2=0x04 1..0=3'
+'bclri      rd rs1 31..27=9 shamtw 14..12=1 6..2=0x04 1..0=3',
+'bseti      rd rs1 31..27=5 shamtw 14..12=1 6..2=0x04 1..0=3',
+'binvi      rd rs1 31..27=13 shamtw 14..12=1 6..2=0x04 1..0=3',
+'bexti      rd rs1 31..27=9 shamtw 14..12=5 6..2=0x04 1..0=3'
  ],
     'rv32i.zbe' : [
       
@@ -241,7 +241,7 @@ inst_store_by_set = {
 'cmov       rd rs1 rs2 rs3 26..25=3 14..12=5 6..2=0x0C 1..0=3',
 'fsl        rd rs1 rs2 rs3 26..25=2 14..12=1 6..2=0x0C 1..0=3',
 'fsr        rd rs1 rs2 rs3 26..25=2 14..12=5 6..2=0x0C 1..0=3',
-'fsri       rd rs1 shamt rs3   26..26=1 14..12=5 6..2=0x04 1..0=3'
+'fsri       rd rs1 shamtw rs3   26..26=1 14..12=5 6..2=0x04 1..0=3'
  ],
  'rv64i.zbt' : [
         'fslw       rd rs1 rs2 rs3 26..25=2 14..12=1 6..2=0x0E 1..0=3',
