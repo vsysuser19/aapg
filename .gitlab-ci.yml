@@ -27,7 +27,7 @@ test:
         - eval "$(pyenv virtualenv-init -)"
         - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
-        - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
+      #  - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
         refs:
             - merge_requests
@@ -45,7 +45,7 @@ test_master:
         - eval "$(pyenv virtualenv-init -)"
         - pyenv activate py38
         - pytest tests/test_aapg.py -m "serial" -v
-        - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
+     #   - pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s
     only:
         refs:
             - master
