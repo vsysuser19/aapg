@@ -46,6 +46,23 @@ isa-instruction-distribution:
   rel_rv32i.fence: 0
   rel_rv64i.compute: 0
   rel_rv64i.data: 0
+  rel_rv32i.zba: 0
+  rel_rv64i.zba: 0
+  rel_rv32i.zbb: 0
+  rel_rv64i.zbb: 0
+  rel_rv32i.zbc: 0
+  rel_rv32i.zbs: 0
+  rel_rv32i.zbe: 0
+  rel_rv64i.zbe: 0
+  rel_rv32i.zbf: 0
+  rel_rv64i.zbf: 0
+  rel_rv64i.zbm: 0
+  rel_rv32i.zbp: 0
+  rel_rv64i.zbp: 0
+  rel_rv32i.zbr: 0
+  rel_rv64i.zbr: 0
+  rel_rv32i.zbt: 0
+  rel_rv64i.zbt: 0
   rel_rv32m: 0
   rel_rv64m: 0
   rel_rv32a: 0

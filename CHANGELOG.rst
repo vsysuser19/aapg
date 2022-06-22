@@ -3,6 +3,9 @@ CHANGELOG
 
 This project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+[2.4.0] - 2022-06-22
+  - adding support for Zb extension instructions
+
 [2.3.1] - 2022-06-22
   - commented pytest tests/test_aapg.py -m "not serial" -v --seed=$((1 + $RANDOM)) -s in CI
 

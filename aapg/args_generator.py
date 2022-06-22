@@ -396,6 +396,15 @@ def gen_args(instruction, regfile, arch, reg_ignore, csr_sections, *args, **kwar
             final_inst.append(register_mapping[register])
             continue
 
+        if arg == 'rs3':
+            try:
+                register = random.choice(registers_src)
+            except IndexError as e:
+                register = random.choice(registers_int)
+            regfile[register] = incr_rw(regfile[register], True, False)
+            final_inst.append(register_mapping[register])
+            continue
+
         if arg in ['imm12', 'uimm12']:
 
             # Check if memory_inst
