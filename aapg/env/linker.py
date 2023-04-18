@@ -30,7 +30,7 @@ SECTIONS
   <!data_section!>
 
   <![tohost]
-  . = ALIGN(0x100000);
+  . = ALIGN(0x5000);
   .tohost : { *(.tohost) } !>
   .rodata : { *(rodata) }
 
