@@ -17,12 +17,14 @@ def confargs():
 
 class TestBasicGenerator(object):
 
-    def test_constructor_exists(self):
+    @staticmethod
+    def test_constructor_exists():
         """ Check if constructor is working """
         basic_generator = BasicGenerator(confargs())
         assert isinstance(basic_generator, BasicGenerator)
 
-    def test_raises_StopIteration_on_empty(self):
+    @staticmethod
+    def test_raises_StopIteration_on_empty():
         """ Check if it stops iteration properly """
         args = confargs()
         args['general']['total_instructions'] = '0'
@@ -30,7 +32,8 @@ class TestBasicGenerator(object):
         with pytest.raises(StopIteration):
             next(basic_generator)
 
-    def test_correct_num_instructions_generated(self):
+    @staticmethod
+    def test_correct_num_instructions_generated():
         """ Check generated number of instructions """
         basic_generator = BasicGenerator(confargs())
         instruction_counter = 0
