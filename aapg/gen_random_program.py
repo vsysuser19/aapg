@@ -1843,8 +1843,8 @@ def float_rounding_dist(args):
           args: Configuration parser args obtained from (default) config.yaml
     """
     total = 0
-    rounding_array = list()
-    prob_array = list()
+    rounding_array = []
+    prob_array = []
     for key in args['float-rounding'].keys():
       rounding_array.append(key)
       total = total + int(args['float-rounding'][key])
