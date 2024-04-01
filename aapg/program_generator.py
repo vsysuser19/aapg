@@ -695,14 +695,16 @@ class BasicGenerator(object):
             self.total_instructions += 3
             self.current_access_section = access_section
 
-    def branch_ext_selected(self, inst_dist):
+    @staticmethod
+    def branch_ext_selected(inst_dist):
         """ Check if a branch extension is present in supplied inst dist """
         if 'rv32i.ctrl' in inst_dist or 'rvc.ctrl' in inst_dist or 'rv32c.ctrl' in inst_dist:
                 return True
         else:
                 return False
 
-    def is_branch_ext(self, ext):
+    @staticmethod
+    def is_branch_ext(ext):
         if ext in ('rv32i.ctrl', 'rvc.ctrl', 'rv32c.ctrl'):
             return True
         else:
