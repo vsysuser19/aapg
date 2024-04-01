@@ -70,11 +70,11 @@ def init_global_wth_seed(seed):
   random.seed(seed)
   reg1 = random.randint(0,14) + 1
   reg2 = random.randint(0,12)
-  if reg1 == 11 or reg1 == 2:
+  if reg1 in (11, 2):
     reg1=reg1+1
   if (reg1 == reg2):
     reg2=reg2+1
-  if (reg2 == 11 or reg2 == 2):
+  if reg2 in (11, 2):
     reg2=reg2+1
 
   no_use_regs.append(reg1)
@@ -129,11 +129,11 @@ def init_global_wth_seed(seed):
 
   reg1 = random.randint(0,14) + 1
   reg2 = random.randint(0,12)
-  if reg1 == 11 or reg1 == 2:
+  if reg1 in (11, 2):
     reg1=reg1+1
   if (reg1 == reg2):
     reg2=reg2+1
-  if (reg2 == 11 or reg2 == 2):
+  if reg2 in (11, 2):
     reg2=reg2+1
   no_use_regs.append(reg1)
   no_use_regs.append(reg2)
@@ -234,11 +234,11 @@ def init_global_wth_seed(seed):
 
   reg1 = random.randint(0,14) + 1
   reg2 = random.randint(0,12)
-  if reg1 == 11 or reg1 == 2:
+  if reg1 in (11, 2):
     reg1=reg1+1
   if (reg1 == reg2):
     reg2=reg2+1
-  if (reg2 == 11 or reg2 == 2):
+  if reg2 in (11, 2):
     reg2=reg2+1
   no_use_regs.append(reg1)
   no_use_regs.append(reg2)
@@ -910,11 +910,11 @@ def init_global_wth_seed(seed):
 
   reg1 = random.randint(0,14) + 1
   reg2 = random.randint(0,12)
-  if reg1 == 11 or reg1 == 2:
+  if reg1 in (11, 2):
     reg1=reg1+1
   if (reg1 == reg2):
     reg2=reg2+1
-  if (reg2 == 11 or reg2 == 2):
+  if reg2 in (11, 2):
     reg2=reg2+1
   no_use_regs.append(reg1)
   no_use_regs.append(reg2)
@@ -1180,11 +1180,11 @@ def init_global_wth_seed(seed):
 
   reg1 = random.randint(0,14) + 1
   reg2 = random.randint(0,12)
-  if reg1 == 11 or reg1 == 2:
+  if reg1 in (11, 2):
     reg1=reg1+1
   if (reg1 == reg2):
     reg2=reg2+1
-  if (reg2 == 11 or reg2 == 2):
+  if reg2 in (11, 2):
     reg2=reg2+1
   no_use_regs.append(reg1)
   no_use_regs.append(reg2)
@@ -1602,11 +1602,11 @@ def init_global_wth_seed(seed):
 
   reg1 = random.randint(0,14) + 1
   reg2 = random.randint(0,12)
-  if reg1 == 11 or reg1 == 2:
+  if reg1 in (11, 2):
     reg1=reg1+1
   if (reg1 == reg2):
     reg2=reg2+1
-  if (reg2 == 11 or reg2 == 2):
+  if reg2 in (11, 2):
     reg2=reg2+1
   no_use_regs.append(reg1)
   no_use_regs.append(reg2)

@@ -72,7 +72,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
     # Generate the args
     offset_string = '{0},{1}'.format('b' if backward else 'f', num_steps)
 
-    if instr_name == 'beq' or instr_name == 'c.beqz':
+    if instr_name in ('beq', 'c.beqz'):
         pre_insts = []
         if backward:
             if taken:
@@ -92,7 +92,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
 
         pre_insts.append(offset_string)
         return (pre_insts,comp_reg)
-    elif instr_name == 'bne' or instr_name == 'c.bnez':
+    elif instr_name in ('bne', 'c.bnez'):
         pre_insts = []
         if backward:
             if taken:
@@ -114,7 +114,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
 
         pre_insts.append(offset_string)
         return (pre_insts,comp_reg)
-    elif instr_name == 'blt' or instr_name == 'bltu':
+    elif instr_name in ('blt', 'bltu'):
         pre_insts = []
         if backward:
             if taken:
@@ -136,7 +136,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
 
         pre_insts.append(offset_string)
         return (pre_insts,comp_reg)
-    elif instr_name == 'bge' or instr_name == 'bgeu':
+    elif instr_name in ('bge', 'bgeu'):
         pre_insts = []
         if backward:
             if taken:
@@ -157,7 +157,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
         pre_insts.append(['li', 'x{branch_use_reg}'.format(branch_use_reg=kwargs['branch_use_reg']), '10'])
         pre_insts.append(offset_string)
         return (pre_insts,comp_reg)
-    elif instr_name == 'jal' or instr_name == 'c.j' or instr_name == 'c.jal':
+    elif instr_name in ('jal', 'c.j', 'c.jal'):
         pre_insts = []
 
         target_reg = 'x10'
@@ -183,7 +183,7 @@ def gen_branch_args(instruction, regfile, arch, *args, **kwargs):
             pre_insts.append(['jal', '{}'.format(target_reg), offset_string])
         pre_insts.append(offset_string)
         return (pre_insts,comp_reg)
-    elif instr_name == 'jalr' or instr_name == 'c.jr' or instr_name == 'c.jalr':
+    elif instr_name in ('jalr', 'c.jr', 'c.jalr'):
         pre_insts = []
 
         target_reg = 'x10'
@@ -750,7 +750,7 @@ def gen_atomic_args(instruction, regfile, arch, reg_ignore, *args, **kwargs):
             final_inst.append(register_mapping[register])
 
         if arg == 'rs1':
-            if instr_name == 'lr.w' or instr_name == 'lr.d':
+            if instr_name in ('lr.w', 'lr.d'):
                 final_inst.append('sp')
             else:
                 try:

@@ -435,7 +435,7 @@ class BasicGenerator(object):
 
 
                     flag = False
-                    if isa_ext == 'rv32a' or isa_ext == 'rv64a':
+                    if isa_ext in ('rv32a', 'rv64a'):
                         #self.instructions_togen -= 1
                         #self.total_instructions -= 1
                         next_inst_with_args = aapg.args_generator.gen_atomic_args(
@@ -490,7 +490,7 @@ class BasicGenerator(object):
                 return
 
             # if atomic instruction
-            if isa_ext == 'rv32a' or isa_ext == 'rv64a':
+            if isa_ext in ('rv32a', 'rv64a'):
                 self.instructions_togen -= 1
                 self.total_instructions -= 1
                 next_inst_with_args = aapg.args_generator.gen_atomic_args(
@@ -549,7 +549,7 @@ class BasicGenerator(object):
 
         self.inst_dist = cd
         self.inst_dist_nobranch = {k:cd[k] for k in self.inst_dist if
-                (k != 'rv32i.ctrl' and k != 'rvc.ctrl' and k != 'rv32c.ctrl')}
+                k not in ('rv32i.ctrl', 'rvc.ctrl', 'rv32c.ctrl')}
         if self.branch_ext_selected(self.inst_dist):
             num_branch_insts = 0
             if 'rv32i.ctrl' in self.inst_dist:
@@ -703,7 +703,7 @@ class BasicGenerator(object):
                 return False
 
     def is_branch_ext(self, ext):
-        if ext == 'rv32i.ctrl' or ext == 'rvc.ctrl' or ext == 'rv32c.ctrl':
+        if ext in ('rv32i.ctrl', 'rvc.ctrl', 'rv32c.ctrl'):
             return True
         else:
             return False
@@ -712,7 +712,7 @@ class BasicGenerator(object):
         """ Return the exts selected """
         ret = []
         for k in self.inst_dist:
-            if k == 'rv32i.ctrl' or k == 'rv32c.ctrl' or k == 'rvc.ctrl':
+            if k in ('rv32i.ctrl', 'rv32c.ctrl', 'rvc.ctrl'):
                 ret.append(k)
 
         return ret
